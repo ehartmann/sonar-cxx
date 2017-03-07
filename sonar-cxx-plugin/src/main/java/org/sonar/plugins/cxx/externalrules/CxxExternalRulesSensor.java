@@ -19,9 +19,15 @@
  */
 package org.sonar.plugins.cxx.externalrules;
 
+import javax.xml.transform.*;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.codehaus.staxmate.in.SMHierarchicCursor;
 import org.codehaus.staxmate.in.SMInputCursor;
 import org.sonar.api.batch.sensor.SensorContext;
@@ -42,12 +48,16 @@ import org.sonar.plugins.cxx.utils.StaxParser;
 public class CxxExternalRulesSensor extends CxxReportSensor {
   public static final Logger LOG = Loggers.get(CxxExternalRulesSensor.class);
   public static final String REPORT_PATH_KEY = "sonar.cxx.other.reportPath";
+  private static final String TRANSFORM_XSLT_SCRIPT_KEY = "sonar.cxx.other.transformXsltScript";
+  private static final String SONAR_WORKING_DIRECTORY_KEY = "sonar.working.directory";
+  private Settings settings;
 
   /**
    * {@inheritDoc}
    */
   public CxxExternalRulesSensor(Settings settings) {
     super(settings, CxxMetrics.EXTERNAL);
+    this.settings = settings;
   }
 
   @Override
@@ -61,9 +71,9 @@ public class CxxExternalRulesSensor extends CxxReportSensor {
   }
   
   @Override
-  public void processReport(final SensorContext context, File report) throws XMLStreamException {
+  public void processReport(final SensorContext context, File report) throws XMLStreamException, IOException, URISyntaxException, TransformerException {
     LOG.debug("Parsing 'other' format");
-    
+
     StaxParser parser = new StaxParser(new StaxParser.XmlStreamHandler() {
 
       /**
@@ -84,6 +94,20 @@ public class CxxExternalRulesSensor extends CxxReportSensor {
         }
       }
     });
+
+    String transformXsltScript = FilenameUtils.normalize(settings.getString(TRANSFORM_XSLT_SCRIPT_KEY));
+    if (transformXsltScript != null) {
+      File transformFile = new File(transformXsltScript);
+      if (transformFile.isAbsolute()) {
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Source xslt = new StreamSource(transformFile);
+        Transformer transformer = factory.newTransformer(xslt);
+
+        File transformedReport = new File(SONAR_WORKING_DIRECTORY_KEY + "/other_transformed.xml");
+        transformer.transform(new StreamSource(report), new StreamResult(transformedReport));
+        report = transformedReport;
+      }
+    }
 
     parser.parse(report);
   }
