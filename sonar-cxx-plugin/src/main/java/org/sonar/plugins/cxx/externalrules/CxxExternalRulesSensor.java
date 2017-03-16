@@ -38,12 +38,13 @@ import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.cxx.CxxLanguage;
 import org.sonar.plugins.cxx.utils.CxxMetrics;
 import org.sonar.plugins.cxx.utils.CxxReportSensor;
+import org.sonar.plugins.cxx.utils.CxxUtils;
 import org.sonar.plugins.cxx.utils.StaxParser;
 
 /**
  * Custom Rule Import, all static analysis are supported.
  *
- * @author jorge costa
+ * @author jorge costa, stefan weiser
  */
 public class CxxExternalRulesSensor extends CxxReportSensor {
   public static final Logger LOG = Loggers.get(CxxExternalRulesSensor.class);
@@ -72,38 +73,28 @@ public class CxxExternalRulesSensor extends CxxReportSensor {
     descriptor.onlyOnLanguage(CxxLanguage.KEY).name("CxxExternalRulesSensor");
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void execute(SensorContext context) {
+    try {
+      transformFiles();
+    } catch (Exception e) {
+      String msg = new StringBuilder()
+        .append("Cannot transform report files: '")
+        .append(e)
+        .append("'")
+        .toString();
+      LOG.error(msg);
+      CxxUtils.validateRecovery(e, this.settings);
+    }
+    super.execute(context);
+  }
+
   @Override
   public void processReport(final SensorContext context, File report) throws XMLStreamException, IOException, URISyntaxException, TransformerException {
     LOG.debug("Parsing 'other' format");
-
-    for(int i = 1; i < 100; i++) {
-      String stylesheetKey = SONAR_CXX_XSLT_KEY + i + STYLESHEET_KEY;
-      String sourceKey = SONAR_CXX_XSLT_KEY + i + SOURCE_KEY;
-      String outputKey = SONAR_CXX_XSLT_KEY + i + OUTPUT_KEY;
-
-      String stylesheet = FilenameUtils.normalize(settings.getString(SONAR_CXX_XSLT_KEY + i + STYLESHEET_KEY));
-      String[] sources = settings.getStringArray(SONAR_CXX_XSLT_KEY + i + SOURCE_KEY);
-      String[] outputs = settings.getStringArray(SONAR_CXX_XSLT_KEY + i + OUTPUT_KEY);
-
-      if (sources.length != outputs.length) {
-        LOG.error("Number of source XML files is not equal to the the number of output files.");
-      } else if ((stylesheet != null) || (sources != null) || (outputs != null)) {
-        if (stylesheet == null) {
-          LOG.error(SONAR_CXX_XSLT_KEY + i + STYLESHEET_KEY + " is not defined.");
-        } else if (sources == null) {
-          LOG.error(SONAR_CXX_XSLT_KEY + i + SOURCE_KEY + " file is not defined.");
-        } else if (outputs == null) {
-          LOG.error(SONAR_CXX_XSLT_KEY + i + OUTPUT_KEY + " is not defined.");
-        } else {
-          File stylesheetFile = new File(stylesheet);
-          if (stylesheetFile.isAbsolute()) {
-            for (int j = 0; j < sources.length; j++) {
-              transformFile(stylesheetFile, sources[j], outputs[j]);
-            }
-          }
-        }
-      }
-    }
 
     StaxParser parser = new StaxParser(new StaxParser.XmlStreamHandler() {
 
@@ -129,7 +120,40 @@ public class CxxExternalRulesSensor extends CxxReportSensor {
     parser.parse(report);
   }
 
-  private void transformFile(File stylesheetFile, String source, String output) throws TransformerException, TransformerConfigurationException {
+  private void transformFiles() throws TransformerException {
+    for(int i = 1; i < 100; i++) {
+      String stylesheetKey = SONAR_CXX_XSLT_KEY + i + STYLESHEET_KEY;
+      String sourceKey = SONAR_CXX_XSLT_KEY + i + SOURCE_KEY;
+      String outputKey = SONAR_CXX_XSLT_KEY + i + OUTPUT_KEY;
+
+      String stylesheet = FilenameUtils.normalize(settings.getString(SONAR_CXX_XSLT_KEY + i + STYLESHEET_KEY));
+      String[] sources = settings.getStringArray(SONAR_CXX_XSLT_KEY + i + SOURCE_KEY);
+      String[] outputs = settings.getStringArray(SONAR_CXX_XSLT_KEY + i + OUTPUT_KEY);
+
+      if (sources.length != outputs.length) {
+        LOG.error("Number of source XML files is not equal to the the number of output files.");
+      } else if ((stylesheet != null) ||
+        ((sources != null) && (sources.length > 0)) ||
+        ((outputs != null) && (outputs.length > 0))) {
+        if (stylesheet == null) {
+          LOG.error(SONAR_CXX_XSLT_KEY + i + STYLESHEET_KEY + " is not defined.");
+        } else if (sources == null) {
+          LOG.error(SONAR_CXX_XSLT_KEY + i + SOURCE_KEY + " file is not defined.");
+        } else if (outputs == null) {
+          LOG.error(SONAR_CXX_XSLT_KEY + i + OUTPUT_KEY + " is not defined.");
+        } else {
+          File stylesheetFile = new File(stylesheet);
+          if (stylesheetFile.isAbsolute()) {
+            for (int j = 0; j < sources.length; j++) {
+              transformFile(stylesheetFile, sources[j], outputs[j]);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private void transformFile(File stylesheetFile, String source, String output) throws TransformerException {
     TransformerFactory factory = TransformerFactory.newInstance();
     Source xslt = new StreamSource(stylesheetFile);
     Transformer transformer = factory.newTransformer(xslt);
