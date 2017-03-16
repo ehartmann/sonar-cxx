@@ -240,7 +240,7 @@ public abstract class CxxReportSensor implements Sensor {
         newIssue.save();
         violationsCount++;
       } catch (Exception ex) {
-        LOG.error("Could not add the issue '{}', skipping issue", ex.getMessage());
+        LOG.error("Could not add the issue '{}' for rule '{}:{}', skipping issue", ex.getMessage(), ruleRepoKey, ruleId);
         CxxUtils.validateRecovery(ex, settings);
       }
     }
