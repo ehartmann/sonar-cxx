@@ -49,10 +49,10 @@ import org.sonar.plugins.cxx.utils.StaxParser;
 public class CxxExternalRulesSensor extends CxxReportSensor {
   public static final Logger LOG = Loggers.get(CxxExternalRulesSensor.class);
   public static final String REPORT_PATH_KEY = "sonar.cxx.other.reportPath";
-  private static final String SONAR_CXX_XSLT_KEY = "sonar.cxx.xslt.";
-  private static final String STYLESHEET_KEY = ".stylesheet";
-  private static final String SOURCE_KEY = ".source";
-  private static final String OUTPUT_KEY = ".output";
+  public static final String SONAR_CXX_XSLT_KEY = "sonar.cxx.xslt.";
+  public static final String STYLESHEET_KEY = ".stylesheet";
+  public static final String SOURCE_KEY = ".source";
+  public static final String OUTPUT_KEY = ".output";
   private Settings settings;
 
   /**
@@ -142,6 +142,7 @@ public class CxxExternalRulesSensor extends CxxReportSensor {
         } else if (outputs == null) {
           LOG.error(SONAR_CXX_XSLT_KEY + i + OUTPUT_KEY + " is not defined.");
         } else {
+          LOG.debug("Converting " + sourceKey + " with " + stylesheetKey + " to " + outputKey + ".");
           File stylesheetFile = new File(stylesheet);
           if (stylesheetFile.isAbsolute()) {
             for (int j = 0; j < sources.length; j++) {
