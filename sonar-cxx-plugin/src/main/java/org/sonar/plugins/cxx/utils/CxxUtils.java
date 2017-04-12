@@ -26,6 +26,14 @@ import org.sonar.api.config.Settings;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.cxx.CxxPlugin;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 
 /**
@@ -69,8 +77,15 @@ public final class CxxUtils {
     }
     return filePath;
   }
-  
-  
+
+
+  public static void transformFile(Source stylesheetFile, File source, File output) throws TransformerException {
+    TransformerFactory factory = TransformerFactory.newInstance();
+    Transformer transformer = factory.newTransformer(stylesheetFile);
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+    transformer.transform(new StreamSource(source), new StreamResult(output));
+  }
+
 
   /**
    * <p>Gets the stack trace from a Throwable as a String.</p>
