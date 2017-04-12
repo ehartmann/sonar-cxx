@@ -25,6 +25,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.FilenameUtils;
@@ -78,17 +79,7 @@ public class CxxExternalRulesSensor extends CxxReportSensor {
    */
   @Override
   public void execute(SensorContext context) {
-    try {
-      transformFiles();
-    } catch (Exception e) {
-      String msg = new StringBuilder()
-        .append("Cannot transform report files: '")
-        .append(e)
-        .append("'")
-        .toString();
-      LOG.error(msg);
-      CxxUtils.validateRecovery(e, this.settings);
-    }
+    transformFiles(context);
     super.execute(context);
   }
 
@@ -120,21 +111,21 @@ public class CxxExternalRulesSensor extends CxxReportSensor {
     parser.parse(report);
   }
 
-  private void transformFiles() throws TransformerException {
-    for(int i = 1; i < 100; i++) {
+  private void transformFiles(final SensorContext context) {
+    for (int i = 1; i < 10; i++) {
       String stylesheetKey = SONAR_CXX_XSLT_KEY + i + STYLESHEET_KEY;
       String sourceKey = SONAR_CXX_XSLT_KEY + i + SOURCE_KEY;
       String outputKey = SONAR_CXX_XSLT_KEY + i + OUTPUT_KEY;
 
       String stylesheet = FilenameUtils.normalize(settings.getString(SONAR_CXX_XSLT_KEY + i + STYLESHEET_KEY));
-      String[] sources = settings.getStringArray(SONAR_CXX_XSLT_KEY + i + SOURCE_KEY);
-      String[] outputs = settings.getStringArray(SONAR_CXX_XSLT_KEY + i + OUTPUT_KEY);
+      List<File> sources = getReports(settings, context.fileSystem().baseDir(), SONAR_CXX_XSLT_KEY + i + SOURCE_KEY);
+      List<File> outputs = getReports(settings, context.fileSystem().baseDir(), SONAR_CXX_XSLT_KEY + i + OUTPUT_KEY);
 
-      if (sources.length != outputs.length) {
+      if (sources.size() != outputs.size()) {
         LOG.error("Number of source XML files is not equal to the the number of output files.");
       } else if ((stylesheet != null) ||
-        ((sources != null) && (sources.length > 0)) ||
-        ((outputs != null) && (outputs.length > 0))) {
+        ((sources != null) && (sources.size() > 0)) ||
+        ((outputs != null) && (outputs.size() > 0))) {
         if (stylesheet == null) {
           LOG.error(SONAR_CXX_XSLT_KEY + i + STYLESHEET_KEY + " is not defined.");
         } else if (sources == null) {
@@ -145,8 +136,8 @@ public class CxxExternalRulesSensor extends CxxReportSensor {
           LOG.debug("Converting " + sourceKey + " with " + stylesheetKey + " to " + outputKey + ".");
           File stylesheetFile = new File(stylesheet);
           if (stylesheetFile.isAbsolute()) {
-            for (int j = 0; j < sources.length; j++) {
-              transformFile(stylesheetFile, sources[j], outputs[j]);
+            for (int j = 0; j < sources.size(); j++) {
+              transformFile(stylesheetFile, sources.get(j), outputs.get(j));
             }
           }
         }
@@ -154,13 +145,21 @@ public class CxxExternalRulesSensor extends CxxReportSensor {
     }
   }
 
-  private void transformFile(File stylesheetFile, String source, String output) throws TransformerException {
-    TransformerFactory factory = TransformerFactory.newInstance();
-    Source xslt = new StreamSource(stylesheetFile);
-    Transformer transformer = factory.newTransformer(xslt);
-
-    File sourceFile = new File(source);
-    File outputFile = new File(output);
-    transformer.transform(new StreamSource(sourceFile), new StreamResult(outputFile));
+  private void transformFile(File stylesheetFile, File source, File output) {
+    try {
+      TransformerFactory factory = TransformerFactory.newInstance();
+      Source xslt = new StreamSource(stylesheetFile);
+      Transformer transformer = factory.newTransformer(xslt);
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+      transformer.transform(new StreamSource(source), new StreamResult(output));
+    } catch (Exception e) {
+      String msg = new StringBuilder()
+        .append("Cannot transform report files: '")
+        .append(e)
+        .append("'")
+        .toString();
+      LOG.error(msg);
+      CxxUtils.validateRecovery(e, this.settings);
+    }
   }
 }
