@@ -123,8 +123,24 @@ public abstract class CxxReportSensor implements Sensor {
     return value;
   }
 
-  public static List<File> getReports(Settings settings, final File moduleBaseDir,
-      String reportPathPropertyKey) {
+  public static String resolveFilename(final String baseDir, final String filename) {
+
+    // Normalization can return null if path is null, is invalid, or is a path with back-ticks outside known directory structure
+    String normalizedPath = FilenameUtils.normalize(filename);
+    if ((normalizedPath != null) && (new File(normalizedPath).isAbsolute())) {
+      return normalizedPath;
+    }
+
+    // Prefix with absolute module base dir, attempt normalization again -- can still get null here
+    normalizedPath = FilenameUtils.normalize(baseDir + File.separator + filename);
+    if (normalizedPath != null) {
+      return normalizedPath;
+    }
+
+    return null;
+  }
+
+  public static List<File> getReports(Settings settings, final File moduleBaseDir, String reportPathPropertyKey) {
 
     List<File> reports = new ArrayList<>();
 
@@ -132,15 +148,8 @@ public abstract class CxxReportSensor implements Sensor {
     if (!reportPaths.isEmpty()) {
       List<String> includes = new ArrayList<>();
       for (String reportPath : reportPaths) {
-        // Normalization can return null if path is null, is invalid, or is a path with back-ticks outside known directory structure
-        String normalizedPath = FilenameUtils.normalize(reportPath);
-        if (normalizedPath != null && new File(normalizedPath).isAbsolute()) {
-          includes.add(normalizedPath);
-          continue;
-        }
 
-        // Prefix with absolute module base dir, attempt normalization again -- can still get null here
-        normalizedPath = FilenameUtils.normalize(moduleBaseDir.getAbsolutePath() + File.separator + reportPath);
+        String normalizedPath = resolveFilename(moduleBaseDir.getAbsolutePath(), reportPath);
         if (normalizedPath != null) {
           includes.add(normalizedPath);
           continue;

@@ -22,6 +22,7 @@ package org.sonar.plugins.cxx.externalrules;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
@@ -79,7 +80,7 @@ public class CxxExternalRulesSensor extends CxxReportSensor {
    */
   @Override
   public void execute(SensorContext context) {
-    transformFiles(context);
+    transformFiles(context.fileSystem().baseDir());
     super.execute(context);
   }
 
@@ -111,15 +112,15 @@ public class CxxExternalRulesSensor extends CxxReportSensor {
     parser.parse(report);
   }
 
-  private void transformFiles(final SensorContext context) {
+  public void transformFiles(final File baseDir) {
     for (int i = 1; i < 10; i++) {
       String stylesheetKey = SONAR_CXX_OTHER_XSLT_KEY + i + STYLESHEET_KEY;
       String sourceKey = SONAR_CXX_OTHER_XSLT_KEY + i + SOURCE_KEY;
       String outputKey = SONAR_CXX_OTHER_XSLT_KEY + i + OUTPUT_KEY;
 
-      String stylesheet = FilenameUtils.normalize(settings.getString(stylesheetKey));
-      List<File> sources = getReports(settings, context.fileSystem().baseDir(), sourceKey);
-      List<File> outputs = getReports(settings, context.fileSystem().baseDir(), outputKey);
+      String stylesheet = resolveFilename(baseDir.getAbsolutePath(), settings.getString(stylesheetKey));
+      List<File> sources = getReports(settings, baseDir, sourceKey);
+      List<String> outputs = Arrays.asList(settings.getStringArray(outputKey));
 
       if (sources.size() != outputs.size()) {
         LOG.error("Number of source XML files is not equal to the the number of output files.");
@@ -133,20 +134,21 @@ public class CxxExternalRulesSensor extends CxxReportSensor {
         } else if (outputs == null) {
           LOG.error(outputKey + " is not defined.");
         } else {
-          LOG.debug("Converting " + sourceKey + " with " + stylesheetKey + " to " + outputKey + ".");
+          LOG.debug("Converting " + stylesheet + " with " + sources.toString() + " to " + outputs.toString() + ".");
           File stylesheetFile = new File(stylesheet);
           if (stylesheetFile.isAbsolute()) {
-            transformFileList(stylesheetFile, sources, outputs);
+            transformFileList(baseDir.getAbsolutePath(), stylesheetFile, sources, outputs);
           }
         }
       }
     }
   }
 
-  private void transformFileList(File stylesheetFile, List<File> sources, List<File> outputs) {
+  private void transformFileList(final String baseDir, File stylesheetFile, List<File> sources, List<String> outputs) {
     for (int j = 0; j < sources.size(); j++) {
       try {
-        CxxUtils.transformFile(new StreamSource(stylesheetFile), sources.get(j), outputs.get(j));
+        String normalizedOutputFilename = resolveFilename(baseDir, outputs.get(j));
+        CxxUtils.transformFile(new StreamSource(stylesheetFile), sources.get(j), new File(normalizedOutputFilename));
       } catch (Exception e) {
         String msg = new StringBuilder()
           .append("Cannot transform report files: '")
