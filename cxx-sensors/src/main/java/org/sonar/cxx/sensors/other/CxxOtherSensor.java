@@ -36,11 +36,9 @@ import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
-import org.sonar.plugins.cxx.CxxLanguage;
-import org.sonar.plugins.cxx.utils.CxxMetrics;
-import org.sonar.plugins.cxx.utils.CxxReportSensor;
-import org.sonar.plugins.cxx.utils.CxxUtils;
-import org.sonar.plugins.cxx.utils.StaxParser;
+import org.sonar.cxx.CxxLanguage;
+import org.sonar.cxx.sensors.utils.CxxMetrics;
+import org.sonar.cxx.sensors.utils.CxxUtils;
 import org.sonar.cxx.sensors.utils.CxxReportSensor;
 import org.sonar.cxx.sensors.utils.StaxParser;
 
@@ -57,14 +55,14 @@ public class CxxOtherSensor extends CxxReportSensor {
   public static final String STYLESHEET_KEY = ".stylesheet";
   public static final String SOURCE_KEY = ".source";
   public static final String OUTPUT_KEY = ".output";
-  private Settings settings;
+  private CxxLanguage cxxLanguage;
 
   /**
    * {@inheritDoc}
    */
   public CxxOtherSensor(CxxLanguage language) {
     super(language);
-    this.settings = settings;
+    this.cxxLanguage = language;
   }
 
   @Override
@@ -120,26 +118,32 @@ public class CxxOtherSensor extends CxxReportSensor {
   }  
 
   public void transformFiles(final File baseDir) {
-    for (int i = 1; i < 10; i++) {
+    Boolean goOn = true;
+    for (int i = 1; (i < 10) && goOn; i++) {
       String stylesheetKey = SONAR_CXX_OTHER_XSLT_KEY + i + STYLESHEET_KEY;
       String sourceKey = SONAR_CXX_OTHER_XSLT_KEY + i + SOURCE_KEY;
       String outputKey = SONAR_CXX_OTHER_XSLT_KEY + i + OUTPUT_KEY;
 
-      String stylesheet = resolveFilename(baseDir.getAbsolutePath(), settings.getString(stylesheetKey));
-      List<File> sources = getReports(settings, baseDir, sourceKey);
-      List<String> outputs = Arrays.asList(settings.getStringArray(outputKey));
+      String stylesheet = resolveFilename(baseDir.getAbsolutePath(), cxxLanguage.getStringOption(stylesheetKey));
+      List<File> sources = getReports(cxxLanguage, baseDir, sourceKey);
+      String outputStrings[] = language.getStringArrayOption(outputKey);
+      List<String> outputs = Arrays.asList((outputStrings != null) ? outputStrings : new String[] {});
 
       if (sources.size() != outputs.size()) {
         LOG.error("Number of source XML files is not equal to the the number of output files.");
+        goOn = false;
       } else if ((stylesheet != null) ||
         ((sources != null) && (sources.size() > 0)) ||
         ((outputs != null) && (outputs.size() > 0))) {
         if (stylesheet == null) {
           LOG.error(stylesheetKey + " is not defined.");
+          goOn = false;
         } else if (sources == null) {
           LOG.error(sourceKey + " file is not defined.");
+          goOn = false;
         } else if (outputs == null) {
           LOG.error(outputKey + " is not defined.");
+          goOn = false;
         } else {
           LOG.debug("Converting " + stylesheet + " with " + sources.toString() + " to " + outputs.toString() + ".");
           File stylesheetFile = new File(stylesheet);
@@ -163,7 +167,7 @@ public class CxxOtherSensor extends CxxReportSensor {
           .append("'")
           .toString();
         LOG.error(msg);
-        CxxUtils.validateRecovery(e, this.settings);
+        CxxUtils.validateRecovery(e, cxxLanguage);
       }
     }
   }

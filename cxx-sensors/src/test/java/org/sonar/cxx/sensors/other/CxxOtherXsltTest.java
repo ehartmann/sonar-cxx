@@ -17,10 +17,11 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.cxx.externalrules;
+package org.sonar.cxx.sensors.other;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import static org.fest.assertions.Assertions.assertThat;
@@ -31,11 +32,12 @@ import org.junit.Test;
 import org.apache.commons.io.FileUtils;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
+import org.sonar.cxx.CxxLanguage;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
-import org.sonar.plugins.cxx.TestUtils;
+import org.sonar.cxx.sensors.utils.TestUtils;
 
-public class CxxExternalRulesXsltTest {
+public class CxxOtherXsltTest {
 
   private FileSystem fs;
 
@@ -47,12 +49,12 @@ public class CxxExternalRulesXsltTest {
   @Test
   public void shouldReportNothingWhenNoReportFound() {
     SensorContextTester context = SensorContextTester.create(fs.baseDir());
-    Settings settings = new Settings();
-    settings.setProperty(CxxExternalRulesSensor.REPORT_PATH_KEY, "notexistingpath");
-    settings.setProperty(CxxExternalRulesSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxExternalRulesSensor.STYLESHEET_KEY, "notexistingpath");
-    settings.setProperty(CxxExternalRulesSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxExternalRulesSensor.SOURCE_KEY, "notexistingpath");
-    settings.setProperty(CxxExternalRulesSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxExternalRulesSensor.OUTPUT_KEY, "notexistingpath");
-    CxxExternalRulesSensor sensor = new CxxExternalRulesSensor(settings);
+    CxxLanguage language = TestUtils.mockCxxLanguage();
+    when(language.getStringOption(CxxOtherSensor.REPORT_PATH_KEY)).thenReturn("notexistingpath");
+    when(language.getStringOption(CxxOtherSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxOtherSensor.STYLESHEET_KEY)).thenReturn("notexistingpath");
+    when(language.getStringArrayOption(CxxOtherSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxOtherSensor.SOURCE_KEY)).thenReturn(new String[] {"notexistingpath"});
+    when(language.getStringArrayOption(CxxOtherSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxOtherSensor.OUTPUT_KEY)).thenReturn(new String[] {"notexistingpath"});
+    CxxOtherSensor sensor = new CxxOtherSensor(language);
 
     sensor.execute(context);
 
@@ -68,12 +70,12 @@ public class CxxExternalRulesXsltTest {
     String inputFile = "externalrules-reports" + File.separator + "externalrules-xslt-input.xml";
     String outputFile = "externalrules-reports" + File.separator + "externalrules-xslt-output.xml";
 
-    Settings settings = new Settings();
-    settings.setProperty(CxxExternalRulesSensor.REPORT_PATH_KEY, "externalrules-xslt-output.xml");
-    settings.setProperty(CxxExternalRulesSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxExternalRulesSensor.STYLESHEET_KEY, stylesheetFile);
-    settings.setProperty(CxxExternalRulesSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxExternalRulesSensor.SOURCE_KEY, inputFile);
-    settings.setProperty(CxxExternalRulesSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxExternalRulesSensor.OUTPUT_KEY, outputFile);
-    CxxExternalRulesSensor sensor = new CxxExternalRulesSensor(settings);
+    CxxLanguage language = TestUtils.mockCxxLanguage();
+    when(language.getStringOption(CxxOtherSensor.REPORT_PATH_KEY)).thenReturn("externalrules-xslt-output.xml");
+    when(language.getStringOption(CxxOtherSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxOtherSensor.STYLESHEET_KEY)).thenReturn(stylesheetFile);
+    when(language.getStringArrayOption(CxxOtherSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxOtherSensor.SOURCE_KEY)).thenReturn(new String[] {inputFile});
+    when(language.getStringArrayOption(CxxOtherSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxOtherSensor.OUTPUT_KEY)).thenReturn(new String[] {outputFile});
+    CxxOtherSensor sensor = new CxxOtherSensor(language);
 
     sensor.transformFiles(fs.baseDir());
 

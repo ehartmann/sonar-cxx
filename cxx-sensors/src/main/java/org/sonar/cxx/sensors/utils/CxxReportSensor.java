@@ -148,7 +148,8 @@ public abstract class CxxReportSensor implements Sensor {
       return reports;
     }
     
-    List<String> reportPaths = Arrays.asList(language.getStringArrayOption(genericReportKeyData));
+    String reportPathStrings[] = language.getStringArrayOption(genericReportKeyData);
+    List<String> reportPaths = Arrays.asList((reportPathStrings != null) ? reportPathStrings : new String[] {});
     if (!reportPaths.isEmpty()) {
       List<String> includes = new ArrayList<>();
       for (String reportPath : reportPaths) {
