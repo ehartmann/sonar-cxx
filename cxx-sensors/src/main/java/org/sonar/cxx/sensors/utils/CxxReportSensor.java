@@ -226,7 +226,7 @@ public abstract class CxxReportSensor implements Sensor {
             int lines = inputFile.lines();
             int lineNr = getLineAsInt(line, lines);
             String repoKey = ruleRepoKey + this.language.getRepositorySuffix();
-            LOG.info("Repository to save: {}", repoKey);
+            LOG.debug("Repository to save: {}", repoKey);
             NewIssue newIssue = sensorContext
                     .newIssue()
                     .forRule(RuleKey.of(repoKey, ruleId));
