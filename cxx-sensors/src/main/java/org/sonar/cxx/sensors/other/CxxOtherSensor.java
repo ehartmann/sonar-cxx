@@ -53,8 +53,8 @@ public class CxxOtherSensor extends CxxReportSensor {
   public static final String KEY = "other";
   public static final String OTHER_XSLT_KEY = KEY + ".xslt.";
   public static final String STYLESHEET_KEY = ".stylesheet";
-  public static final String SOURCE_KEY = ".source";
-  public static final String OUTPUT_KEY = ".output";
+  public static final String SOURCE_KEY = ".inputs";
+  public static final String OUTPUT_KEY = ".outputs";
   private CxxLanguage cxxLanguage;
 
   /**
