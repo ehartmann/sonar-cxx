@@ -151,6 +151,9 @@ public class CxxOtherSensor extends CxxReportSensor {
             transformFileList(baseDir.getAbsolutePath(), stylesheetFile, sources, outputs);
           }
         }
+      } else {
+          // No keys found.
+          goOn = false;
       }
     }
   }
