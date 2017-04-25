@@ -50,8 +50,8 @@ import org.sonar.cxx.sensors.utils.StaxParser;
 public class CxxOtherSensor extends CxxReportSensor {
   public static final Logger LOG = Loggers.get(CxxOtherSensor.class);
   public static final String REPORT_PATH_KEY = "other.reportPath";
-  public static final String KEY = "Other";
-  public static final String SONAR_CXX_OTHER_XSLT_KEY = "sonar.cxx.other.xslt.";
+  public static final String KEY = "other";
+  public static final String OTHER_XSLT_KEY = KEY + ".xslt.";
   public static final String STYLESHEET_KEY = ".stylesheet";
   public static final String SOURCE_KEY = ".source";
   public static final String OUTPUT_KEY = ".output";
@@ -120,9 +120,9 @@ public class CxxOtherSensor extends CxxReportSensor {
   public void transformFiles(final File baseDir) {
     Boolean goOn = true;
     for (int i = 1; (i < 10) && goOn; i++) {
-      String stylesheetKey = SONAR_CXX_OTHER_XSLT_KEY + i + STYLESHEET_KEY;
-      String sourceKey = SONAR_CXX_OTHER_XSLT_KEY + i + SOURCE_KEY;
-      String outputKey = SONAR_CXX_OTHER_XSLT_KEY + i + OUTPUT_KEY;
+      String stylesheetKey = OTHER_XSLT_KEY + i + STYLESHEET_KEY;
+      String sourceKey = OTHER_XSLT_KEY + i + SOURCE_KEY;
+      String outputKey = OTHER_XSLT_KEY + i + OUTPUT_KEY;
 
       String stylesheet = resolveFilename(baseDir.getAbsolutePath(), cxxLanguage.getStringOption(stylesheetKey));
       List<File> sources = getReports(cxxLanguage, baseDir, sourceKey);

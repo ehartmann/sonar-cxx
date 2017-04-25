@@ -51,9 +51,9 @@ public class CxxOtherXsltTest {
     SensorContextTester context = SensorContextTester.create(fs.baseDir());
     CxxLanguage language = TestUtils.mockCxxLanguage();
     when(language.getStringOption(CxxOtherSensor.REPORT_PATH_KEY)).thenReturn("notexistingpath");
-    when(language.getStringOption(CxxOtherSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxOtherSensor.STYLESHEET_KEY)).thenReturn("notexistingpath");
-    when(language.getStringArrayOption(CxxOtherSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxOtherSensor.SOURCE_KEY)).thenReturn(new String[] {"notexistingpath"});
-    when(language.getStringArrayOption(CxxOtherSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxOtherSensor.OUTPUT_KEY)).thenReturn(new String[] {"notexistingpath"});
+    when(language.getStringOption(CxxOtherSensor.OTHER_XSLT_KEY + "1" + CxxOtherSensor.STYLESHEET_KEY)).thenReturn("notexistingpath");
+    when(language.getStringArrayOption(CxxOtherSensor.OTHER_XSLT_KEY + "1" + CxxOtherSensor.SOURCE_KEY)).thenReturn(new String[] {"notexistingpath"});
+    when(language.getStringArrayOption(CxxOtherSensor.OTHER_XSLT_KEY + "1" + CxxOtherSensor.OUTPUT_KEY)).thenReturn(new String[] {"notexistingpath"});
     CxxOtherSensor sensor = new CxxOtherSensor(language);
 
     sensor.execute(context);
@@ -72,9 +72,9 @@ public class CxxOtherXsltTest {
 
     CxxLanguage language = TestUtils.mockCxxLanguage();
     when(language.getStringOption(CxxOtherSensor.REPORT_PATH_KEY)).thenReturn("externalrules-xslt-output.xml");
-    when(language.getStringOption(CxxOtherSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxOtherSensor.STYLESHEET_KEY)).thenReturn(stylesheetFile);
-    when(language.getStringArrayOption(CxxOtherSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxOtherSensor.SOURCE_KEY)).thenReturn(new String[] {inputFile});
-    when(language.getStringArrayOption(CxxOtherSensor.SONAR_CXX_OTHER_XSLT_KEY + "1" + CxxOtherSensor.OUTPUT_KEY)).thenReturn(new String[] {outputFile});
+    when(language.getStringOption(CxxOtherSensor.OTHER_XSLT_KEY + "1" + CxxOtherSensor.STYLESHEET_KEY)).thenReturn(stylesheetFile);
+    when(language.getStringArrayOption(CxxOtherSensor.OTHER_XSLT_KEY + "1" + CxxOtherSensor.SOURCE_KEY)).thenReturn(new String[] {inputFile});
+    when(language.getStringArrayOption(CxxOtherSensor.OTHER_XSLT_KEY + "1" + CxxOtherSensor.OUTPUT_KEY)).thenReturn(new String[] {outputFile});
     CxxOtherSensor sensor = new CxxOtherSensor(language);
 
     sensor.transformFiles(fs.baseDir());
