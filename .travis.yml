@@ -40,8 +40,8 @@ install:
         - unzip -qq sonarqube-6.2.zip
         - travis_retry wget -q https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-6.3.1.zip
         - unzip -qq sonarqube-6.3.1.zip
-        - travis_retry wget -q https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.1.733-windows.zip
-        - unzip -qq sonar-scanner-cli-3.0.1.733-windows.zip
+        - travis_retry wget -q https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.1.733-linux.zip
+        - unzip -qq sonar-scanner-cli-3.0.1.733-linux.zip
         - cd -
 
 before_script:
@@ -52,7 +52,7 @@ before_script:
 script:
         - mvn install -DskipTests=true
         - mvn test
-        - RAILS_ENV=production PATH=$PATH:/tmp/sonar-scanner-cli-3.0.1.733-windows/bin TestDataFolder=~/build/SonarOpenCommunity/sonar-cxx/integration-tests/testdata behave --no-capture --tags=$SONARAPI
+        - RAILS_ENV=production PATH=$PATH:/tmp/sonar-scanner-cli-3.0.1.733-linux/bin TestDataFolder=~/build/SonarOpenCommunity/sonar-cxx/integration-tests/testdata behave --no-capture --tags=$SONARAPI
         
 after_failure:
         - cat $SONARHOME/logs/sonar.log
