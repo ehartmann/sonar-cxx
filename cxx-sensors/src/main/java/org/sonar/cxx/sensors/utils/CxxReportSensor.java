@@ -25,6 +25,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
+
+import javax.annotation.Nullable;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tools.ant.DirectoryScanner;
 import org.sonar.api.batch.sensor.Sensor;
@@ -43,7 +46,7 @@ import org.sonar.cxx.CxxLanguage;
  * common logic such as finding the reports and saving issues in SonarQube
  */
 public abstract class CxxReportSensor implements Sensor {
-  public static final Logger LOG = Loggers.get(CxxReportSensor.class);
+  private static final Logger LOG = Loggers.get(CxxReportSensor.class);
   private final Set<String> notFoundFiles = new HashSet<>();
   private final Set<String> uniqueIssues = new HashSet<>();
   private int violationsCount;
@@ -197,9 +200,8 @@ public abstract class CxxReportSensor implements Sensor {
      * @param ruleId
      * @param msg
    */
-  public void saveUniqueViolation(SensorContext sensorContext, String ruleRepoKey, String file,
-          String line, String ruleId, String msg) {
-
+  public void saveUniqueViolation(SensorContext sensorContext, String ruleRepoKey,
+                                  @Nullable String file, @Nullable String line, String ruleId, String msg) {
     if (uniqueIssues.add(file + line + ruleId + msg)) { // StringBuilder is slower
       saveViolation(sensorContext, ruleRepoKey, file, line, ruleId, msg);
     }
@@ -212,9 +214,8 @@ public abstract class CxxReportSensor implements Sensor {
    * according parameters ('file' = null for project level, 'line' = null for
    * file-level)
    */
-  private void saveViolation(SensorContext sensorContext, String ruleRepoKey, String filename, String line,
-          String ruleId, String msg) {
-      
+  private void saveViolation(SensorContext sensorContext, String ruleRepoKey, 
+                            @Nullable String filename, @Nullable String line, String ruleId, String msg) {
     // handles file="" situation -- file level
     if ((filename != null) && (!filename.isEmpty())) {
       String root = sensorContext.fileSystem().baseDir().getAbsolutePath();
@@ -226,7 +227,6 @@ public abstract class CxxReportSensor implements Sensor {
             int lines = inputFile.lines();
             int lineNr = getLineAsInt(line, lines);
             String repoKey = ruleRepoKey + this.language.getRepositorySuffix();
-            LOG.debug("Repository to save: {}", repoKey);
             NewIssue newIssue = sensorContext
                     .newIssue()
                     .forRule(RuleKey.of(repoKey, ruleId));
@@ -238,7 +238,7 @@ public abstract class CxxReportSensor implements Sensor {
             newIssue.at(location);
             newIssue.save();
             violationsCount++;
-          } catch (Exception ex) { //NOSONAR
+          } catch (Exception ex) {
             LOG.error("Could not add the issue '{}', skipping issue", ex.getMessage());
             CxxUtils.validateRecovery(ex, this.language);
           }
@@ -257,14 +257,14 @@ public abstract class CxxReportSensor implements Sensor {
         newIssue.at(location);
         newIssue.save();
         violationsCount++;
-      } catch (Exception ex) { //NOSONAR
+      } catch (Exception ex) {
         LOG.error("Could not add the issue '{}' for rule '{}:{}', skipping issue", ex.getMessage(), ruleRepoKey, ruleId);
         CxxUtils.validateRecovery(ex, this.language);
       }
     }
   }
 
-  private int getLineAsInt(String line, int maxLine) {
+  private int getLineAsInt(@Nullable String line, int maxLine) {
     int lineNr = 0;
     if (line != null) {
       try {
@@ -284,9 +284,9 @@ public abstract class CxxReportSensor implements Sensor {
   }
 
   protected void processReport(final SensorContext context, File report)
-    throws Exception { //NOSONAR
+    throws Exception {
   }
 
-  abstract protected String reportPathKey();
-  abstract protected String getSensorKey();
+  protected abstract String reportPathKey();
+  protected abstract String getSensorKey();
 }
