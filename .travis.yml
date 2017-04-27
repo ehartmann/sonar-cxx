@@ -41,7 +41,8 @@ install:
         - travis_retry wget -q https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-6.3.1.zip
         - unzip -qq sonarqube-6.3.1.zip
         - travis_retry wget -q https://sonarsource.bintray.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.0.1.733.zip
-        - unzip -qq sonar-scanner-cli-3.0.1.733.zip
+        - unzip sonar-scanner-cli-3.0.1.733.zip
+        - ls
         - cd -
 
 before_script:
