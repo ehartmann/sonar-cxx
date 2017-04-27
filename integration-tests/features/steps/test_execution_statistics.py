@@ -334,10 +334,12 @@ def step_impl(context):
 
 
 def _run_command(context, command):
+    print(BRIGHT + "\ncommand : " + command + RESET_ALL) 
     context.log = "_%s_.log" % context.project
 
     sonarhome = os.environ.get("SONARHOME", None)
     if sonarhome:
+        print(BRIGHT + "\nsonarhome : " + sonarhome + RESET_ALL)
         context.serverlog = sonarlog(sonarhome)
         if getattr(context, "serverlogfd", None) is not None:
             context.serverlogfd.close()
@@ -347,6 +349,8 @@ def _run_command(context, command):
         context.serverlogfd = None
 
     projecthome = os.path.join(TESTDATADIR, context.project)
+    print(BRIGHT + "\nprojecthome : " + projecthome + RESET_ALL)
+    
     with open(context.log, "w") as logfile:
         rc = subprocess.call(command,
                              cwd=projecthome,
