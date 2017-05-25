@@ -38,6 +38,7 @@ GREEN = ""
 RESET = ""
 RESET_ALL = ""
 BRIGHT = ""
+INDENT = "    "
 
 SONAR_URL = "http://localhost:9000"
 
@@ -118,6 +119,7 @@ def analyseloglines(lines, toignore=None):
     errors = warnings = 0
     toingore_re = None if toignore is None else re.compile(toignore)
     for line in lines:
+        print(INDENT + line)
         if isSonarError(line, toingore_re):
             badlines.append(line)
             errors += 1
@@ -129,11 +131,9 @@ def analyseloglines(lines, toignore=None):
             
     return badlines, errors, warnings
 
-
 def isSonarError(line, toignore_re):
     return (SONAR_ERROR_RE.match(line)
             and (toignore_re is None or not toignore_re.match(line)))
-
 
 def isSonarWarning(line, toignore_re):
     return (SONAR_WARN_RE.match(line)

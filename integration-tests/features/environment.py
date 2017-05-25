@@ -24,8 +24,9 @@ from __future__ import print_function
 import os
 import sys
 import time
-import urllib
 import platform
+import requests
+import json
 
 from glob import glob
 from shutil import copyfile
@@ -152,7 +153,6 @@ def install_plugin(sonarhome):
 
     copyfile(jcpath, os.path.join(pluginspath, os.path.basename(jcpath)))
     
-    
     sys.stdout.write(GREEN + "OK\n" + RESET)
     return True
 
@@ -187,7 +187,7 @@ def start_sonar(sonarhome):
     sys.stdout.flush()
     now = time.time()
     start_script(sonarhome)
-    if not wait_for_sonar(60, is_webui_up):
+    if not wait_for_sonar(120, is_webui_up):
         sys.stdout.write(RED + "FAILED, duration: %03.1f s\n" % (time.time() - now) + RESET)
         return False
 
@@ -208,7 +208,7 @@ def stop_sonar(sonarhome):
             command = ["cmd", "/c", os.path.join(sonarhome, "bin", "windows-x86-64", "UninstallNTService.bat")]
             check_call(command, stdout=PIPE, shell=os.name == "nt")
             
-        if not wait_for_sonar(60, is_webui_down):
+        if not wait_for_sonar(120, is_webui_down):
             sys.stdout.write(RED + "FAILED\n" + RESET)
             return False
 
@@ -329,16 +329,19 @@ def wait_for_sonar(timeout, criteria):
 
 def is_webui_up():
     try:
-        return urllib.urlopen(SONAR_URL).getcode() == 200
-    except IOError:
+        response = requests.get(SONAR_URL + "/api/system/status")
+        response.raise_for_status()
+        return response.json()['status'] == "UP"
+    except:
         return False
 
 
 def is_webui_down():
     try:
-        urllib.urlopen(SONAR_URL)
+        response = requests.get(SONAR_URL + "/api/system/status")
+        response.raise_for_status()
         return False
-    except IOError:
+    except:
         return True
 
 
