@@ -332,18 +332,15 @@ def _runCommand(context, command):
 
     projecthome = os.path.join(TESTDATADIR, context.project)
     print(BRIGHT + "\n projecthome:" + projecthome + RESET_ALL)
-    proc = subprocess.Popen(command,
-                            shell=True,
-                            cwd=projecthome,
-                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-                           )
-    print(BRIGHT + "\n Popen" + RESET_ALL)                        
-    output = proc.communicate()[0]
-    print(BRIGHT + "\n communicate" + RESET_ALL)
     
     with open(context.log, "w") as logfile:
-        logfile.write("\n".join(output))
-    print(BRIGHT + "\n logfile" + RESET_ALL)
-
+        proc = subprocess.Popen(command,
+                                shell=True,
+                                cwd=projecthome,
+                                stdout=logfile,
+                                stderr=subprocess.STDOUT
+                               )
+        proc.communicate()
+        
     context.rc = proc.returncode
     print(BRIGHT + "\n _runCommand end" + RESET_ALL)
