@@ -332,10 +332,23 @@ def _runCommand(context, command):
 
     projecthome = os.path.join(TESTDATADIR, context.project)
     print(BRIGHT + "\n projecthome:" + projecthome + RESET_ALL)
+    proc = subprocess.Popen(command,
+                            shell=True,
+                            cwd=projecthome,
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+                           )
+    print(BRIGHT + "\n Popen" + RESET_ALL)                        
+    try:
+        output = proc.communicate(tiemout=60)[0]
+    except TimeoutExpired:
+        print(RED + " Timeout " + RESET)
+        proc.kill()
+        output = proc.communicate()[0]
+    print(BRIGHT + "\n communicate" + RESET_ALL)
+    
     with open(context.log, "w") as logfile:
-        rc = subprocess.call(command,
-                             cwd=projecthome,
-                             stdout=logfile, stderr=logfile,
-                             shell=True)
-    context.rc = rc
+        logfile.write("\n".join(output))
+    print(BRIGHT + "\n logfile" + RESET_ALL)
+
+    context.rc = proc.returncode
     print(BRIGHT + "\n _runCommand end" + RESET_ALL)
