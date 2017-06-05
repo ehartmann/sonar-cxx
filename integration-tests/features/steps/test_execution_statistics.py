@@ -314,11 +314,15 @@ def _assertMeasures(project, measures):
     assert diff == "", "\n" + diff
 
 def _runCommand(context, command):
+    print(BRIGHT + "\n _runCommand begin" + RESET_ALL)
     context.log = "_%s_.log" % context.project
+    print(BRIGHT + "\n context.log:" + context.log + RESET_ALL)
 
     sonarhome = os.environ.get("SONARHOME", None)
     if sonarhome:
+        print(BRIGHT + "\n sonarhome:" + sonarhome + RESET_ALL)
         context.serverlog = sonarlog(sonarhome)
+        print(BRIGHT + "\n context.serverlog:" + context.serverlog + RESET_ALL)
         if getattr(context, "serverlogfd", None) is not None:
             context.serverlogfd.close()
         context.serverlogfd = open(context.serverlog, "r")
@@ -327,9 +331,11 @@ def _runCommand(context, command):
         context.serverlogfd = None
 
     projecthome = os.path.join(TESTDATADIR, context.project)
+    print(BRIGHT + "\n projecthome:" + projecthome + RESET_ALL)
     with open(context.log, "w") as logfile:
         rc = subprocess.call(command,
                              cwd=projecthome,
                              stdout=logfile, stderr=logfile,
                              shell=True)
     context.rc = rc
+    print(BRIGHT + "\n _runCommand end" + RESET_ALL)
