@@ -338,12 +338,7 @@ def _runCommand(context, command):
                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
                            )
     print(BRIGHT + "\n Popen" + RESET_ALL)                        
-    try:
-        output = proc.communicate(tiemout=60)[0]
-    except subprocess.TimeoutExpired:
-        print(RED + " Timeout " + RESET)
-        proc.kill()
-        output = proc.communicate()[0]
+    output = proc.communicate()[0]
     print(BRIGHT + "\n communicate" + RESET_ALL)
     
     with open(context.log, "w") as logfile:
