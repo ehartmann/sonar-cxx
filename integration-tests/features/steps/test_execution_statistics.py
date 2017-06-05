@@ -340,7 +340,7 @@ def _runCommand(context, command):
     print(BRIGHT + "\n Popen" + RESET_ALL)                        
     try:
         output = proc.communicate(tiemout=60)[0]
-    except TimeoutExpired:
+    except subprocess.TimeoutExpired:
         print(RED + " Timeout " + RESET)
         proc.kill()
         output = proc.communicate()[0]
