@@ -336,9 +336,7 @@ def _runCommand(context, command):
     with open(context.log, "w") as logfile:
         proc = subprocess.Popen(command,
                                 shell=True,
-                                cwd=projecthome,
-                                stdout=logfile,
-                                stderr=subprocess.STDOUT
+                                cwd=projecthome
                                )
         proc.communicate()
         
