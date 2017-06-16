@@ -109,6 +109,11 @@ public class TooManyStatementsPerLineCheck extends AbstractOneStatementPerLineCh
       if (statement != null ) {
         return astNode.getTokenLine() == statement.getTokenLine();
       }
+
+      AstNode prevNode = astNode.getPreviousAstNode();
+      if (prevNode.isCopyBookOrGeneratedNode()) {
+        return astNode.getTokenLine() == prevNode.getTokenLine();
+      }
     }
     return false;
   }
