@@ -20,12 +20,16 @@
 package org.sonar.cxx.sensors.valgrind;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.cxx.CxxLanguage;
+import org.sonar.cxx.sensors.utils.CxxReportIssue;
+import org.sonar.cxx.sensors.utils.CxxReportLocation;
 import org.sonar.cxx.sensors.utils.CxxReportSensor;
 
 /**
@@ -70,10 +74,20 @@ public class CxxValgrindSensor extends CxxReportSensor {
 
   void saveErrors(SensorContext context, Set<ValgrindError> valgrindErrors) {
     for (ValgrindError error : valgrindErrors) {
-      ValgrindFrame frame = error.getLastOwnFrame(context.fileSystem().baseDir().getPath());
-      if (frame != null) {
-        saveUniqueViolation(context, CxxValgrindRuleRepository.KEY,
-          frame.getPath(), frame.getLine(), error.getKind(), error.toString());
+      ValgrindFrame lastOwnFrame = error.getLastOwnFrame(context.fileSystem().baseDir().getPath());
+      if (lastOwnFrame != null) {
+        List<CxxReportLocation> locations = new ArrayList<>();
+        locations.add(new CxxReportLocation(lastOwnFrame.getPath(), lastOwnFrame.getLine(), error.toString()));
+
+        int frameNr = 0;
+        for (ValgrindFrame frame : error.getAllFrames()) {
+          if (frame.isLocationKnown()) {
+            locations.add(new CxxReportLocation(frame.getPath(), frame.getLine(), "#" + Integer.toString(frameNr, 10) + " " + frame.toString()));
+          }
+          frameNr++;
+        }
+        CxxReportIssue issue = new CxxReportIssue(CxxValgrindRuleRepository.KEY, error.getKind(), locations);
+        saveUniqueViolation(context, issue);
       } else {
         LOG.warn("Cannot find a project file to assign the valgrind error '{}' to", error);
       }

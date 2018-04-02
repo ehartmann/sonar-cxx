@@ -31,6 +31,9 @@ import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.cxx.CxxLanguage;
+import org.sonar.cxx.sensors.other.CxxOtherRepository;
+import org.sonar.cxx.sensors.utils.CxxReportIssue;
+import org.sonar.cxx.sensors.utils.CxxReportLocation;
 import org.sonar.cxx.sensors.utils.CxxReportSensor;
 import org.sonar.cxx.sensors.utils.CxxUtils;
 import org.sonar.cxx.sensors.utils.EmptyReportException;
@@ -108,9 +111,10 @@ public class CxxPCLintSensor extends CxxReportSensor {
                   id = mapMisraRulesToUniqueSonarRules(msg, Boolean.TRUE);
                 }
               }
-              saveUniqueViolation(context, CxxPCLintRuleRepository.KEY,
-                file, line, id, msg);
 
+              CxxReportLocation location = new CxxReportLocation(file, line, msg);
+              CxxReportIssue issue = new CxxReportIssue(CxxPCLintRuleRepository.KEY, id, location);
+              saveUniqueViolation(context, issue);
             } else {
               LOG.warn("PC-lint warning ignored: {}", msg);
               if (LOG.isDebugEnabled()) {

@@ -21,6 +21,9 @@ package org.sonar.cxx.sensors.drmemory;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
@@ -29,6 +32,8 @@ import org.sonar.api.utils.log.Loggers;
 import org.sonar.cxx.CxxLanguage;
 import org.sonar.cxx.sensors.drmemory.DrMemoryParser.DrMemoryError;
 import org.sonar.cxx.sensors.drmemory.DrMemoryParser.DrMemoryError.Location;
+import org.sonar.cxx.sensors.utils.CxxReportIssue;
+import org.sonar.cxx.sensors.utils.CxxReportLocation;
 import org.sonar.cxx.sensors.utils.CxxReportSensor;
 import org.sonar.cxx.sensors.utils.CxxUtils;
 
@@ -82,19 +87,36 @@ public class CxxDrMemorySensor extends CxxReportSensor {
     LOG.debug("Parsing 'Dr Memory' format");
 
     for (DrMemoryError error : DrMemoryParser.parse(report, defaultCharset())) {
+      List<CxxReportLocation> locations = new ArrayList<>();
       if (error.getStackTrace().isEmpty()) {
-        saveUniqueViolation(context, CxxDrMemoryRuleRepository.KEY,
-          null, null,
-          error.getType().getId(), error.getMessage());
+        CxxReportLocation moduleLocation = new CxxReportLocation(null, null, error.getMessage());
+        locations.add(moduleLocation);
+      } else {
+        addFileLocations(context, error, locations);
       }
-      for (Location errorLocation : error.getStackTrace()) {
-        if (isFileInAnalysis(context, errorLocation)) {
-          saveUniqueViolation(context, CxxDrMemoryRuleRepository.KEY,
-            errorLocation.getFile(), errorLocation.getLine().toString(),
-            error.getType().getId(), error.getMessage());
-          break;
-        }
+      if (!locations.isEmpty()) {
+        CxxReportIssue issue = new CxxReportIssue(CxxDrMemoryRuleRepository.KEY, error.getType().getId(), locations);
+        saveUniqueViolation(context, issue);
       }
+    }
+  }
+
+  private void addFileLocations(final SensorContext context, DrMemoryError error, List<CxxReportLocation> locations) {
+    // add the most upper frame, which relates to the file in analyzed project
+    for (Location errorLocation : error.getStackTrace()) {
+      if (isFileInAnalysis(context, errorLocation)) {
+        CxxReportLocation lastOwnLocation = new CxxReportLocation(errorLocation.getFile(), errorLocation.getLine().toString(), error.getMessage());
+        locations.add(lastOwnLocation);
+        break;
+      }
+    }
+
+    // add all remaining frames
+    Integer frameNr = 0;
+    for (Location errorLocation : error.getStackTrace()) {
+      CxxReportLocation frameLocation = new CxxReportLocation(errorLocation.getFile(), errorLocation.getLine().toString(), "#" + frameNr.toString());
+      locations.add(frameLocation);
+      frameNr++;
     }
   }
 

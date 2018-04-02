@@ -259,30 +259,12 @@ public abstract class CxxReportSensor implements Sensor {
     return includes;
   }
 
-  /**
-   * Saves code violation only if unique. Compares file, line, ruleId and msg.
-   *
-   * @param sensorContext
-   * @param ruleRepoKey
-   * @param file
-   * @param line
-   * @param ruleId
-   * @param msg
-   */
-  public void saveUniqueViolation(SensorContext sensorContext, String ruleRepoKey, @Nullable String file,
-      @Nullable String line, String ruleId, String msg) {
-    CxxReportLocation location = new CxxReportLocation(file, line, msg);
-    CxxReportIssue issue = new CxxReportIssue(ruleRepoKey, ruleId, location);
-    saveUniqueViolation(sensorContext, issue);
-  }
 
   /**
-   * Saves code violation only if unique. Compares file, line, ruleId and msg or the first given location
+   * Saves code violation only if it wasn't already saved
    *
    * @param sensorContext
-   * @param ruleRepoKey
-   * @param ruleId
-   * @param locations
+   * @param issue
    */
   public void saveUniqueViolation(SensorContext sensorContext, CxxReportIssue issue) {
     if (uniqueIssues.add(issue)) {

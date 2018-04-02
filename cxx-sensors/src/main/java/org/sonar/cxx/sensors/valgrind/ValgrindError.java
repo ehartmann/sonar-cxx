@@ -19,6 +19,8 @@
  */
 package org.sonar.cxx.sensors.valgrind;
 
+import java.util.List;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
@@ -78,5 +80,9 @@ class ValgrindError {
    */
   public ValgrindFrame getLastOwnFrame(String basedir) {
     return stack.getLastOwnFrame(basedir);
+  }
+
+  public List<ValgrindFrame> getAllFrames() {
+    return stack.getFrames();
   }
 }

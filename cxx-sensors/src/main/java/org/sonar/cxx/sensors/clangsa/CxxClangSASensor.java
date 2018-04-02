@@ -31,6 +31,8 @@ import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.cxx.CxxLanguage;
+import org.sonar.cxx.sensors.utils.CxxReportIssue;
+import org.sonar.cxx.sensors.utils.CxxReportLocation;
 import org.sonar.cxx.sensors.utils.CxxReportSensor;
 
 /**
@@ -98,13 +100,9 @@ public class CxxClangSASensor extends CxxReportSensor {
 
         NSObject filePath = sourceFiles[fileIndex.intValue()];
 
-        saveUniqueViolation(context,
-          CxxClangSARuleRepository.KEY,
-          ((NSString) filePath).getContent(),
-          line.toString(),
-          checkerName,
-          description);
-
+        CxxReportLocation issueLocation = new CxxReportLocation(((NSString) filePath).getContent(), line.toString(), description);
+        CxxReportIssue issue = new CxxReportIssue(CxxClangSARuleRepository.KEY, checkerName, issueLocation);
+        saveUniqueViolation(context, issue);
       }
     } catch (final java.io.IOException
       | java.text.ParseException

@@ -29,6 +29,8 @@ import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.cxx.CxxLanguage;
+import org.sonar.cxx.sensors.utils.CxxReportIssue;
+import org.sonar.cxx.sensors.utils.CxxReportLocation;
 import org.sonar.cxx.sensors.utils.CxxReportSensor;
 
 /**
@@ -90,12 +92,10 @@ public class CxxClangTidySensor extends CxxReportSensor {
           String lineId = m.group(2);
           String message = m.group(5);
           String check = m.group(6);
-          saveUniqueViolation(context,
-            CxxClangTidyRuleRepository.KEY,
-            path,
-            lineId,
-            check,
-            message);
+
+          CxxReportLocation location = new CxxReportLocation(path, lineId, message);
+          CxxReportIssue issue = new CxxReportIssue(CxxClangTidyRuleRepository.KEY, check, location);
+          saveUniqueViolation(context, issue);
         }
       }
     } catch (final java.io.FileNotFoundException
