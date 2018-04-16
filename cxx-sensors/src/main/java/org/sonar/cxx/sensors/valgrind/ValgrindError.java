@@ -39,7 +39,7 @@ class ValgrindError {
    *
    * @param kind The kind of error, plays the role of an id
    * @param text Description of the error
-   * @param stack The associated call stack
+   * @param stacks One or more associated call stacks
    */
   public ValgrindError(String kind, String text, List<ValgrindStack> stacks) {
     this.kind = kind;
