@@ -74,7 +74,7 @@ public class CxxValgrindSensor extends CxxReportSensor {
     if (error.getStacks().size() > 1) {
       errorMsg.append(" (Stack ").append(stackNr).append(")");
     }
-    errorMsg.append("\n\n").append(stack.toString());
+    errorMsg.append("\n\n").append(stack);
     return errorMsg.toString();
   }
 
