@@ -30,6 +30,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamSource;
+
+import org.sonar.api.batch.bootstrap.ProjectDefinition;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.measures.CoreMetrics;
@@ -54,17 +56,17 @@ public class CxxXunitSensor extends CxxReportSensor {
   public static final String XSLT_URL_KEY = "xunit.xsltURL";
   private static final double PERCENT_BASE = 100D;
 
-  private String xsltURL;
+  private final ProjectDefinition projectDef;
+  private final String xsltURL;
 
   /**
    * CxxXunitSensor
    * @param language for C or C++
    */
-  public CxxXunitSensor(CxxLanguage language) {
+  public CxxXunitSensor(CxxLanguage language, ProjectDefinition projectDef) {
     super(language);
-    if (language.getStringOption(XSLT_URL_KEY).isPresent()) {
-      xsltURL = language.getStringOption(XSLT_URL_KEY).orElse("xunit-report.xslt");
-    }
+    this.projectDef = projectDef;
+    xsltURL = language.getStringOption(XSLT_URL_KEY).orElse(null);
   }
 
   @Override
@@ -85,9 +87,9 @@ public class CxxXunitSensor extends CxxReportSensor {
    */
   @Override
   public void execute(SensorContext context) {
-    String moduleKey = context.config().get("sonar.moduleKey").orElse(null);
-    if (moduleKey != null) {
-      LOG.debug("Runs unit test import sensor only at top level project skip : Module Key = '{}'", moduleKey);
+    if (projectDef.getParent() != null) {
+      LOG.debug("Runs unit test import sensor only at top level project skip : Module Key = '{}'",
+          context.module().key());
       return;
     }
 

@@ -710,8 +710,8 @@ public final class CxxPlugin implements Plugin {
 
   public static class CxxXunitSensorImpl extends CxxXunitSensor {
 
-    public CxxXunitSensorImpl(Configuration settings) {
-      super(new CppLanguage(settings));
+    public CxxXunitSensorImpl(Configuration settings, ProjectDefinition projectDef) {
+      super(new CppLanguage(settings), projectDef);
     }
   }
 

@@ -26,6 +26,8 @@ import static org.assertj.core.groups.Tuple.tuple;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.when;
+
+import org.sonar.api.batch.bootstrap.ProjectDefinition;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.sensor.internal.DefaultSensorDescriptor;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
@@ -56,7 +58,7 @@ public class CxxXunitSensorTest {
     settings.setProperty(language.getPluginProperty(CxxXunitSensor.REPORT_PATH_KEY), "notexistingpath");
     context.setSettings(settings);
 
-    CxxXunitSensor sensor = new CxxXunitSensor(language);
+    CxxXunitSensor sensor = new CxxXunitSensor(language, ProjectDefinition.create());
 
     sensor.execute(context);
 
@@ -70,7 +72,7 @@ public class CxxXunitSensorTest {
     settings.setProperty(language.getPluginProperty(CxxXunitSensor.REPORT_PATH_KEY), "xunit-reports/xunit-result-SAMPLE_with_fileName.xml");
     context.setSettings(settings);
 
-    CxxXunitSensor sensor = new CxxXunitSensor(language);
+    CxxXunitSensor sensor = new CxxXunitSensor(language, ProjectDefinition.create());
 
     sensor.execute(context);
 
@@ -86,6 +88,23 @@ public class CxxXunitSensorTest {
         tuple(CoreMetrics.TEST_EXECUTION_TIME_KEY, 0L));
   }
 
+  @Test
+  public void shouldIgnoreSubModuleXunitReport() {
+    SensorContextTester context = SensorContextTester.create(fs.baseDir());
+
+    settings.setProperty(language.getPluginProperty(CxxXunitSensor.REPORT_PATH_KEY), "xunit-reports/xunit-result-SAMPLE_with_fileName.xml");
+    context.setSettings(settings);
+
+    final ProjectDefinition subModule = ProjectDefinition.create();
+    final ProjectDefinition rootProject = ProjectDefinition.create().addSubProject(subModule);
+
+    new CxxXunitSensor(language, subModule).execute(context);
+    assertThat(context.measures(context.module().key())).hasSize(0);
+
+    new CxxXunitSensor(language, rootProject).execute(context);
+    assertThat(context.measures(context.module().key())).hasSize(6);
+  }
+
   @Test(expected = IllegalStateException.class)
   public void shouldThrowWhenGivenInvalidTime() {
     SensorContextTester context = SensorContextTester.create(fs.baseDir());
@@ -93,7 +112,7 @@ public class CxxXunitSensorTest {
     settings.setProperty(language.getPluginProperty(CxxXunitSensor.REPORT_PATH_KEY), "xunit-reports/invalid-time-xunit-report.xml");
     context.setSettings(settings);
 
-    CxxXunitSensor sensor = new CxxXunitSensor(language);
+    CxxXunitSensor sensor = new CxxXunitSensor(language, ProjectDefinition.create());
 
     sensor.execute(context);
   }
@@ -104,7 +123,7 @@ public class CxxXunitSensorTest {
 
     when(language.getStringOption(CxxXunitSensor.XSLT_URL_KEY)).thenReturn(Optional.of("whatever"));
 
-    CxxXunitSensor sensor = new CxxXunitSensor(language);
+    CxxXunitSensor sensor = new CxxXunitSensor(language, ProjectDefinition.create());
     sensor.transformReport(cppunitReport());
   }
 
@@ -114,7 +133,7 @@ public class CxxXunitSensorTest {
 
     when(language.getStringOption(CxxXunitSensor.XSLT_URL_KEY)).thenReturn(Optional.of("cppunit-1.x-to-junit-1.0.xsl"));
 
-    CxxXunitSensor sensor = new CxxXunitSensor(language);
+    CxxXunitSensor sensor = new CxxXunitSensor(language, ProjectDefinition.create());
     File reportBefore = cppunitReport();
 
     File reportAfter = sensor.transformReport(reportBefore);
@@ -124,11 +143,11 @@ public class CxxXunitSensorTest {
   File cppunitReport() {
     return new File(new File(fs.baseDir(), "xunit-reports"), "cppunit-report.xml");
   }
-  
+
   @Test
   public void sensorDescriptor() {
     DefaultSensorDescriptor descriptor = new DefaultSensorDescriptor();
-    CxxXunitSensor sensor = new CxxXunitSensor(language);
+    CxxXunitSensor sensor = new CxxXunitSensor(language, ProjectDefinition.create());
     sensor.describe(descriptor);
 
     assertThat(descriptor.name()).isEqualTo(language.getName() + " XunitSensor");

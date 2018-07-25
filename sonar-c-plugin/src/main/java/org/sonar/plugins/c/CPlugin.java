@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 
 import org.sonar.api.Plugin;
 import org.sonar.api.PropertyType;
+import org.sonar.api.batch.bootstrap.ProjectDefinition;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.config.Configuration;
@@ -660,8 +661,8 @@ public final class CPlugin implements Plugin {
 
   public static class CxxXunitSensorImpl extends CxxXunitSensor {
 
-    public CxxXunitSensorImpl(Configuration settings) {
-      super(new CLanguage(settings));
+    public CxxXunitSensorImpl(Configuration settings, ProjectDefinition projectDef) {
+      super(new CLanguage(settings), projectDef);
     }
   }
 
