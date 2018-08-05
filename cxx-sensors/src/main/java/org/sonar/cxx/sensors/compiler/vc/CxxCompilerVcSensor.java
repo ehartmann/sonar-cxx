@@ -19,31 +19,23 @@
  */
 package org.sonar.cxx.sensors.compiler.vc;
 
-import java.util.Optional;
-import java.util.function.Predicate;
+import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.api.config.Configuration;
 import org.sonar.cxx.CxxLanguage;
+import org.sonar.cxx.CxxMetricsFactory;
 import org.sonar.cxx.sensors.compiler.CxxCompilerSensor;
-import org.sonar.cxx.sensors.compiler.gcc.CxxCompilerGccParser;
 
 public class CxxCompilerVcSensor extends CxxCompilerSensor {
 
-  private class IsVcParserConfigured implements Predicate<Configuration> {
-
-    @Override
-    public boolean test(Configuration config) {
-      if (!config.hasKey(getReportPathKey())) {
-        return false;
-      }
-      // VC parser is default, so basically enable it always if GCC is not
-      // configured
-      final Optional<String> parserValue = config.get(getLanguage().getPluginProperty(PARSER_KEY_DEF));
-      final boolean isGCCParserConfigured = parserValue.isPresent()
-        && CxxCompilerGccParser.KEY_GCC.equals(parserValue.get());
-      return !isGCCParserConfigured;
-    }
-  };
+  public static final String KEY = "Visual C++";
+  public static final String REPORT_PATH_KEY = "vc.reportPath";
+  public static final String REPORT_REGEX_DEF = "vc.regex";
+  public static final String REPORT_CHARSET_DEF = "vc.charset";
+  public static final String DEFAULT_CHARSET_DEF = "UTF-8"; // use "UTF-16" for VS2010 build log or TFS Team build log file
+  // search for single line with compiler warning message VS2008 - order for groups: 1=file, 2=line, 3=ID, 4=message
+  public static final String DEFAULT_REGEX_DEF = "^(.*)\\((\\d+)\\)\\x20:\\x20warning\\x20(C\\d+):(.*)$";
+  // sample regex for VS2012/2013: "^.*>(?<filename>.*)\\((?<line>\\d+)\\):\\x20warning\\x20(?<id>C\\d+):(?<message>.*)$";
+  // get value with e.g. scanner.match().group("filename");
 
   public CxxCompilerVcSensor(CxxLanguage language) {
     super(language, REPORT_PATH_KEY, CxxCompilerVcRuleRepository.getRepositoryKey(language), new CxxCompilerVcParser());
@@ -51,7 +43,31 @@ public class CxxCompilerVcSensor extends CxxCompilerSensor {
 
   @Override
   public void describe(SensorDescriptor descriptor) {
-    descriptor.name(getLanguage().getName() + " CxxCompilerVcSensor").onlyOnLanguage(getLanguage().getKey())
-      .createIssuesForRuleRepositories(getReportPathKey()).onlyWhenConfiguration(new IsVcParserConfigured());
+    descriptor
+      .name(getLanguage().getName() + " CxxCompilerVcSensor")
+      .onlyOnLanguage(getLanguage().getKey())
+      .createIssuesForRuleRepositories(getReportPathKey())
+      .onlyWhenConfiguration(conf -> conf.hasKey(getReportPathKey()));
   }
+
+  @Override
+  protected String getCompilerKey() {
+    return KEY;
+  }
+
+  @Override
+  protected String getCharset(final SensorContext context) {
+    return getContextStringProperty(context, getLanguage().getPluginProperty(REPORT_CHARSET_DEF), DEFAULT_CHARSET_DEF);
+  }
+
+  @Override
+  protected String getRegex(final SensorContext context) {
+    return getContextStringProperty(context, getLanguage().getPluginProperty(REPORT_REGEX_DEF), DEFAULT_REGEX_DEF);
+  }
+
+  @Override
+  protected CxxMetricsFactory.Key getMetricKey() {
+    return CxxMetricsFactory.Key.VC_SENSOR_ISSUES_KEY;
+  }
+
 }

@@ -26,32 +26,9 @@ import javax.annotation.Nullable;
 import org.sonar.api.batch.sensor.SensorContext;
 
 /**
- * The interface a compiler parser has to implement in order to be used by CxxCompilerSensor
- *
- * @author Ferrand
+ * Interface for parser used by CxxCompilerSensor
  */
 public interface CompilerParser {
-
-  /**
-   * Get the name of the compiler parser.
-   *
-   * @return The name of the compiler, used in the configuration.
-   */
-  String key();
-
-  /**
-   * Get the default regexp used to parse warning messages.
-   *
-   * @return The default regexp.
-   */
-  String defaultRegexp();
-
-  /**
-   * Get the default charset
-   *
-   * @return The default regexp.
-   */
-  String defaultCharset();
 
   static public class Warning {
 

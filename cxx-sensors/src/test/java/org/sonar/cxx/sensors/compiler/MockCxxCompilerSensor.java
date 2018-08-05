@@ -34,8 +34,11 @@ import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.cxx.CxxLanguage;
+import org.sonar.cxx.CxxMetricsFactory;
+import org.sonar.cxx.sensors.compiler.vc.CxxCompilerVcSensor;
 import org.sonar.cxx.sensors.utils.CxxReportIssue;
 import org.sonar.cxx.sensors.utils.CxxReportLocation;
+import static org.sonar.cxx.sensors.utils.CxxReportSensor.getContextStringProperty;
 
 public class MockCxxCompilerSensor extends CxxCompilerSensor {
 
@@ -67,7 +70,7 @@ public class MockCxxCompilerSensor extends CxxCompilerSensor {
   }
 
   public MockCxxCompilerSensor(CxxLanguage language, FileSystem fs, RulesProfile profile, List<CompilerParser.Warning> warningsToProcess) {
-    super(language, REPORT_PATH_KEY, "", mocktCompilerParser(warningsToProcess));
+    super(language, CxxCompilerVcSensor.REPORT_PATH_KEY, "", mocktCompilerParser(warningsToProcess));
 
     savedWarnings = new LinkedList<>();
   }
@@ -88,4 +91,25 @@ public class MockCxxCompilerSensor extends CxxCompilerSensor {
   public void describe(SensorDescriptor descriptor) {
   }
 
+  @Override
+  protected String getCompilerKey() {
+    return CxxCompilerVcSensor.KEY;
+  }
+
+  @Override
+  protected String getCharset(final SensorContext context) {
+    return getContextStringProperty(context, getLanguage().getPluginProperty(CxxCompilerVcSensor.REPORT_CHARSET_DEF),
+      CxxCompilerVcSensor.DEFAULT_CHARSET_DEF);
+  }
+
+  @Override
+  protected String getRegex(final SensorContext context) {
+    return getContextStringProperty(context, getLanguage().getPluginProperty(CxxCompilerVcSensor.REPORT_REGEX_DEF),
+      CxxCompilerVcSensor.DEFAULT_REGEX_DEF);
+  }
+
+   @Override
+  protected CxxMetricsFactory.Key getMetricKey() {
+    return CxxMetricsFactory.Key.VC_SENSOR_ISSUES_KEY;
+  }
 }

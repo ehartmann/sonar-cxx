@@ -23,43 +23,36 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.internal.MapSettings;
-import org.sonar.api.profiles.RulesProfile;
 import org.sonar.cxx.CxxLanguage;
 import org.sonar.cxx.sensors.compiler.CxxCompilerSensor;
-import org.sonar.cxx.sensors.compiler.vc.CxxCompilerVcParser;
 import org.sonar.cxx.sensors.utils.TestUtils;
 
 public class CxxCompilerVcSensorTest {
 
   private DefaultFileSystem fs;
-  private RulesProfile profile;
   private CxxLanguage language;
   private final MapSettings settings = new MapSettings();
 
   @Before
   public void setUp() {
     fs = TestUtils.mockFileSystem();
-    profile = mock(RulesProfile.class);
     language = TestUtils.mockCxxLanguage();
-    when(language.getPluginProperty(CxxCompilerSensor.REPORT_PATH_KEY)).thenReturn("sonar.cxx." + CxxCompilerSensor.REPORT_PATH_KEY);
-    when(language.getPluginProperty(CxxCompilerSensor.PARSER_KEY_DEF)).thenReturn("sonar.cxx." + CxxCompilerSensor.PARSER_KEY_DEF);
-    when(language.getPluginProperty(CxxCompilerSensor.REPORT_CHARSET_DEF)).thenReturn("sonar.cxx." + CxxCompilerSensor.REPORT_CHARSET_DEF);
-    when(language.getPluginProperty(CxxCompilerSensor.REPORT_REGEX_DEF)).thenReturn("sonar.cxx." + CxxCompilerSensor.REPORT_REGEX_DEF);
+    when(language.getPluginProperty(CxxCompilerVcSensor.REPORT_PATH_KEY)).thenReturn("sonar.cxx." + CxxCompilerVcSensor.REPORT_PATH_KEY);
+    when(language.getPluginProperty(CxxCompilerVcSensor.REPORT_CHARSET_DEF)).thenReturn("sonar.cxx." + CxxCompilerVcSensor.REPORT_CHARSET_DEF);
+    when(language.getPluginProperty(CxxCompilerVcSensor.REPORT_REGEX_DEF)).thenReturn("sonar.cxx." + CxxCompilerVcSensor.REPORT_REGEX_DEF);
   }
 
   @Test
   public void shouldReportACorrectVcViolations() {
     SensorContextTester context = SensorContextTester.create(fs.baseDir());
 
-    settings.setProperty(language.getPluginProperty(CxxCompilerSensor.REPORT_PATH_KEY), "compiler-reports/BuildLog.htm");
-    settings.setProperty(language.getPluginProperty(CxxCompilerSensor.PARSER_KEY_DEF), CxxCompilerVcParser.KEY_VC);
-    settings.setProperty(language.getPluginProperty(CxxCompilerSensor.REPORT_CHARSET_DEF), "UTF-16");
+    settings.setProperty(language.getPluginProperty(CxxCompilerVcSensor.REPORT_PATH_KEY), "compiler-reports/BuildLog.htm");
+    settings.setProperty(language.getPluginProperty(CxxCompilerVcSensor.REPORT_CHARSET_DEF), "UTF-16");
     context.setSettings(settings);
 
     context.fileSystem().add(TestInputFileBuilder.create("ProjectKey", "zipmanager.cpp")
@@ -72,13 +65,13 @@ public class CxxCompilerVcSensorTest {
 
   @Test
   public void shouldReportBCorrectVcViolations() {
-    when(language.getStringOption(language.getPluginProperty(CxxCompilerSensor.REPORT_CHARSET_DEF))).thenReturn(Optional.of("UTF-8"));
+    when(language.getStringOption(language.getPluginProperty(CxxCompilerVcSensor.REPORT_CHARSET_DEF))).thenReturn(Optional.of("UTF-8"));
     SensorContextTester context = SensorContextTester.create(fs.baseDir());
 
-    settings.setProperty(language.getPluginProperty(CxxCompilerSensor.REPORT_PATH_KEY), "compiler-reports/VC-report.vclog");
-    settings.setProperty(language.getPluginProperty(CxxCompilerSensor.PARSER_KEY_DEF), CxxCompilerVcParser.KEY_VC);
-    settings.setProperty(language.getPluginProperty(CxxCompilerSensor.REPORT_CHARSET_DEF), "UTF-8");
-    settings.setProperty(language.getPluginProperty(CxxCompilerSensor.REPORT_REGEX_DEF), "^.*>(?<filename>.*)\\((?<line>\\d+)\\):\\x20warning\\x20(?<id>C\\d+):(?<message>.*)$");
+    settings.setProperty(language.getPluginProperty(CxxCompilerVcSensor.REPORT_PATH_KEY), "compiler-reports/VC-report.vclog");
+    settings.setProperty(language.getPluginProperty(CxxCompilerVcSensor.REPORT_CHARSET_DEF), "UTF-8");
+    settings.setProperty(language.getPluginProperty(CxxCompilerVcSensor.REPORT_REGEX_DEF),
+      "^.*>(?<filename>.*)\\((?<line>\\d+)\\):\\x20warning\\x20(?<id>C\\d+):(?<message>.*)$");
     context.setSettings(settings);
 
     context.fileSystem().add(TestInputFileBuilder.create("ProjectKey", "Server/source/zip/zipmanager.cpp")
@@ -93,10 +86,9 @@ public class CxxCompilerVcSensorTest {
   public void shouldReportCorrectVcViolations() {
     SensorContextTester context = SensorContextTester.create(fs.baseDir());
 
-    settings.setProperty(language.getPluginProperty(CxxCompilerSensor.REPORT_PATH_KEY), "compiler-reports/VC-report.vclog");
-    settings.setProperty(language.getPluginProperty(CxxCompilerSensor.PARSER_KEY_DEF), CxxCompilerVcParser.KEY_VC);
-    settings.setProperty(language.getPluginProperty(CxxCompilerSensor.REPORT_CHARSET_DEF), "UTF-8");
-    settings.setProperty(language.getPluginProperty(CxxCompilerSensor.REPORT_REGEX_DEF), "^(.*)\\((\\d+)\\):\\x20warning\\x20(C\\d+):(.*)$");
+    settings.setProperty(language.getPluginProperty(CxxCompilerVcSensor.REPORT_PATH_KEY), "compiler-reports/VC-report.vclog");
+    settings.setProperty(language.getPluginProperty(CxxCompilerVcSensor.REPORT_CHARSET_DEF), "UTF-8");
+    settings.setProperty(language.getPluginProperty(CxxCompilerVcSensor.REPORT_REGEX_DEF), "^(.*)\\((\\d+)\\):\\x20warning\\x20(C\\d+):(.*)$");
     context.setSettings(settings);
 
     context.fileSystem().add(TestInputFileBuilder.create("ProjectKey", "Server/source/zip/zipmanager.cpp")

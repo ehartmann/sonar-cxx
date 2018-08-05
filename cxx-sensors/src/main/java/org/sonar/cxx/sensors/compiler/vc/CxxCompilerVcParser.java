@@ -36,38 +36,8 @@ import org.sonar.cxx.sensors.compiler.CompilerParser;
 public class CxxCompilerVcParser implements CompilerParser {
 
   private static final Logger LOG = Loggers.get(CxxCompilerVcParser.class);
-  public static final String KEY_VC = "Visual C++";
-  // search for single line with compiler warning message VS2008 - order for groups: 1 = file, 2 = line, 3 = ID, 4=message
-  public static final String DEFAULT_REGEX_DEF = "^(.*)\\((\\d+)\\)\\x20:\\x20warning\\x20(C\\d+):(.*)$";
-  // sample regex for VS2012/2013: "^.*>(?<filename>.*)\\((?<line>\\d+)\\):\\x20warning\\x20(?<id>C\\d+):(?<message>.*)$";
-  // get value with e.g. scanner.match().group("filename");
-  public static final String DEFAULT_CHARSET_DEF = "UTF-8"; // use "UTF-16" for VS2010 build log or TFS Team build log file
 
-  private static final Pattern jobNumberPrefixPattern = Pattern.compile("^\\d+>(.*)$");
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String key() {
-    return KEY_VC;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String defaultRegexp() {
-    return DEFAULT_REGEX_DEF;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String defaultCharset() {
-    return DEFAULT_CHARSET_DEF;
-  }
+  private static final Pattern JOB_NUMBER_PREFIX_PATTERN = Pattern.compile("^\\d+>(.*)$");
 
   /**
    * {@inheritDoc}
@@ -97,7 +67,7 @@ public class CxxCompilerVcParser implements CompilerParser {
 
   private static String removeMPPrefix(String fpath) {
     // /MP (Build with Multiple Processes) will create a line prefix with the job number eg. '   42>'
-    Matcher m = jobNumberPrefixPattern.matcher(fpath);
+    Matcher m = JOB_NUMBER_PREFIX_PATTERN.matcher(fpath);
     if (m.matches()) {
       return m.group(1);
     }

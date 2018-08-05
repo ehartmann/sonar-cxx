@@ -31,6 +31,7 @@ import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.cxx.CxxLanguage;
+import org.sonar.cxx.sensors.compiler.vc.CxxCompilerVcSensor;
 import org.sonar.cxx.sensors.utils.TestUtils;
 
 public class CxxCompilerSensorTest {
@@ -44,10 +45,10 @@ public class CxxCompilerSensorTest {
     fs = TestUtils.mockFileSystem();
     profile = mock(RulesProfile.class);
     language = TestUtils.mockCxxLanguage();
-    when(language.getPluginProperty(CxxCompilerSensor.REPORT_PATH_KEY)).thenReturn("sonar.cxx." + CxxCompilerSensor.REPORT_PATH_KEY);
-    when(language.getPluginProperty(CxxCompilerSensor.PARSER_KEY_DEF)).thenReturn("sonar.cxx." + CxxCompilerSensor.PARSER_KEY_DEF);
-    when(language.getPluginProperty(CxxCompilerSensor.REPORT_CHARSET_DEF)).thenReturn("sonar.cxx." + CxxCompilerSensor.REPORT_CHARSET_DEF);
-    when(language.getPluginProperty(CxxCompilerSensor.REPORT_REGEX_DEF)).thenReturn("sonar.cxx." + CxxCompilerSensor.REPORT_REGEX_DEF);
+    when(language.getPluginProperty(CxxCompilerVcSensor.REPORT_PATH_KEY)).thenReturn("sonar.cxx." + CxxCompilerVcSensor.REPORT_PATH_KEY);
+    when(language.getPluginProperty(CxxCompilerVcSensor.PARSER_KEY_DEF)).thenReturn("sonar.cxx." + CxxCompilerVcSensor.PARSER_KEY_DEF);
+    when(language.getPluginProperty(CxxCompilerVcSensor.REPORT_CHARSET_DEF)).thenReturn("sonar.cxx." + CxxCompilerVcSensor.REPORT_CHARSET_DEF);
+    when(language.getPluginProperty(CxxCompilerVcSensor.REPORT_REGEX_DEF)).thenReturn("sonar.cxx." + CxxCompilerVcSensor.REPORT_REGEX_DEF);
   }
 
   @Test

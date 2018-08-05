@@ -26,27 +26,24 @@ import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.cxx.CxxLanguage;
-import org.sonar.cxx.CxxMetricsFactory;
-import org.sonar.cxx.sensors.compiler.vc.CxxCompilerVcParser;
 import org.sonar.cxx.sensors.utils.CxxIssuesReportSensor;
 import org.sonar.cxx.sensors.utils.CxxReportIssue;
 
 /**
- * compiler for C++ with advanced analysis features (e.g. for VC 2008 team edition or 2010/2012/2013/2015/2017 premium
- * edition)
- *
- * @author Bert
+ * base class for compiler issues
  */
 public abstract class CxxCompilerSensor extends CxxIssuesReportSensor {
 
-  private static final Logger LOG = Loggers.get(CxxCompilerSensor.class);
+  /**
+   * the following settings are still in use by the feature to read configuration settings from the VC compiler report
+   * (CxxSquidSensor::createConfiguration)
+   */
   public static final String REPORT_PATH_KEY = "compiler.reportPath";
-  public static final String REPORT_REGEX_DEF = "compiler.regex";
   public static final String REPORT_CHARSET_DEF = "compiler.charset";
   public static final String PARSER_KEY_DEF = "compiler.parser";
-  public static final String DEFAULT_PARSER_DEF = CxxCompilerVcParser.KEY_VC;
   public static final String DEFAULT_CHARSET_DEF = "UTF-8";
 
+  private static final Logger LOG = Loggers.get(CxxCompilerSensor.class);
   private final CompilerParser parser;
 
   protected CxxCompilerSensor(CxxLanguage language, String propertiesKeyPathToReports, String ruleRepositoryKey,
@@ -56,16 +53,14 @@ public abstract class CxxCompilerSensor extends CxxIssuesReportSensor {
   }
 
   @Override
-  protected void processReport(final SensorContext context, File report)
-    throws javax.xml.stream.XMLStreamException {
-    final String reportCharset = getContextStringProperty(context, getLanguage().getPluginProperty(REPORT_CHARSET_DEF),
-      parser.defaultCharset());
-    final String reportRegEx = getContextStringProperty(context, getLanguage().getPluginProperty(REPORT_REGEX_DEF),
-      parser.defaultRegexp());
+  protected void processReport(final SensorContext context, File report) throws javax.xml.stream.XMLStreamException {
+
     final List<CompilerParser.Warning> warnings = new LinkedList<>();
+    final String reportCharset = getCharset(context);
+    final String reportRegEx = getRegex(context);
 
     // Iterate through the lines of the input file
-    LOG.info("Scanner '{}' initialized with report '{}', CharSet= '{}'", parser.key(), report, reportCharset);
+    LOG.info("Scanner '{}' initialized with report '{}', CharSet= '{}'", getCompilerKey(), report, reportCharset);
     try {
       parser.processReport(context, report, reportCharset, reportRegEx, warnings);
       for (CompilerParser.Warning w : warnings) {
@@ -73,7 +68,7 @@ public abstract class CxxCompilerSensor extends CxxIssuesReportSensor {
           CxxReportIssue issue = new CxxReportIssue(w.id, w.filename, w.line, w.msg);
           saveUniqueViolation(context, issue);
         } else {
-          LOG.warn("C-Compiler warning: '{}''{}'", w.id, w.msg);
+          LOG.warn("Invalid compiler warning: '{}''{}'", w.id, w.msg);
         }
       }
     } catch (java.io.FileNotFoundException | java.lang.IllegalArgumentException e) {
@@ -85,8 +80,27 @@ public abstract class CxxCompilerSensor extends CxxIssuesReportSensor {
     return !warning.toString().isEmpty();
   }
 
-  @Override
-  protected CxxMetricsFactory.Key getMetricKey() {
-    return CxxMetricsFactory.Key.COMPILER_SENSOR_ISSUES_KEY;
-  }
+  /**
+   * Unique string to identify the compiler
+   *
+   * @return
+   */
+  protected abstract String getCompilerKey();
+
+  /**
+   * Character set of the report
+   *
+   * @param context current context
+   * @return
+   */
+  protected abstract String getCharset(final SensorContext context);
+
+  /**
+   * Regular expression to parse the report
+   *
+   * @param context current context
+   * @return
+   */
+  protected abstract String getRegex(final SensorContext context);
+
 }

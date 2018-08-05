@@ -19,26 +19,24 @@
  */
 package org.sonar.cxx.sensors.compiler.gcc;
 
-import java.util.Optional;
-import java.util.function.Predicate;
+import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.api.config.Configuration;
 import org.sonar.cxx.CxxLanguage;
+import org.sonar.cxx.CxxMetricsFactory;
 import org.sonar.cxx.sensors.compiler.CxxCompilerSensor;
 
 public class CxxCompilerGccSensor extends CxxCompilerSensor {
 
-  private class IsGccParserConfigured implements Predicate<Configuration> {
-
-    @Override
-    public boolean test(Configuration config) {
-      if (!config.hasKey(getReportPathKey())) {
-        return false;
-      }
-      final Optional<String> parserValue = config.get(getLanguage().getPluginProperty(PARSER_KEY_DEF));
-      return parserValue.isPresent() && CxxCompilerGccParser.KEY_GCC.equals(parserValue.get());
-    }
-  };
+  public static final String KEY = "GCC";
+  public static final String REPORT_PATH_KEY = "gcc.reportPath";
+  public static final String REPORT_REGEX_DEF = "gcc.regex";
+  public static final String REPORT_CHARSET_DEF = "gcc.charset";
+  public static final String DEFAULT_CHARSET_DEF = "UTF-8";
+  // search for single line with compiler warning message - order for groups: 1=file, 2=line, 3=message, 4=id
+  public static final String DEFAULT_REGEX_DEF = "^(.*):([0-9]+):[0-9]+:\\x20warning:\\x20(.*)\\x20\\[(.*)\\]$";
+  // ToDo: as long as java 7 API is not used the support of named groups for regular expression is not possible
+  // sample regex: "^.*[\\\\,/](?<filename>.*)\\((?<line>[0-9]+)\\)\\x20:\\x20warning\\x20(?<id>C\\d\\d\\d\\d):(?<message>.*)$";
+  // get value with e.g. scanner.match().group("filename");
 
   public CxxCompilerGccSensor(CxxLanguage language) {
     super(language, REPORT_PATH_KEY, CxxCompilerGccRuleRepository.getRepositoryKey(language),
@@ -47,7 +45,31 @@ public class CxxCompilerGccSensor extends CxxCompilerSensor {
 
   @Override
   public void describe(SensorDescriptor descriptor) {
-    descriptor.name(getLanguage().getName() + " CxxCompilerGccSensor").onlyOnLanguage(getLanguage().getKey())
-      .createIssuesForRuleRepositories(getReportPathKey()).onlyWhenConfiguration(new IsGccParserConfigured());
+    descriptor
+      .name(getLanguage().getName() + " CxxCompilerGccSensor")
+      .onlyOnLanguage(getLanguage().getKey())
+      .createIssuesForRuleRepositories(getReportPathKey())
+      .onlyWhenConfiguration(conf -> conf.hasKey(getReportPathKey()));
   }
+
+  @Override
+  protected String getCompilerKey() {
+    return KEY;
+  }
+
+  @Override
+  protected String getCharset(final SensorContext context) {
+    return getContextStringProperty(context, getLanguage().getPluginProperty(REPORT_CHARSET_DEF), DEFAULT_CHARSET_DEF);
+  }
+
+  @Override
+  protected String getRegex(final SensorContext context) {
+    return getContextStringProperty(context, getLanguage().getPluginProperty(REPORT_REGEX_DEF), DEFAULT_REGEX_DEF);
+  }
+  
+  @Override
+  protected CxxMetricsFactory.Key getMetricKey() {
+    return CxxMetricsFactory.Key.GCC_SENSOR_ISSUES_KEY;
+  }
+
 }

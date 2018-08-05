@@ -26,7 +26,6 @@ import org.sonar.api.platform.ServerFileSystem;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.server.rule.RulesDefinitionXmlLoader;
 import org.sonar.cxx.CxxLanguage;
-import org.sonar.cxx.sensors.compiler.gcc.CxxCompilerGccRuleRepository;
 import org.sonar.cxx.sensors.utils.TestUtils;
 
 public class CxxCompilerGccRuleRepositoryTest {
