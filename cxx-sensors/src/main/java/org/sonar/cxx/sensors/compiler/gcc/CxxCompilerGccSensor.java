@@ -17,18 +17,19 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.cxx.sensors.compiler;
+package org.sonar.cxx.sensors.compiler.gcc;
 
 import java.util.Optional;
 import java.util.function.Predicate;
-
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.config.Configuration;
 import org.sonar.cxx.CxxLanguage;
+import org.sonar.cxx.sensors.compiler.CxxCompilerSensor;
 
 public class CxxCompilerGccSensor extends CxxCompilerSensor {
 
   private class IsGccParserConfigured implements Predicate<Configuration> {
+
     @Override
     public boolean test(Configuration config) {
       if (!config.hasKey(getReportPathKey())) {
@@ -41,12 +42,12 @@ public class CxxCompilerGccSensor extends CxxCompilerSensor {
 
   public CxxCompilerGccSensor(CxxLanguage language) {
     super(language, REPORT_PATH_KEY, CxxCompilerGccRuleRepository.getRepositoryKey(language),
-        new CxxCompilerGccParser());
+      new CxxCompilerGccParser());
   }
 
   @Override
   public void describe(SensorDescriptor descriptor) {
     descriptor.name(getLanguage().getName() + " CxxCompilerGccSensor").onlyOnLanguage(getLanguage().getKey())
-        .createIssuesForRuleRepositories(getReportPathKey()).onlyWhenConfiguration(new IsGccParserConfigured());
+      .createIssuesForRuleRepositories(getReportPathKey()).onlyWhenConfiguration(new IsGccParserConfigured());
   }
 }

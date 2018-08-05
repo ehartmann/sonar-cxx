@@ -67,7 +67,7 @@ public class MockCxxCompilerSensor extends CxxCompilerSensor {
   }
 
   public MockCxxCompilerSensor(CxxLanguage language, FileSystem fs, RulesProfile profile, List<CompilerParser.Warning> warningsToProcess) {
-    super(language, REPORT_PATH_KEY, "", mocktCompilerParser(warningsToProcess) );
+    super(language, REPORT_PATH_KEY, "", mocktCompilerParser(warningsToProcess));
 
     savedWarnings = new LinkedList<>();
   }

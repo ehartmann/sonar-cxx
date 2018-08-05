@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.cxx.sensors.compiler;
+package org.sonar.cxx.sensors.compiler.gcc;
 
 import java.io.File;
 import java.util.List;
@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
+import org.sonar.cxx.sensors.compiler.CompilerParser;
 
 /**
  * {@inheritDoc}

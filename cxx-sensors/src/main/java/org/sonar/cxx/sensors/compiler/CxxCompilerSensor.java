@@ -22,12 +22,12 @@ package org.sonar.cxx.sensors.compiler;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.cxx.CxxLanguage;
 import org.sonar.cxx.CxxMetricsFactory;
+import org.sonar.cxx.sensors.compiler.vc.CxxCompilerVcParser;
 import org.sonar.cxx.sensors.utils.CxxIssuesReportSensor;
 import org.sonar.cxx.sensors.utils.CxxReportIssue;
 
@@ -50,7 +50,7 @@ public abstract class CxxCompilerSensor extends CxxIssuesReportSensor {
   private final CompilerParser parser;
 
   protected CxxCompilerSensor(CxxLanguage language, String propertiesKeyPathToReports, String ruleRepositoryKey,
-      CompilerParser parser) {
+    CompilerParser parser) {
     super(language, propertiesKeyPathToReports, ruleRepositoryKey);
     this.parser = parser;
   }
@@ -59,9 +59,9 @@ public abstract class CxxCompilerSensor extends CxxIssuesReportSensor {
   protected void processReport(final SensorContext context, File report)
     throws javax.xml.stream.XMLStreamException {
     final String reportCharset = getContextStringProperty(context, getLanguage().getPluginProperty(REPORT_CHARSET_DEF),
-        parser.defaultCharset());
+      parser.defaultCharset());
     final String reportRegEx = getContextStringProperty(context, getLanguage().getPluginProperty(REPORT_REGEX_DEF),
-        parser.defaultRegexp());
+      parser.defaultRegexp());
     final List<CompilerParser.Warning> warnings = new LinkedList<>();
 
     // Iterate through the lines of the input file

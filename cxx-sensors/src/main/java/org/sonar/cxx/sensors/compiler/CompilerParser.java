@@ -53,14 +53,14 @@ public interface CompilerParser {
    */
   String defaultCharset();
 
-  static class Warning {
+  static public class Warning {
 
     public final String filename;
     public final String line;
     public final String id;
     public final String msg;
 
-    Warning(@Nullable String filename, @Nullable String line, @Nullable String id, @Nullable String msg) {
+    public Warning(@Nullable String filename, @Nullable String line, @Nullable String id, @Nullable String msg) {
       this.filename = getValueOrDefault(filename, "");
       this.line = getValueOrDefault(line, "");
       this.id = getValueOrDefault(id, "");

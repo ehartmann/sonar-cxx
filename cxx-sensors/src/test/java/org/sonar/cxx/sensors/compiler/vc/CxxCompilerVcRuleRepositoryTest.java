@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.cxx.sensors.compiler;
+package org.sonar.cxx.sensors.compiler.vc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
@@ -26,9 +26,10 @@ import org.sonar.api.platform.ServerFileSystem;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.server.rule.RulesDefinitionXmlLoader;
 import org.sonar.cxx.CxxLanguage;
+import org.sonar.cxx.sensors.compiler.vc.CxxCompilerVcRuleRepository;
 import org.sonar.cxx.sensors.utils.TestUtils;
 
-public class CxxCompilerRuleRepositoryTest {
+public class CxxCompilerVcRuleRepositoryTest {
 
   @Test
   public void createVcRulesTest() {
@@ -43,20 +44,5 @@ public class CxxCompilerRuleRepositoryTest {
 
     RulesDefinition.Repository repo = context.repository(CxxCompilerVcRuleRepository.getRepositoryKey(language));
     assertThat(repo.rules()).hasSize(888);
-  }
-
-  @Test
-  public void createGccRulesTest() {
-    CxxLanguage language = TestUtils.mockCxxLanguage();
-
-    CxxCompilerGccRuleRepository def = new CxxCompilerGccRuleRepository(
-      mock(ServerFileSystem.class),
-      new RulesDefinitionXmlLoader(), language);
-
-    RulesDefinition.Context context = new RulesDefinition.Context();
-    def.define(context);
-
-    RulesDefinition.Repository repo = context.repository(CxxCompilerGccRuleRepository.getRepositoryKey(language));
-    assertThat(repo.rules()).hasSize(230);
   }
 }

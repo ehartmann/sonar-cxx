@@ -17,18 +17,20 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.cxx.sensors.compiler;
+package org.sonar.cxx.sensors.compiler.vc;
 
 import java.util.Optional;
 import java.util.function.Predicate;
-
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.config.Configuration;
 import org.sonar.cxx.CxxLanguage;
+import org.sonar.cxx.sensors.compiler.CxxCompilerSensor;
+import org.sonar.cxx.sensors.compiler.gcc.CxxCompilerGccParser;
 
 public class CxxCompilerVcSensor extends CxxCompilerSensor {
 
   private class IsVcParserConfigured implements Predicate<Configuration> {
+
     @Override
     public boolean test(Configuration config) {
       if (!config.hasKey(getReportPathKey())) {
@@ -38,7 +40,7 @@ public class CxxCompilerVcSensor extends CxxCompilerSensor {
       // configured
       final Optional<String> parserValue = config.get(getLanguage().getPluginProperty(PARSER_KEY_DEF));
       final boolean isGCCParserConfigured = parserValue.isPresent()
-          && CxxCompilerGccParser.KEY_GCC.equals(parserValue.get());
+        && CxxCompilerGccParser.KEY_GCC.equals(parserValue.get());
       return !isGCCParserConfigured;
     }
   };
@@ -50,6 +52,6 @@ public class CxxCompilerVcSensor extends CxxCompilerSensor {
   @Override
   public void describe(SensorDescriptor descriptor) {
     descriptor.name(getLanguage().getName() + " CxxCompilerVcSensor").onlyOnLanguage(getLanguage().getKey())
-        .createIssuesForRuleRepositories(getReportPathKey()).onlyWhenConfiguration(new IsVcParserConfigured());
+      .createIssuesForRuleRepositories(getReportPathKey()).onlyWhenConfiguration(new IsVcParserConfigured());
   }
 }
