@@ -502,15 +502,12 @@ public enum CxxGrammarImpl implements GrammarRuleKey {
     b.rule(nestedNameSpecifier).is(
       b.firstOf(
         "::",
-        b.sequence(typeName, "::"), // C++
+        b.sequence(className, "::"), // C++
         b.sequence(namespaceName, "::"), // C++
         b.sequence(decltypeSpecifier, "::") // C++
       ),
       b.zeroOrMore(
-        b.firstOf(
-          b.sequence(IDENTIFIER, "::"), // C++
-          b.sequence(b.optional(CxxKeyword.TEMPLATE), simpleTemplateId, "::") // C++
-        )
+          b.sequence(className, "::") // C++
       )
     );
 

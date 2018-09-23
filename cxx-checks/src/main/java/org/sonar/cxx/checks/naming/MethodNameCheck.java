@@ -118,7 +118,7 @@ public class MethodNameCheck extends SquidCheck<Grammar> {
     if (nestedNameSpecifier != null) {
       AstNode idNode = declId.getLastChild(CxxGrammarImpl.className);
       if (idNode != null) {
-        AstNode className = nestedNameSpecifier.getFirstDescendant(CxxGrammarImpl.className);
+        AstNode className = nestedNameSpecifier.getLastChild(CxxGrammarImpl.className);
         // if class name is equal to method name then it is a ctor or dtor
         if ((className != null) && !className.getTokenValue().equals(idNode.getTokenValue())) {
           result = idNode;
