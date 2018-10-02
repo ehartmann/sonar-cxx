@@ -44,7 +44,7 @@ public class CxxParseErrorLoggerVisitor<GRAMMAR extends Grammar>
   }
 
   /**
-   * This only thing this visitor does is to logs with INFO severity; Disable
+   * The only thing this visitor does is logging with severity == INFO; Disable
    * the entire visitor if logging level was set to the level > INFO
    */
   public static boolean isLoggingEnabled() {
