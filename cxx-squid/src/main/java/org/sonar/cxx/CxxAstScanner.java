@@ -229,7 +229,9 @@ public final class CxxAstScanner {
     builder.withSquidAstVisitor(new CxxFileVisitor<>(context));
 
     // log syntax errors
-    builder.withSquidAstVisitor(new CxxParseErrorLoggerVisitor<>(context));
+    if (CxxParseErrorLoggerVisitor.isLoggingEnabled()) {
+      builder.withSquidAstVisitor(new CxxParseErrorLoggerVisitor<>(context));
+    }
 
     /* External visitors (typically Check ones) */
     for (SquidAstVisitor<Grammar> visitor : visitors) {

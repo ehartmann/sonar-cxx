@@ -26,6 +26,7 @@ import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.TokenType;
 import java.util.List;
 import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.LoggerLevel;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.cxx.api.CxxPunctuator;
 import org.sonar.cxx.parser.CxxGrammarImpl;
@@ -40,6 +41,15 @@ public class CxxParseErrorLoggerVisitor<GRAMMAR extends Grammar>
 
   public CxxParseErrorLoggerVisitor(SquidAstVisitorContext<?> context) {
     this.context = context;
+  }
+
+  /**
+   * This only thing this visitor does is to logs with INFO severity; Disable
+   * the entire visitor if logging level was set to the level > INFO
+   */
+  public static boolean isLoggingEnabled() {
+    final LoggerLevel level = LOG.getLevel();
+    return level == LoggerLevel.TRACE || level == LoggerLevel.DEBUG || level == LoggerLevel.INFO;
   }
 
   @Override
@@ -64,7 +74,7 @@ public class CxxParseErrorLoggerVisitor<GRAMMAR extends Grammar>
       } else if (type.equals(CxxPunctuator.CURLBR_LEFT)) {
         // part with CURLBR_LEFT is typically an ignored declaration
         if (identifierLine != -1) {
-          LOG.warn("[{}:{}]: skip declaration: {}",
+          LOG.info("[{}:{}]: skip declaration: {}",
             context.getFile(), identifierLine, sb.toString());
           sb.setLength(0);
           identifierLine = -1;
@@ -79,7 +89,7 @@ public class CxxParseErrorLoggerVisitor<GRAMMAR extends Grammar>
 
     if (identifierLine != -1 && sb.length() > 0) {
       // part without CURLBR_LEFT is typically a syntax error
-      LOG.warn("[{}:{}]:    syntax error: {}",
+      LOG.info("[{}:{}]:    syntax error: {}",
         context.getFile(), identifierLine, sb.toString());
     }
   }
