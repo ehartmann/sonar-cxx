@@ -173,7 +173,9 @@ public final class ExpressionEvaluator {
       } else {
         LOG.warn("Error evaluating expression '{}', assuming 0", constExpr);
       }
-      LOG.debug("EvalToInt failed: {}", re);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("EvalToInt failed: {}", re);
+      }
       return BigInteger.ZERO;
     }
   }

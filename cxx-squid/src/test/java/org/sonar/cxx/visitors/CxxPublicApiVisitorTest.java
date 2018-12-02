@@ -169,7 +169,9 @@ public class CxxPublicApiVisitorTest {
 
     // check completeness
     expectedIdCommentMap.keySet().stream().forEach((id) -> {
-      LOG.debug("id: {}", id);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("id: {}", id);
+      }
 
       List<Token> comments = visitor.idCommentMap.get(id);
 
@@ -186,8 +188,9 @@ public class CxxPublicApiVisitorTest {
 
     // check correction
     visitor.idCommentMap.keySet().stream().forEach((id) -> {
-      LOG.debug("id: {}", id);
-
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("id: {}", id);
+      }
       List<Token> comments = visitor.idCommentMap.get(id);
 
       assertThat(comments)

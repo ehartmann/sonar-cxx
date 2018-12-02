@@ -54,7 +54,9 @@ public class SourceCodeProvider {
       }
 
       if (includeRoot.isDirectory()) {
-        LOG.debug("storing include root: '{}'", includeRoot);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("storing include root: '{}'", includeRoot);
+        }
         this.includeRoots.add(includeRoot);
       } else {
         LOG.warn("the include root '{}' doesn't exist", includeRoot.getAbsolutePath());

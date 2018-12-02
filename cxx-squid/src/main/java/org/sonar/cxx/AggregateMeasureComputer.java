@@ -78,18 +78,24 @@ public class AggregateMeasureComputer implements MeasureComputer {
   private static void compute(MeasureComputerContext context, String metricKey) {
     final Component component = context.getComponent();
     if (component.getType() == Component.Type.FILE) {
-      LOG.debug("Component {}: FILE doesn't required an aggregation", component.getKey());
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Component {}: FILE doesn't required an aggregation", component.getKey());
+      }
       return;
     }
     final Measure existingMeasure = context.getMeasure(metricKey);
     if (existingMeasure != null) {
-      LOG.debug("Component {}: measure {} already calculated, value = {}", component.getKey(), metricKey,
-        existingMeasure.getIntValue());
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Component {}: measure {} already calculated, value = {}", component.getKey(), metricKey,
+          existingMeasure.getIntValue());
+      }
       return;
     }
     Iterable<Measure> childrenMeasures = context.getChildrenMeasures(metricKey);
     if (childrenMeasures == null || !childrenMeasures.iterator().hasNext()) {
-      LOG.debug("Component {}: measure {} is not set for children", component.getKey(), metricKey);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Component {}: measure {} is not set for children", component.getKey(), metricKey);
+      }
       return;
     }
     int aggregation = 0;

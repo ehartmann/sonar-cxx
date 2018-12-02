@@ -86,8 +86,10 @@ public class CxxParseErrorLoggerVisitor<GRAMMAR extends Grammar>
       } else if (type.equals(CxxPunctuator.CURLBR_LEFT)) {
         // part with CURLBR_LEFT is typically an ignored declaration
         if (identifierLine != -1) {
-          LOG.debug("[{}:{}]: skip declaration: {}",
-            context.getFile(), identifierLine, sb.toString());
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("[{}:{}]: skip declaration: {}",
+              context.getFile(), identifierLine, sb.toString());
+          }
           sb.setLength(0);
           identifierLine = -1;
         }
@@ -101,8 +103,10 @@ public class CxxParseErrorLoggerVisitor<GRAMMAR extends Grammar>
 
     if (identifierLine != -1 && sb.length() > 0) {
       // part without CURLBR_LEFT is typically a syntax error
-      LOG.debug("[{}:{}]:    syntax error: {}",
-        context.getFile(), identifierLine, sb.toString());
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("[{}:{}]:    syntax error: {}",
+          context.getFile(), identifierLine, sb.toString());
+      }
     }
   }
 

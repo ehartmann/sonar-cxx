@@ -76,7 +76,9 @@ public class CxxXunitSensor extends CxxReportSensor {
    */
   @Override
   public void execute(SensorContext context) {
-    LOG.debug("Root module imports test metrics: Module Key = '{}'", context.module());
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Root module imports test metrics: Module Key = '{}'", context.module());
+    }
 
     try {
       List<File> reports = getReports(context.config(), context.fileSystem().baseDir(), getReportPathKey());
@@ -87,7 +89,9 @@ public class CxxXunitSensor extends CxxReportSensor {
         LOG.info("Parsing 'xUnit' format");
         simpleMode(context, testcases);
       } else {
-        LOG.debug("No reports found, nothing to process");
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("No reports found, nothing to process");
+        }
       }
     } catch (IOException | TransformerException | XMLStreamException e) {
       String msg = new StringBuilder(256)
@@ -215,7 +219,9 @@ public class CxxXunitSensor extends CxxReportSensor {
         CxxUtils.validateRecovery(ex, getLanguage());
       }
     } else {
-      LOG.debug("The reports contain no testcases");
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("The reports contain no testcases");
+      }
     }
   }
 
@@ -223,10 +229,14 @@ public class CxxXunitSensor extends CxxReportSensor {
     throws java.io.IOException, javax.xml.transform.TransformerException {
     File transformed = report;
     if (xsltURL != null && report.length() > 0) {
-      LOG.debug("Transforming the report using xslt '{}'", xsltURL);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Transforming the report using xslt '{}'", xsltURL);
+      }
       InputStream inputStream = this.getClass().getResourceAsStream("/xsl/" + xsltURL);
       if (inputStream == null) {
-        LOG.debug("Transforming: try to access external XSLT via URL");
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Transforming: try to access external XSLT via URL");
+        }
         URL url = new URL(xsltURL);
         inputStream = url.openStream();
       }
@@ -235,7 +245,9 @@ public class CxxXunitSensor extends CxxReportSensor {
       transformed = new File(report.getAbsolutePath() + ".after_xslt");
       CxxUtils.transformFile(xsl, report, transformed);
     } else {
-      LOG.debug("Transformation skipped: no xslt given");
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Transformation skipped: no xslt given");
+      }
     }
 
     return transformed;

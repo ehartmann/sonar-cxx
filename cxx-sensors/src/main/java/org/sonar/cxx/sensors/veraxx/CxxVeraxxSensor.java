@@ -63,7 +63,9 @@ public class CxxVeraxxSensor extends CxxIssuesReportSensor {
   @Override
   protected void processReport(final SensorContext context, File report)
     throws javax.xml.stream.XMLStreamException {
-    LOG.debug("Parsing 'Vera++' format");
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Parsing 'Vera++' format");
+    }
     try {
       StaxParser parser = new StaxParser((SMHierarchicCursor rootCursor) -> {
         try {

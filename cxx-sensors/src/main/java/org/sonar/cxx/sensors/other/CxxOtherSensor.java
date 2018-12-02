@@ -140,7 +140,9 @@ public class CxxOtherSensor extends CxxIssuesReportSensor {
   @Override
   public void processReport(final SensorContext context, File report) throws XMLStreamException, IOException,
     URISyntaxException, TransformerException {
-    LOG.debug("Parsing 'other' format");
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Parsing 'other' format");
+    }
 
     StaxParser parser = new StaxParser((SMHierarchicCursor rootCursor) -> {
       rootCursor.advance();

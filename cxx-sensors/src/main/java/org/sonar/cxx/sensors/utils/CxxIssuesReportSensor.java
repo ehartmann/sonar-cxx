@@ -142,8 +142,10 @@ public abstract class CxxIssuesReportSensor extends CxxReportSensor {
     final InputFile inputFile = sensorContext.fileSystem().inputFile(sensorContext.
       fileSystem().predicates().hasPath(path));
     if (inputFile == null) {
-      LOG.debug("Path '{}' couldn't be found in module '{}' base dir '{}'", path, sensorContext.module().key(),
-        sensorContext.fileSystem().baseDir());
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Path '{}' couldn't be found in module '{}' base dir '{}'", path, sensorContext.module().key(),
+          sensorContext.fileSystem().baseDir());
+      }
       notFoundFiles.add(path);
     }
     return inputFile;

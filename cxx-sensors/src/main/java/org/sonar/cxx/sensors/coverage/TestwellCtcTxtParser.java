@@ -59,7 +59,9 @@ public class TestwellCtcTxtParser extends CxxCoverageParser {
    */
   @Override
   public void processReport(File report, final Map<String, CoverageMeasures> coverageData) {
-    LOG.debug("Parsing 'Testwell CTC++' textual format");
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Parsing 'Testwell CTC++' textual format");
+    }
 
     try (Scanner s = new Scanner(report).useDelimiter(SECTION_SEP)) {
       scanner = s;
@@ -75,8 +77,10 @@ public class TestwellCtcTxtParser extends CxxCoverageParser {
   }
 
   private boolean parseUnit(final Map<String, CoverageMeasures> coverageData, Matcher headerMatcher) {
-    LOG.debug(headerMatcher.toString());
-
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(headerMatcher.toString());
+    }
+     
     if (headerMatcher.find(FROM_START)) {
       parseFileUnit(coverageData, headerMatcher);
     } else {
@@ -86,7 +90,9 @@ public class TestwellCtcTxtParser extends CxxCoverageParser {
   }
 
   private void parseFileUnit(final Map<String, CoverageMeasures> coverageData, Matcher headerMatcher) {
-    LOG.debug("Parsing file section...");
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Parsing file section...");
+    }
 
     String normalFilename;
     String filename = headerMatcher.group(1);
@@ -110,7 +116,9 @@ public class TestwellCtcTxtParser extends CxxCoverageParser {
   }
 
   private void parseLineSection(CoverageMeasures coverageMeasures, String nextLine) {
-    LOG.debug("Found line section...");
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Found line section...");
+    }
 
     Matcher lineMatcher = LINE_RESULT.matcher(nextLine);
     if (lineMatcher.find(FROM_START)) {

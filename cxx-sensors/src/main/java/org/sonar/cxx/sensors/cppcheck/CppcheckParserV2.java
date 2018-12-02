@@ -66,7 +66,9 @@ public class CppcheckParserV2 implements CppcheckParser {
   @Override
   public void processReport(final SensorContext context, File report)
     throws javax.xml.stream.XMLStreamException {
-    LOG.debug("Parsing 'Cppcheck V2' format");
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Parsing 'Cppcheck V2' format");
+    }
     StaxParser parser = new StaxParser(new StaxParser.XmlStreamHandler() {
       /**
        * {@inheritDoc}

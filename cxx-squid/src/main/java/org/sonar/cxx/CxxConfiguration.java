@@ -120,7 +120,9 @@ public class CxxConfiguration extends SquidConfiguration {
     List<String> overallIncludes = uniqueIncludes.get(OVERALLINCLUDEKEY);
     includeDirectories.stream().forEach((include) -> {
       if (!overallIncludes.contains(include)) {
-        LOG.debug("setIncludeDirectories() adding dir '{}'", include);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("setIncludeDirectories() adding dir '{}'", include);
+        }
         overallIncludes.add(include);
       }
     });
@@ -129,7 +131,9 @@ public class CxxConfiguration extends SquidConfiguration {
   public void addOverallIncludeDirectory(String includeDirectory) {
     List<String> overallIncludes = uniqueIncludes.get(OVERALLINCLUDEKEY);
     if (!overallIncludes.contains(includeDirectory)) {
-      LOG.debug("setIncludeDirectories() adding dir '{}'", includeDirectory);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("setIncludeDirectories() adding dir '{}'", includeDirectory);
+      }
       overallIncludes.add(includeDirectory);
     }
   }
@@ -260,12 +264,16 @@ public class CxxConfiguration extends SquidConfiguration {
           if (LOG.isDebugEnabled()) {
             uniqueIncludes.values().stream().forEach((allIncludes) -> {
               if (!allIncludes.isEmpty()) {
-                LOG.debug("Includes folders ({})='{}'", allIncludes.size(), allIncludes);
+                if (LOG.isDebugEnabled()) {
+                  LOG.debug("Includes folders ({})='{}'", allIncludes.size(), allIncludes);
+                }
               }
             });
             uniqueDefines.values().stream().forEach((allDefines) -> {
               if (!allDefines.isEmpty()) {
-                LOG.debug("Defines ({})='{}'", allDefines.size(), allDefines);
+                if (LOG.isDebugEnabled()) {
+                  LOG.debug("Defines ({})='{}'", allDefines.size(), allDefines);
+                }
               }
             });
           }

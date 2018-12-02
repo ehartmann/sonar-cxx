@@ -77,7 +77,9 @@ public class BullseyeParser extends CxxCoverageParser {
   @Override
   public void processReport(File report, final Map<String, CoverageMeasures> coverageData)
     throws XMLStreamException {
-    LOG.debug("Parsing 'Bullseye' format");
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Parsing 'Bullseye' format");
+    }
     StaxParser topLevelparser = new StaxParser((SMHierarchicCursor rootCursor) -> {
       rootCursor.advance();
       collectCoverageLeafNodes(rootCursor.getAttrValue("dir"), rootCursor.childElementCursor("src"), coverageData);

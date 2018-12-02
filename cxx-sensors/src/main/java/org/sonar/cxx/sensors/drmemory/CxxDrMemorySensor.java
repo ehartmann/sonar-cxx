@@ -85,7 +85,9 @@ public class CxxDrMemorySensor extends CxxIssuesReportSensor {
 
   @Override
   protected void processReport(final SensorContext context, File report) {
-    LOG.debug("Parsing 'Dr Memory' format");
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Parsing 'Dr Memory' format");
+    }
 
     for (DrMemoryError error : DrMemoryParser.parse(report, DEFAULT_CHARSET_DEF)) {
       if (error.getStackTrace().isEmpty()) {

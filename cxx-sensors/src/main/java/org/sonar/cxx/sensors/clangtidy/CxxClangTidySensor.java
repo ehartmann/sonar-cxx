@@ -68,7 +68,9 @@ public class CxxClangTidySensor extends CxxIssuesReportSensor {
   protected void processReport(final SensorContext context, File report) {
     final String reportCharset = getContextStringProperty(context,
       getLanguage().getPluginProperty(REPORT_CHARSET_DEF), DEFAULT_CHARSET_DEF);
-    LOG.debug("Parsing 'clang-tidy' report, CharSet= '{}'", reportCharset);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Parsing 'clang-tidy' report, CharSet= '{}'", reportCharset);
+    }
 
     try (Scanner scanner = new Scanner(report, reportCharset)) {
       // E:\Development\SonarQube\cxx\sonar-cxx\sonar-cxx-plugin\src\test\resources\org\sonar\plugins\cxx\

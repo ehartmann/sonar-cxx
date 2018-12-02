@@ -52,8 +52,9 @@ public class JsonCompilationDatabase {
    * @throws IOException
    */
   public static void parse(CxxConfiguration config, File compileCommandsFile) throws IOException {
-
-    LOG.debug("Parsing 'JSON Compilation Database' format");
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Parsing 'JSON Compilation Database' format");
+    }
 
     ObjectMapper mapper = new ObjectMapper();
     mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);

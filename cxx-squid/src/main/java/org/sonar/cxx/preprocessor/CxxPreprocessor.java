@@ -140,10 +140,14 @@ public class CxxPreprocessor extends Preprocessor {
 
       // parse the configured defines and store into the macro library
       conf.getDefines().stream().forEach((define) -> {
-        LOG.debug("parsing external macro: '{}'", define);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("parsing external macro: '{}'", define);
+        }
         if (!"".equals(define)) {
           Macro macro = parseMacroDefinition("#define " + define);
-          LOG.debug("storing external macro: '{}'", macro);
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("storing external macro: '{}'", macro);
+          }
           getMacros().put(macro.name, macro);
         }
       });
@@ -153,7 +157,9 @@ public class CxxPreprocessor extends Preprocessor {
 
       // parse the configured force includes and store into the macro library
       conf.getForceIncludeFiles().stream().forEach((include) -> {
-        LOG.debug("parsing force include: '{}'", include);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("parsing force include: '{}'", include);
+        }
         if (!"".equals(include)) {
           parseIncludeLine("#include \"" + include + "\"", "sonar." + this.language.getPropertiesKey()
             + ".forceIncludes", conf.getEncoding());
@@ -475,12 +481,16 @@ public class CxxPreprocessor extends Preprocessor {
       compilationUnitSettings = conf.getCompilationUnitSettings(currentContextFile.getAbsolutePath());
 
       if (compilationUnitSettings != null) {
-        LOG.debug("compilation unit settings for: '{}'", rootFilePath);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("compilation unit settings for: '{}'", rootFilePath);
+        }
       } else {
         compilationUnitSettings = conf.getGlobalCompilationUnitSettings();
 
         if (compilationUnitSettings != null) {
-          LOG.debug("global compilation unit settings for: '{}'", rootFilePath);
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("global compilation unit settings for: '{}'", rootFilePath);
+          }
         }
       }
 
@@ -497,11 +507,15 @@ public class CxxPreprocessor extends Preprocessor {
 
           // parse the configured defines and store into the macro library
           conf.getDefines().stream().forEach((define) -> {
-            LOG.debug("parsing external macro to unit: '{}'", define);
+            if (LOG.isDebugEnabled()) {
+              LOG.debug("parsing external macro to unit: '{}'", define);
+            }
             if (!"".equals(define)) {
               Macro macro = parseMacroDefinition("#define " + define);
               if (macro != null) {
-                LOG.debug("storing external macro to unit: '{}'", macro);
+                if (LOG.isDebugEnabled()) {
+                  LOG.debug("storing external macro to unit: '{}'", macro);
+                }
                 getMacros().put(macro.name, macro);
               }
             }
@@ -518,7 +532,9 @@ public class CxxPreprocessor extends Preprocessor {
 
           // parse the configured force includes and store into the macro library
           conf.getForceIncludeFiles().stream().forEach((include) -> {
-            LOG.debug("parsing force include to unit: '{}'", include);
+            if (LOG.isDebugEnabled()) {
+              LOG.debug("parsing force include to unit: '{}'", include);
+            }
             if (!"".equals(include)) {
               // TODO -> this needs to come from language
               parseIncludeLine("#include \"" + include + "\"", "sonar.cxx.forceIncludes", conf.getEncoding());
@@ -537,7 +553,9 @@ public class CxxPreprocessor extends Preprocessor {
         }
       } else {
         // Use global settings
-        LOG.debug("global settings for: '{}'", rootFilePath);
+         if (LOG.isDebugEnabled()) {
+          LOG.debug("global settings for: '{}'", rootFilePath);
+        }
         if (isCFile(currentContextFile.getAbsolutePath())) {
           //Create macros to replace C++ keywords when parsing C files
           registerMacros(StandardDefinitions.compatibilityMacros());
@@ -555,7 +573,9 @@ public class CxxPreprocessor extends Preprocessor {
         lineAst = pplineParser.parse(token.getValue()).getFirstChild();
       } catch (com.sonar.sslr.api.RecognitionException re) {
         LOG.warn("Cannot parse '{}', ignoring...", token.getValue());
-        LOG.debug("Parser exception: '{}'", re);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Parser exception: '{}'", re);
+        }
         return new PreprocessorAction(1, Collections.singletonList(Trivia.createSkippedText(token)),
           new ArrayList<>());
       }
@@ -612,9 +632,9 @@ public class CxxPreprocessor extends Preprocessor {
     // A macro definition lasts (independent of block structure) until
     // a corresponding #undef directive is encountered or (if none
     // is encountered) until the end of the translation unit.
-
-    LOG.debug("finished preprocessing '{}'", file);
-
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("finished preprocessing '{}'", file);
+    }
     analysedFiles.clear();
     fixedMacros.clearLowPrio();
     unitMacros = null;
@@ -680,11 +700,15 @@ public class CxxPreprocessor extends Preprocessor {
     for (String pattern : cFilesPatterns) {
       String patt = pattern.replace("*", "");
       if (filePath.endsWith(patt)) {
-        LOG.debug("Parse '{}' as C file, ends in '{}'", filePath, pattern);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Parse '{}' as C file, ends in '{}'", filePath, pattern);
+        }
         return true;
       }
     }
-    LOG.debug("Parse '{}' as C++ file", filePath);
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Parse '{}' as C++ file", filePath);
+    }
     return false;
   }
 

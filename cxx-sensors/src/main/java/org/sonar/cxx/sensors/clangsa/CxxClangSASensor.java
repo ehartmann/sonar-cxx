@@ -75,7 +75,9 @@ public class CxxClangSASensor extends CxxIssuesReportSensor {
   protected void processReport(final SensorContext context, File report)
     throws javax.xml.stream.XMLStreamException {
 
-    LOG.debug("Processing clangsa report '{}''", report.getName());
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Processing clangsa report '{}''", report.getName());
+    }
 
     try {
       File f = new File(report.getPath());
