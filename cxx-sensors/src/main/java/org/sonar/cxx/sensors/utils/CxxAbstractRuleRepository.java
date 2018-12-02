@@ -82,13 +82,13 @@ public abstract class CxxAbstractRuleRepository implements RulesDefinition {
       InputStream xmlStream = getClass().getResourceAsStream(fileName());
       xmlLoader.load(repository, xmlStream, charset);
 
-      for (File userExtensionXml : getExtensions(repositoryKey, "xml")) {
+      getExtensions(repositoryKey, "xml").stream().forEach((userExtensionXml) -> {
         try (InputStream input = java.nio.file.Files.newInputStream(userExtensionXml.toPath())) {
           xmlRuleLoader.load(repository, input, charset);
         } catch (IOException | IllegalStateException ex) {
           LOG.info("Cannot Load XML '{}'", ex);
         }
-      }
+      });
     }
 
     if (language.getStringOption(this.customRepositoryKey).isPresent()) {

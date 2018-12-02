@@ -54,10 +54,10 @@ class ValgrindStack {
   @Override
   public String toString() {
     StringBuilder res = new StringBuilder(256);
-    for (ValgrindFrame frame : frames) {
+    frames.stream().forEach((frame) -> {
       res.append(frame);
       res.append('\n');
-    }
+    });
     return res.toString();
   }
 

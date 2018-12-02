@@ -37,9 +37,9 @@ public class JoinStringsPreprocessor extends Preprocessor {
   private static String concatenateStringLiterals(List<Token> concatenatedTokens) {
     StringBuilder sb = new StringBuilder(256);
     sb.append("\"");
-    for (Token t : concatenatedTokens) {
+    concatenatedTokens.stream().forEach((t) -> {
       sb.append(stripQuotes(t.getValue()));
-    }
+    });
     sb.append("\"");
     return sb.toString();
   }

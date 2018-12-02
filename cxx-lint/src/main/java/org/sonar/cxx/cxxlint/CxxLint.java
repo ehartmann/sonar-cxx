@@ -212,7 +212,7 @@ public class CxxLint {
         visitors.toArray(new SquidAstVisitor[visitors.size()]));
       LOG.info("Analyse with : " + visitors.size() + " checks");
 
-      for (CheckMessage message : file.getCheckMessages()) {
+      file.getCheckMessages().stream().forEach((message) -> {
         Object check = message.getCheck();
         String key = getRuleKey(check);
 
@@ -220,7 +220,7 @@ public class CxxLint {
         // but is slow and can overflow buffers.  [runtime/printf-5] [1]
         LOG.info(message.getSourceCode() + "(" + message.getLine() + "): Warning : "
           + message.formatDefaultMessage() + " [" + key + "]");
-      }
+      });
 
       LOG.info("LOC: {}", file.getInt(CxxMetric.LINES_OF_CODE));
       LOG.info("COMPLEXITY: {}", file.getInt(CxxMetric.COMPLEXITY));
@@ -366,10 +366,10 @@ public class CxxLint {
       check.setEnable("Enabled".equals(enabled));
       JsonElement region = data.get("properties");
       if (region != null) {
-        for (Entry<?, ?> parameter : region.getAsJsonObject().entrySet()) {
+        region.getAsJsonObject().entrySet().stream().forEach((parameter) -> {
           JsonElement elem = (JsonElement) parameter.getValue();
-          check.getParameterData().put(parameter.getKey().toString(), elem.getAsString());
-        }
+          check.getParameterData().put(parameter.getKey(), elem.getAsString());
+        });
       }
 
       rulesData.add(check);
@@ -420,9 +420,9 @@ public class CxxLint {
       lineOptionsParser.setPlatform(platform);
       lineOptionsParser.setPlatformToolset(platformToolset);
       lineOptionsParser.parseVCppLine(elementsOfAdditionalOptions, project, fileToAnalyse);
-      for (String define : uniqueDefines.get(fileToAnalyse)) {
+      uniqueDefines.get(fileToAnalyse).stream().forEach((define) -> {
         configuration.addOverallDefine(define);
-      }
+      });
     }
   }
 

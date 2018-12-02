@@ -87,9 +87,9 @@ public class ValgrindFrameTest {
     ioMap.put("???: ???",
       new ValgrindFrame(null, null, null, null, null, ""));
 
-    for (Map.Entry<String, ValgrindFrame> entry : ioMap.entrySet()) {
+    ioMap.entrySet().stream().forEach((entry) -> {
       assertEquals(entry.getKey(), entry.getValue().toString());
-    }
+    });
   }
 
 }

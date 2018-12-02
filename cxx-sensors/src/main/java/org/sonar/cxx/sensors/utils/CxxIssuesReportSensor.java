@@ -93,13 +93,13 @@ public abstract class CxxIssuesReportSensor extends CxxReportSensor {
       Metric<Integer> metric = getLanguage().getMetric(this.getMetricKey());
       LOG.info("{} processed = {}", metric.getKey(), violationsPerModuleCount);
 
-      for (Map.Entry<InputFile, Integer> entry : violationsPerFileCount.entrySet()) {
+      violationsPerFileCount.entrySet().stream().forEach((entry) -> {
         context.<Integer>newMeasure()
           .forMetric(metric)
           .on(entry.getKey())
           .withValue(entry.getValue())
           .save();
-      }
+      });
 
       // this sensor could be executed on module without any files
       // (possible for hierarchical multi-module projects)
@@ -199,7 +199,7 @@ public abstract class CxxIssuesReportSensor extends CxxReportSensor {
     Set<InputFile> affectedFiles = new HashSet<>();
     List<NewIssueLocation> newIssueLocations = new ArrayList<>();
 
-    for (CxxReportLocation location : issue.getLocations()) {
+    issue.getLocations().stream().forEach((location) -> {
       if (location.getFile() != null && !location.getFile().isEmpty()) {
         NewIssueLocation newIssueLocation = createNewIssueLocationFile(sensorContext, newIssue, location,
           affectedFiles);
@@ -210,7 +210,7 @@ public abstract class CxxIssuesReportSensor extends CxxReportSensor {
         NewIssueLocation newIssueLocation = createNewIssueLocationModule(sensorContext, newIssue, location);
         newIssueLocations.add(newIssueLocation);
       }
-    }
+    });
 
     if (!newIssueLocations.isEmpty()) {
       try {

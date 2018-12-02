@@ -56,11 +56,11 @@ public class CustomCxxRulesDefinitionTest {
     assertThat(alertUseRule).isNotNull();
     assertThat(alertUseRule.name()).isEqualTo(RULE_NAME);
 
-    for (RulesDefinition.Rule rule : repository.rules()) {
-      for (Param param : rule.params()) {
+    repository.rules().stream().forEach((rule) -> {
+      rule.params().stream().forEach((param) -> {
         assertThat(param.description()).as("description for " + param.key()).isNotEmpty();
-      }
-    }
+      });
+    });
   }
 
   public static class MyCustomPlSqlRulesDefinition extends CustomCxxRulesDefinition {

@@ -92,9 +92,9 @@ public class UndocumentedApiCheckTest {
       .next().atLine(156) // aliasDeclaration2
       .next().atLine(161); // class ClassWithFriend
 
-    for (CheckMessage msg : file.getCheckMessages()) {
+    file.getCheckMessages().stream().forEach((msg) -> {
       assertThat(msg.formatDefaultMessage()).isNotEmpty();
-    }
+    });
   }
 
   @Test
@@ -103,13 +103,13 @@ public class UndocumentedApiCheckTest {
     SourceFile file = CxxAstScanner.scanSingleFile(tester.cxxFile, tester.sensorContext, CxxFileTesterHelper.mockCxxLanguage(), new UndocumentedApiCheck());
 
     StringBuilder errors = new StringBuilder(1024);
-    for (CheckMessage msg : file.getCheckMessages()) {
+    file.getCheckMessages().stream().forEach((msg) -> {
       errors.append("Line: ");
       errors.append(msg.getLine());
       errors.append("; ");
       errors.append(msg.formatDefaultMessage());
       errors.append("\r\n");
-    }
+    });
     assertThat(errors.length()).isEqualTo(0);
   }
 
@@ -119,13 +119,13 @@ public class UndocumentedApiCheckTest {
     SourceFile file = CxxAstScanner.scanSingleFile(tester.cxxFile, tester.sensorContext, CxxFileTesterHelper.mockCxxLanguage(), new UndocumentedApiCheck());
 
     StringBuilder errors = new StringBuilder(1024);
-    for (CheckMessage msg : file.getCheckMessages()) {
+    file.getCheckMessages().stream().forEach((msg) -> {
       errors.append("Line: ");
       errors.append(msg.getLine());
       errors.append("; ");
       errors.append(msg.formatDefaultMessage());
       errors.append("\r\n");
-    }
+    });
     assertThat(errors.length()).isEqualTo(0);
   }
 

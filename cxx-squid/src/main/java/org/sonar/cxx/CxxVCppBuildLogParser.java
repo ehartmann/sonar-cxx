@@ -253,15 +253,15 @@ public class CxxVCppBuildLogParser {
 
   private void parseVCppCompilerCLLine(String line, String projectPath, String fileElement) {
     for (Pattern includePattern : INCLUDE_PATTERNS) {
-      for (String includeElem : getMatches(includePattern, line)) {
+      getMatches(includePattern, line).stream().forEach((includeElem) -> {
         parseInclude(includeElem, projectPath, fileElement);
-      }
+      });
     }
 
     for (Pattern definePattern : DEFINE_PATTERNS) {
-      for (String macroElem : getMatches(definePattern, line)) {
+      getMatches(definePattern, line).stream().forEach((macroElem) -> {
         addMacro(macroElem, fileElement);
-      }
+      });
     }
 
     // https://msdn.microsoft.com/en-us/library/vstudio/b0084kay(v=vs.100).aspx

@@ -78,25 +78,22 @@ public class CxxRatsSensor extends CxxIssuesReportSensor {
     try {
       SAXBuilder builder = new SAXBuilder(XMLReaders.NONVALIDATING);
       Element root = builder.build(report).getRootElement();
-      List<Element> vulnerabilities = root.getChildren("vulnerability");
-      for (Element vulnerability : vulnerabilities) {
+
+      root.getChildren("vulnerability").stream().forEach((vulnerability) -> {
         String type = getVulnerabilityType(vulnerability.getChild("type"));
         String message = vulnerability.getChild("message").getTextTrim();
 
-        List<Element> files = vulnerability.getChildren("file");
-
-        for (Element file : files) {
+        vulnerability.getChildren("file").stream().forEach((file) -> {
           String fileName = file.getChild("name").getTextTrim();
 
-          List<Element> lines = file.getChildren("line");
-          for (Element lineElem : lines) {
+          file.getChildren("line").stream().forEach((lineElem) -> {
             String line = lineElem.getTextTrim();
 
             CxxReportIssue issue = new CxxReportIssue(type, fileName, line, message);
             saveUniqueViolation(context, issue);
-          }
-        }
-      }
+          });
+        });
+      });
     } catch (org.jdom2.input.JDOMParseException e) {
       // when RATS fails the XML file might be incomplete
       LOG.error("Ignore incomplete XML output from RATS '{}'", CxxUtils.getStackTrace(e));

@@ -139,26 +139,26 @@ public class CxxPreprocessor extends Preprocessor {
       getMacros().setHighPrio(true);
 
       // parse the configured defines and store into the macro library
-      for (String define : conf.getDefines()) {
+      conf.getDefines().stream().forEach((define) -> {
         LOG.debug("parsing external macro: '{}'", define);
         if (!"".equals(define)) {
           Macro macro = parseMacroDefinition("#define " + define);
           LOG.debug("storing external macro: '{}'", macro);
           getMacros().put(macro.name, macro);
         }
-      }
+      });
 
       // set standard macros
       registerMacros(StandardDefinitions.macros());
 
       // parse the configured force includes and store into the macro library
-      for (String include : conf.getForceIncludeFiles()) {
+      conf.getForceIncludeFiles().stream().forEach((include) -> {
         LOG.debug("parsing force include: '{}'", include);
         if (!"".equals(include)) {
           parseIncludeLine("#include \"" + include + "\"", "sonar." + this.language.getPropertiesKey()
             + ".forceIncludes", conf.getEncoding());
         }
-      }
+      });
     } finally {
       getMacros().setHighPrio(false);
     }
@@ -189,9 +189,9 @@ public class CxxPreprocessor extends Preprocessor {
 
   private static String serialize(List<Token> tokens, String spacer) {
     StringJoiner js = new StringJoiner(spacer);
-    for (Token t : tokens) {
+    tokens.stream().forEach((t) -> {
       js.add(t.getValue());
-    }
+    });
     return js.toString();
   }
 
@@ -439,9 +439,9 @@ public class CxxPreprocessor extends Preprocessor {
 
   private static List<Token> getParams(AstNode identListAst) {
     List<Token> params = new ArrayList<>();
-    for (AstNode node : identListAst.getChildren(IDENTIFIER)) {
+    identListAst.getChildren(IDENTIFIER).stream().forEach((node) -> {
       params.add(node.getToken());
-    }
+    });
 
     return params;
   }
@@ -496,7 +496,7 @@ public class CxxPreprocessor extends Preprocessor {
           getMacros().setHighPrio(true);
 
           // parse the configured defines and store into the macro library
-          for (String define : conf.getDefines()) {
+          conf.getDefines().stream().forEach((define) -> {
             LOG.debug("parsing external macro to unit: '{}'", define);
             if (!"".equals(define)) {
               Macro macro = parseMacroDefinition("#define " + define);
@@ -505,7 +505,7 @@ public class CxxPreprocessor extends Preprocessor {
                 getMacros().put(macro.name, macro);
               }
             }
-          }
+          });
 
           // set standard macros
           // using smaller set of defines as rest is provides by compilation unit settings
@@ -517,13 +517,13 @@ public class CxxPreprocessor extends Preprocessor {
           registerMacros(defines);
 
           // parse the configured force includes and store into the macro library
-          for (String include : conf.getForceIncludeFiles()) {
+          conf.getForceIncludeFiles().stream().forEach((include) -> {
             LOG.debug("parsing force include to unit: '{}'", include);
             if (!"".equals(include)) {
               // TODO -> this needs to come from language
               parseIncludeLine("#include \"" + include + "\"", "sonar.cxx.forceIncludes", conf.getEncoding());
             }
-          }
+          });
 
           // rest of defines comes from compilation unit settings
           registerMacros(compilationUnitSettings.getDefines());
@@ -658,7 +658,7 @@ public class CxxPreprocessor extends Preprocessor {
   }
 
   private void registerMacros(Map<String, String> standardMacros) {
-    for (Map.Entry<String, String> entry : standardMacros.entrySet()) {
+    standardMacros.entrySet().stream().forEach((entry) -> {
       Token bodyToken;
       try {
         bodyToken = Token.builder()
@@ -673,7 +673,7 @@ public class CxxPreprocessor extends Preprocessor {
       }
 
       getMacros().put(entry.getKey(), new Macro(entry.getKey(), null, Collections.singletonList(bodyToken), false));
-    }
+    });
   }
 
   private boolean isCFile(String filePath) {
@@ -757,7 +757,7 @@ public class CxxPreprocessor extends Preprocessor {
     // highlighting
     for (Token token : tokens) {
       if (!token.isGeneratedCode()) {
-        token = Token.builder(token).setGeneratedCode(true).build();
+        Token.builder(token).setGeneratedCode(true).build();
       }
     }
 
@@ -771,9 +771,9 @@ public class CxxPreprocessor extends Preprocessor {
     List<Token> newTokens = new ArrayList<>();
     if (!body.isEmpty()) {
       List<String> defParamValues = new ArrayList<>();
-      for (Token t : parameters) {
+      parameters.stream().forEach((t) -> {
         defParamValues.add(t.getValue());
-      }
+      });
 
       boolean tokenPastingLeftOp = false;
       boolean tokenPastingRightOp = false;

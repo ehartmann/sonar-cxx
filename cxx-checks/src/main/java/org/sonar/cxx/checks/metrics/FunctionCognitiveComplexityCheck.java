@@ -63,9 +63,9 @@ public class FunctionCognitiveComplexityCheck extends CxxCognitiveComplexityVisi
         .append(" which is greater than ").append(max).append(" authorized.");
 
       final CxxReportIssue issue = new CxxReportIssue(getRuleKey(), null, scope.getStartingLine(), msg.toString());
-      for (CxxComplexitySource source : scope.getSources()) {
+      scope.getSources().stream().forEach((source) -> {
         issue.addLocation(null, source.getLine(), source.getExplanation());
-      }
+      });
       createMultiLocationViolation(issue);
     }
   }

@@ -105,25 +105,25 @@ public class CxxConfiguration extends SquidConfiguration {
   public List<String> getDefines() {
     Set<String> allDefines = new HashSet<>();
 
-    for (Set<String> elemSet : uniqueDefines.values()) {
-      for (String value : elemSet) {
+    uniqueDefines.values().stream().forEach((elemSet) -> {
+      elemSet.stream().forEach((value) -> {
         if (!allDefines.contains(value)) {
           allDefines.add(value);
         }
-      }
-    }
+      });
+    });
 
     return new ArrayList<>(allDefines);
   }
 
   public void setIncludeDirectories(List<String> includeDirectories) {
     List<String> overallIncludes = uniqueIncludes.get(OVERALLINCLUDEKEY);
-    for (String include : includeDirectories) {
+    includeDirectories.stream().forEach((include) -> {
       if (!overallIncludes.contains(include)) {
         LOG.debug("setIncludeDirectories() adding dir '{}'", include);
         overallIncludes.add(include);
       }
-    }
+    });
   }
 
   public void addOverallIncludeDirectory(String includeDirectory) {
@@ -143,13 +143,13 @@ public class CxxConfiguration extends SquidConfiguration {
   public List<String> getIncludeDirectories() {
     List<String> allIncludes = new ArrayList<>();
 
-    for (List<String> elemList : uniqueIncludes.values()) {
-      for (String value : elemList) {
+    uniqueIncludes.values().stream().forEach((elemList) -> {
+      elemList.stream().forEach((value) -> {
         if (!allIncludes.contains(value)) {
           allIncludes.add(value);
         }
-      }
-    }
+      });
+    });
 
     return allIncludes;
   }
@@ -235,9 +235,9 @@ public class CxxConfiguration extends SquidConfiguration {
   public List<File> getCompilationUnitSourceFiles() {
     List<File> files = new ArrayList<>();
 
-    for (String item : compilationUnitSettings.keySet()) {
+    compilationUnitSettings.keySet().stream().forEach((item) -> {
       files.add(new File(item));
-    }
+    });
 
     return files;
   }
@@ -250,7 +250,7 @@ public class CxxConfiguration extends SquidConfiguration {
       return;
     }
 
-    for (File buildLog : reports) {
+    reports.stream().forEach((buildLog) -> {
       if (buildLog.exists()) {
         if ("Visual C++".equals(fileFormat)) {
           cxxVCppParser.parseVCppLog(buildLog, baseDir, charsetName);
@@ -258,22 +258,22 @@ public class CxxConfiguration extends SquidConfiguration {
             + "' added includes: '" + uniqueIncludes.size()
             + "', added defines: '" + uniqueDefines.size() + "'");
           if (LOG.isDebugEnabled()) {
-            for (List<String> allIncludes : uniqueIncludes.values()) {
+            uniqueIncludes.values().stream().forEach((allIncludes) -> {
               if (!allIncludes.isEmpty()) {
                 LOG.debug("Includes folders ({})='{}'", allIncludes.size(), allIncludes);
               }
-            }
-            for (Set<String> allDefines : uniqueDefines.values()) {
+            });
+            uniqueDefines.values().stream().forEach((allDefines) -> {
               if (!allDefines.isEmpty()) {
                 LOG.debug("Defines ({})='{}'", allDefines.size(), allDefines);
               }
-            }
+            });
           }
         }
       } else {
         LOG.error("Compilation log file not found: '{}'", buildLog.getAbsolutePath());
       }
-    }
+    });
   }
 
   public Charset getEncoding() {

@@ -56,9 +56,9 @@ public class CxxDefaultProfile extends ProfileDefinition {
       "default-profile.xml", messages);
     RulesProfile sonarRules = annotationProfileParser.parse(this.lang.getRepositoryKey(), NAME,
       CppLanguage.KEY, this.lang.getChecks(), messages);
-    for (ActiveRule activeRule : sonarRules.getActiveRules()) {
+    sonarRules.getActiveRules().stream().forEach((activeRule) -> {
       profile.addActiveRule(activeRule);
-    }
+    });
 
     profile.setDefaultProfile(Boolean.TRUE);
     return profile;

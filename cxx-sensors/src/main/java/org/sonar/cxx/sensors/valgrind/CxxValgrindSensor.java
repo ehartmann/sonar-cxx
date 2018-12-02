@@ -83,12 +83,12 @@ public class CxxValgrindSensor extends CxxIssuesReportSensor {
     CxxReportIssue issue = new CxxReportIssue(error.getKind(), lastOwnFrame.getPath(),
       lastOwnFrame.getLine(), errorMsg);
     // add all frames as secondary locations
-    for (ValgrindFrame frame : stack.getFrames()) {
+    stack.getFrames().stream().forEach((frame) -> {
       Boolean frameIsInProject = frameIsInProject(context, frame);
       String mappedPath = (frameIsInProject) ? frame.getPath() : lastOwnFrame.getPath();
       String mappedLine = (frameIsInProject) ? frame.getLine() : lastOwnFrame.getLine();
       issue.addLocation(mappedPath, mappedLine, frame.toString());
-    }
+    });
     return issue;
   }
 
@@ -106,7 +106,7 @@ public class CxxValgrindSensor extends CxxIssuesReportSensor {
   }
 
   void saveErrors(SensorContext context, Set<ValgrindError> valgrindErrors) {
-    for (ValgrindError error : valgrindErrors) {
+    valgrindErrors.stream().forEach((error) -> {
       int stackNr = 0;
       for (ValgrindStack stack : error.getStacks()) {
         CxxReportIssue issue = createIssue(context, error, stack, stackNr);
@@ -115,7 +115,7 @@ public class CxxValgrindSensor extends CxxIssuesReportSensor {
         }
         ++stackNr;
       }
-    }
+    });
   }
 
 }

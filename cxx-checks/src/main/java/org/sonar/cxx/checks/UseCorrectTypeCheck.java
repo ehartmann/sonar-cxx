@@ -97,12 +97,12 @@ public class UseCorrectTypeCheck extends SquidCheck<Grammar> {
 
   @Override
   public void leaveFile(AstNode node) {
-    for (Map.Entry<String, Integer> literalOccurences : literalsOccurrences.entrySet()) {
+    literalsOccurrences.entrySet().stream().forEach((literalOccurences) -> {
       Integer occurences = literalOccurences.getValue();
       String literal = literalOccurences.getKey();
       getContext().createLineViolation(this, "Use the correct type instead of "
         + literal + " (" + occurences + " times).", firstOccurrence.get(literal));
-    }
+    });
   }
 
   private void visitOccurence(String literal, int line) {

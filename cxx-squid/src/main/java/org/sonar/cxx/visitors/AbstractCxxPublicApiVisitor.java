@@ -319,7 +319,7 @@ public abstract class AbstractCxxPublicApiVisitor<G extends Grammar> extends Squ
   private static List<Token> getInlineDocumentation(Token token, int line) {
     List<Token> comments = new ArrayList<>();
 
-    for (Trivia trivia : token.getTrivia()) {
+    token.getTrivia().stream().forEach((trivia) -> {
       if (trivia.isComment()) {
         Token triviaToken = trivia.getToken();
         if ((triviaToken != null)
@@ -331,7 +331,7 @@ public abstract class AbstractCxxPublicApiVisitor<G extends Grammar> extends Squ
           }
         }
       }
-    }
+    });
     return comments;
   }
 
@@ -339,7 +339,7 @@ public abstract class AbstractCxxPublicApiVisitor<G extends Grammar> extends Squ
     List<Token> commentTokens = new ArrayList<>();
 
     Token token = node.getToken();
-    for (Trivia trivia : token.getTrivia()) {
+    token.getTrivia().stream().forEach((trivia) -> {
       if (trivia.isComment()) {
         Token triviaToken = trivia.getToken();
         if (triviaToken != null) {
@@ -353,7 +353,7 @@ public abstract class AbstractCxxPublicApiVisitor<G extends Grammar> extends Squ
           }
         }
       }
-    }
+    });
 
     return commentTokens;
   }
@@ -447,7 +447,7 @@ public abstract class AbstractCxxPublicApiVisitor<G extends Grammar> extends Squ
   private void visitPublicApi(AstNode node, String id, List<Token> comments) {
     List<Token> doxygenComments = new ArrayList<>();
 
-    for (Token token : comments) {
+    comments.stream().forEach((token) -> {
       String comment = token.getValue();
       if (isDoxygenInlineComment(comment)
         || isDoxygenCommentBlock(comment)) {
@@ -456,7 +456,7 @@ public abstract class AbstractCxxPublicApiVisitor<G extends Grammar> extends Squ
           LOG.debug("Doc: " + comment.replace("\r\n", ""));
         }
       }
-    }
+    });
 
     if (LOG.isDebugEnabled()) {
       LOG.debug("Public API: " + id);
@@ -506,9 +506,9 @@ public abstract class AbstractCxxPublicApiVisitor<G extends Grammar> extends Squ
     } else {
       // with several declarators, documentation should be located
       // on each declarator
-      for (AstNode declarator : declarators) {
+      declarators.stream().forEach((declarator) -> {
         visitDeclarator(declarator, declarator);
-      }
+      });
     }
   }
 
@@ -662,9 +662,9 @@ public abstract class AbstractCxxPublicApiVisitor<G extends Grammar> extends Squ
       } else {
         // if several declarator, doc should be placed before each
         // declarator, or in-lined
-        for (AstNode declarator : declarators) {
+        declarators.stream().forEach((declarator) -> {
           visitMemberDeclarator(declarator);
-        }
+        });
       }
     }
   }

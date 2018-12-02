@@ -75,8 +75,8 @@ public class CxxReportPatternMatchingTest {
       reports = CxxReportSensor.getReports(settings.asConfig(), base.getRoot(), REPORT_PATH_KEY);
       String[] parsedPaths = expected.split(",");
       List<File> expectedFiles = new LinkedList<>();
-      for (String path : parsedPaths) {
-        path = path.trim();
+      for (String p : parsedPaths) {
+        String path = p.trim();
         if (!path.isEmpty()) {
           expectedFiles.add(new File(base.getRoot(), path));
         }
@@ -92,8 +92,8 @@ public class CxxReportPatternMatchingTest {
 
   private void setupExample(String pathes) throws java.io.IOException {
     String[] parsedPaths = pathes.split(",");
-    for (String path : parsedPaths) {
-      path = path.trim();
+    for (String p : parsedPaths) {
+      String path = p.trim();
       if (!path.isEmpty()) {
         FileUtils.touch(new File(base.getRoot(), path));
       }

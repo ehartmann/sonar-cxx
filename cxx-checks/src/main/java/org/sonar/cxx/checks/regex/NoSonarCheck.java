@@ -45,7 +45,7 @@ public class NoSonarCheck extends SquidCheck<Grammar> implements AstAndTokenVisi
 
   @Override
   public void visitToken(Token token) {
-    for (Trivia trivia : token.getTrivia()) {
+    token.getTrivia().stream().forEach((trivia) -> {
       if (trivia.isComment()) {
         String[] commentLines = EOL_PATTERN
           .split(getContext().getCommentAnalyser().getContents(trivia.getToken().getOriginalValue()), -1);
@@ -59,7 +59,7 @@ public class NoSonarCheck extends SquidCheck<Grammar> implements AstAndTokenVisi
           line++;
         }
       }
-    }
+    });
   }
 
 }

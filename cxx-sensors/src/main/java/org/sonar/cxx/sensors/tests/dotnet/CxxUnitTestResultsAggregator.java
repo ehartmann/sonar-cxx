@@ -62,9 +62,9 @@ public class CxxUnitTestResultsAggregator {
     for (String reportPathPattern : reportPaths) {
       LOG.info("Report path pattern: '{}'", reportPathPattern);
       if (!reportPathPattern.isEmpty()) {
-        for (File reportFile : wildcardPatternFileProvider.listFiles(reportPathPattern)) {
+        wildcardPatternFileProvider.listFiles(reportPathPattern).stream().forEach((reportFile) -> {
           parser.accept(reportFile, unitTestResults);
-        }
+        });
       }
     }
   }

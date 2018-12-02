@@ -58,9 +58,9 @@ public class SwitchLastCaseIsDefaultCheck extends SquidCheck<Grammar> {
       result.add(node);
     }
     if (node.hasChildren()) {
-      for (AstNode child : node.getChildren()) {
+      node.getChildren().stream().forEach((child) -> {
         getSwitchCases(result, child);
-      }
+      });
     }
   }
 

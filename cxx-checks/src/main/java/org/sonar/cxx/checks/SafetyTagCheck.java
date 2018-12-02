@@ -87,7 +87,7 @@ public class SafetyTagCheck extends SquidCheck<Grammar> implements AstAndTokenVi
 
   @Override
   public void visitToken(Token token) {
-    for (Trivia trivia : token.getTrivia()) {
+    token.getTrivia().stream().forEach((trivia) -> {
       if (trivia.isComment()) {
         String comment = trivia.getToken().getOriginalValue();
         Matcher regexMatcher = pattern.matcher(comment);
@@ -95,7 +95,7 @@ public class SafetyTagCheck extends SquidCheck<Grammar> implements AstAndTokenVi
           getContext().createLineViolation(this, message + " : " + regexMatcher.group(0), trivia.getToken());
         }
       }
-    }
+    });
   }
 
 }

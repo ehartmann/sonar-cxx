@@ -73,7 +73,7 @@ public class StringLiteralDuplicatedCheck extends SquidCheck<Grammar> {
 
   @Override
   public void leaveFile(AstNode node) {
-    for (Map.Entry<String, Integer> literalOccurences : literalsOccurrences.entrySet()) {
+    literalsOccurrences.entrySet().stream().forEach((literalOccurences) -> {
       Integer occurences = literalOccurences.getValue();
 
       if (occurences > 1) {
@@ -83,7 +83,7 @@ public class StringLiteralDuplicatedCheck extends SquidCheck<Grammar> {
           + literal + " " + occurences
           + " times.", firstOccurrence.get(literal));
       }
-    }
+    });
   }
 
   private void visitOccurence(String literal, int line) {

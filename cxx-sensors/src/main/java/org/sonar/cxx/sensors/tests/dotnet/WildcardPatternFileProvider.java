@@ -62,12 +62,12 @@ public class WildcardPatternFileProvider {
   }
 
   private static void checkNoCurrentOrParentFolderAccess(List<String> elements) {
-    for (String element : elements) {
+    elements.stream().forEach((element) -> {
       if (isCurrentOrParentFolder(element)) {
         throw new IllegalArgumentException("Cannot contain '" + CURRENT_FOLDER + "' or '"
           + PARENT_FOLDER + "' after the first wildcard.");
       }
-    }
+    });
   }
 
   private static boolean containsWildcard(String element) {
@@ -128,13 +128,13 @@ public class WildcardPatternFileProvider {
     WildcardPattern wildcardPattern = WildcardPattern.create(toPath(wildcardElements), directorySeparator);
 
     Set<File> result = new HashSet<>();
-    for (File file : listFiles(absoluteFileTillFirstWildcardElement)) {
+    listFiles(absoluteFileTillFirstWildcardElement).stream().forEach((file) -> {
       String relativePath = relativize(absoluteFileTillFirstWildcardElement, file);
 
       if (wildcardPattern.match(relativePath)) {
         result.add(file);
       }
-    }
+    });
 
     return result;
   }

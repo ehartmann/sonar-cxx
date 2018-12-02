@@ -87,9 +87,9 @@ public abstract class CxxCyclomaticComplexityCheck<G extends Grammar> extends Mu
     if (astNode.is(CxxComplexityConstants.getCyclomaticComplexityTypes())) {
       // for nested scopes (e.g. nested classes) the inner classes
       // add complexity to the outer ones
-      for (CxxComplexityScope scope : complexityScopes) {
+      complexityScopes.stream().forEach((scope) -> {
         scope.addComplexitySource(astNode);
-      }
+      });
     }
   }
 
@@ -116,9 +116,9 @@ public abstract class CxxCyclomaticComplexityCheck<G extends Grammar> extends Mu
         .append(" which is greater than ").append(maxComplexity).append(" authorized.");
 
       final CxxReportIssue issue = new CxxReportIssue(getRuleKey(), null, scope.getStartingLine(), msg.toString());
-      for (CxxComplexitySource source : scope.getSources()) {
+      scope.getSources().stream().forEach((source) -> {
         issue.addLocation(null, source.getLine(), source.getExplanation());
-      }
+      });
       createMultiLocationViolation(issue);
     }
   }

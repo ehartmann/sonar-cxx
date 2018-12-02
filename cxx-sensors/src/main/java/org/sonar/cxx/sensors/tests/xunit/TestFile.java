@@ -95,9 +95,9 @@ public class TestFile {
   public String getDetails() {
     StringBuilder details = new StringBuilder(512);
     details.append("<tests-details>");
-    for (TestCase tc : testCases) {
+    testCases.stream().forEach((tc) -> {
       details.append(tc.getDetails());
-    }
+    });
     details.append("</tests-details>");
     return details.toString();
   }

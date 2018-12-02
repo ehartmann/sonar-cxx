@@ -92,9 +92,9 @@ public class CxxCppCheckSensorTest {
 
     // assert that all all issues were filed on on the module
     final String moduleKey = context.module().key();
-    for (Issue issue : context.allIssues()) {
+    context.allIssues().stream().forEach((issue) -> {
       softly.assertThat(issue.primaryLocation().inputComponent().key()).isEqualTo(moduleKey);
-    }
+    });
     softly.assertAll();
   }
 

@@ -155,12 +155,11 @@ public class CxxFileLinesVisitor extends SquidAstVisitor<Grammar> implements Ast
       addLineNumber(linesOfCode, token.getLine());
     }
 
-    List<Trivia> trivias = token.getTrivia();
-    for (Trivia trivia : trivias) {
+    token.getTrivia().stream().forEach((trivia) -> {
       if (trivia.isComment()) {
         addLineNumber(linesOfComments, trivia.getToken().getLine());
       }
-    }
+    });
   }
 
   @Override

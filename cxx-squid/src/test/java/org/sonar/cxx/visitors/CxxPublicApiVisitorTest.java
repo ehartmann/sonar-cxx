@@ -168,7 +168,7 @@ public class CxxPublicApiVisitorTest {
     expectedIdCommentMap.put("linkageSpecification", "linkageSpecification");
 
     // check completeness
-    for (final String id : expectedIdCommentMap.keySet()) {
+    expectedIdCommentMap.keySet().stream().forEach((id) -> {
       LOG.debug("id: {}", id);
 
       List<Token> comments = visitor.idCommentMap.get(id);
@@ -182,10 +182,10 @@ public class CxxPublicApiVisitorTest {
       assertThat(comments.get(0).getValue())
         .overridingErrorMessage("Unexpected documentation for " + id)
         .contains(expectedIdCommentMap.get(id));
-    }
+    });
 
     // check correction
-    for (final String id : visitor.idCommentMap.keySet()) {
+    visitor.idCommentMap.keySet().stream().forEach((id) -> {
       LOG.debug("id: {}", id);
 
       List<Token> comments = visitor.idCommentMap.get(id);
@@ -196,7 +196,7 @@ public class CxxPublicApiVisitorTest {
       assertThat(expectedIdCommentMap.keySet())
         .overridingErrorMessage("Should not be part of public API: " + id)
         .contains(id);
-    }
+    });
 
     assertThat(file.getInt(CxxMetric.PUBLIC_API)).isEqualTo(
       expectedIdCommentMap.keySet().size());

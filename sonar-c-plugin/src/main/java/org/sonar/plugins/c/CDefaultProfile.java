@@ -56,9 +56,9 @@ public class CDefaultProfile extends ProfileDefinition {
       "default-profile.xml", messages);
     RulesProfile sonarRules = annotationProfileParser.parse(this.language.getRepositoryKey(), NAME,
       CLanguage.KEY, this.language.getChecks(), messages);
-    for (ActiveRule activeRule : sonarRules.getActiveRules()) {
+    sonarRules.getActiveRules().stream().forEach((activeRule) -> {
       profile.addActiveRule(activeRule);
-    }
+    });
 
     profile.setDefaultProfile(Boolean.TRUE);
     return profile;

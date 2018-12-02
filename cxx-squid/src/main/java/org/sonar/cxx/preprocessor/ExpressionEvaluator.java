@@ -164,9 +164,9 @@ public final class ExpressionEvaluator {
   }
 
   private BigInteger evalToInt(String constExpr, @Nullable AstNode exprAst) {
-    AstNode constExprAst = null;
     try {
-      constExprAst = parser.parse(constExpr);
+      AstNode constExprAst = parser.parse(constExpr);
+      return evalToInt(constExprAst);
     } catch (com.sonar.sslr.api.RecognitionException re) {
       if (exprAst != null) {
         LOG.warn("Error evaluating expression '{}' for AstExp '{}', assuming 0", constExpr, exprAst.getToken());
@@ -176,8 +176,6 @@ public final class ExpressionEvaluator {
       LOG.debug("EvalToInt failed: {}", re);
       return BigInteger.ZERO;
     }
-
-    return evalToInt(constExprAst);
   }
 
   private BigInteger evalToInt(AstNode exprAst) {

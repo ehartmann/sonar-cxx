@@ -67,9 +67,9 @@ public final class CxxChecks {
   public List<SquidAstVisitor<Grammar>> all() {
     List<SquidAstVisitor<Grammar>> allVisitors = new ArrayList<>();
 
-    for (Checks<SquidAstVisitor<Grammar>> checks : checksByRepository) {
+    checksByRepository.stream().forEach((checks) -> {
       allVisitors.addAll(checks.all());
-    }
+    });
 
     return allVisitors;
   }

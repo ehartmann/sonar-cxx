@@ -37,9 +37,9 @@ public class TestCaseTest {
     ioMap.put("<testcase status=\"failure\" time=\"1\" name=\"name\"><failure message=\"errmsg\"><![CDATA[stack]]></failure></testcase>",
       new TestCase("name", 1, "failure", "stack", "errmsg", "", "", "", ""));
 
-    for (Map.Entry<String, TestCase> entry : ioMap.entrySet()) {
+    ioMap.entrySet().stream().forEach((entry) -> {
       assertEquals(entry.getKey(), entry.getValue().getDetails());
-    }
+    });
   }
 
 }

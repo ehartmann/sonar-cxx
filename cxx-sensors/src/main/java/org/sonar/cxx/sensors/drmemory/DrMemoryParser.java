@@ -57,7 +57,7 @@ public final class DrMemoryParser {
 
     List<String> elements = getElements(file, charset);
 
-    for (String element : elements) {
+    elements.stream().forEach((element) -> {
       Matcher m = RX_MESSAGE_FINDER.matcher(element);
 
       if (m.find()) {
@@ -77,7 +77,7 @@ public final class DrMemoryParser {
         result.add(error);
 
       }
-    }
+    });
 
     return result;
   }

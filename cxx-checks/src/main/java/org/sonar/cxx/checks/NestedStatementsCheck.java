@@ -115,9 +115,9 @@ public class NestedStatementsCheck extends SquidCheck<Grammar> {
   }
 
   private void visitChildren(List<AstNode> watchedDescendants) {
-    for (AstNode descendant : watchedDescendants) {
+    watchedDescendants.stream().forEach((descendant) -> {
       visitNode(descendant);
-    }
+    });
   }
-
+  
 }

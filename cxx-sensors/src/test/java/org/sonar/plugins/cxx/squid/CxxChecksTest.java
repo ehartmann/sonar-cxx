@@ -109,7 +109,7 @@ public class CxxChecksTest {
 
     SquidAstVisitor<Grammar> check;
     for (Checks<SquidAstVisitor<Grammar>> checks : cxxChecks.getChecks()) {
-      check = (SquidAstVisitor<Grammar>) checks.of(key);
+      check = checks.of(key);
 
       if (check != null) {
         return check;

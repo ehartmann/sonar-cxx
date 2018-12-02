@@ -159,7 +159,7 @@ public class CxxCoverageSensor extends CxxReportSensor {
 
   private void saveMeasures(SensorContext context,
     Map<String, CoverageMeasures> coverageMeasures) {
-    for (Map.Entry<String, CoverageMeasures> entry : coverageMeasures.entrySet()) {
+    coverageMeasures.entrySet().stream().forEach((entry) -> {
       final String filePath = PathUtils.sanitize(entry.getKey());
       if (filePath != null) {
         InputFile cxxFile = context.fileSystem().inputFile(context.fileSystem().predicates().hasPath(filePath));
@@ -196,7 +196,7 @@ public class CxxCoverageSensor extends CxxReportSensor {
           LOG.debug("Cannot sanitize file path '{}'", entry.getKey());
         }
       }
-    }
+    });
   }
 
   /**

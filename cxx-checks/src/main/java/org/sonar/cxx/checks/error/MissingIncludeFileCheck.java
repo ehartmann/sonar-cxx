@@ -41,9 +41,10 @@ public class MissingIncludeFileCheck extends SquidCheck<Grammar> {
 
   @Override
   public void leaveFile(AstNode astNode) {
-    for (CxxPreprocessor.Include missingInclude : CxxParser.getMissingIncludeFiles(getContext().getFile())) {
+    CxxParser.getMissingIncludeFiles(getContext().getFile()).stream().forEach((missingInclude) -> {
       getContext().createLineViolation(this, "Unable to find the source for '" + missingInclude.getPath() + "'.",
         missingInclude.getLine());
-    }
+    });
   }
+  
 }

@@ -76,7 +76,7 @@ public class CxxParserTest extends ParserBaseTestHelper {
         put("outbuf2.cpp", 2);
       }
     };
-    for (File file : files) {
+    files.stream().forEach((file) -> {
       AstNode root = p.parse(file);
       CxxParser.finishedParsing(file);
       if (map.containsKey(file.getName())) {
@@ -84,7 +84,7 @@ public class CxxParserTest extends ParserBaseTestHelper {
       } else {
         assertThat(root.hasChildren()).isTrue();
       }
-    }
+    });
   }
 
   @SuppressWarnings("unchecked")
@@ -119,8 +119,7 @@ public class CxxParserTest extends ParserBaseTestHelper {
     };
 
     p = CxxParser.create(mock(SquidAstVisitorContext.class), conf, CxxFileTesterHelper.mockCxxLanguage());
-    Collection<File> files = listFiles(preprocessorFiles, new String[]{"cc", "cpp", "hpp", "h"});
-    for (File file : files) {
+    listFiles(preprocessorFiles, new String[]{"cc", "cpp", "hpp", "h"}).stream().forEach((file) -> {
       AstNode root = p.parse(file);
       CxxParser.finishedParsing(file);
       if (map.containsKey(file.getName())) {
@@ -128,7 +127,7 @@ public class CxxParserTest extends ParserBaseTestHelper {
       } else {
         assertThat(root.hasChildren()).isTrue();
       }
-    }
+    });
   }
 
   @SuppressWarnings("unchecked")

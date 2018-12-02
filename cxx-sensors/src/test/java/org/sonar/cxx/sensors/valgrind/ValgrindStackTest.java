@@ -92,9 +92,9 @@ public class ValgrindStackTest {
     ioMap.put("", new ValgrindStack());
     ioMap.put(frame.toString() + "\n", stack);
 
-    for (Map.Entry<String, ValgrindStack> entry : ioMap.entrySet()) {
+    ioMap.entrySet().stream().forEach((entry) -> {
       assertEquals(entry.getKey(), entry.getValue().toString());
-    }
+    });
   }
 
   @Test
