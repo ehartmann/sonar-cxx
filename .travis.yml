@@ -13,6 +13,7 @@ env:
         - SONARHOME=/tmp/sonarqube-7.2     SONARAPI=SqApi67
         - SONARHOME=/tmp/sonarqube-7.3     SONARAPI=SqApi67
         - SONARHOME=/tmp/sonarqube-7.4     SONARAPI=SqApi67
+        - SONARHOME=/tmp/sonarqube-7.5     SONARAPI=SqApi75
 
 matrix:
     fast_finish: true
@@ -31,8 +32,10 @@ before_cache:
         - rm -rf $HOME/.m2/repository/org/sonarsource/sonarqube-plugins/cxx
         - find $HOME/.m2 -name resolver-status.properties -exec rm {} \;
 cache:
+    pip: true
     directories:
         - '$HOME/.m2/repository'
+        - '$HOME/.sonar'
 
 before_install:
         - cat /etc/hosts # optionally check the content
@@ -56,6 +59,8 @@ install:
         - unzip -qq sonarqube-7.3.zip
         - travis_retry wget -q https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.4.zip
         - unzip -qq sonarqube-7.4.zip
+        - travis_retry wget -q https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-7.5.zip
+        - unzip -qq sonarqube-7.5.zip
         - travis_retry wget -q https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.2.0.1227.zip
         - unzip -qq sonar-scanner-cli-3.2.0.1227.zip
         - travis_retry wget -q https://github.com/htacg/tidy-html5/archive/5.6.0.zip --output-document=tidy-html5.zip
