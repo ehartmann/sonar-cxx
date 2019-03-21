@@ -7,14 +7,14 @@ jdk:
         - oraclejdk8
 
 env:
-        - SONARLABEL=sonarqube-6.7.6   SONARAPI=SqApi67
-        - SONARLABEL=sonarqube-7.0     SONARAPI=SqApi67
-        - SONARLABEL=sonarqube-7.1     SONARAPI=SqApi67
-        - SONARLABEL=sonarqube-7.2     SONARAPI=SqApi67
-        - SONARLABEL=sonarqube-7.3     SONARAPI=SqApi67
-        - SONARLABEL=sonarqube-7.4     SONARAPI=SqApi67
-        - SONARLABEL=sonarqube-7.5     SONARAPI=SqApi75
-        - SONARLABEL=sonarqube-7.6     SONARAPI=SqApi76
+        #- SONARLABEL=sonarqube-6.7.6   SONARAPI=SqApi67
+        #- SONARLABEL=sonarqube-7.0     SONARAPI=SqApi67
+        #- SONARLABEL=sonarqube-7.1     SONARAPI=SqApi67
+        #- SONARLABEL=sonarqube-7.2     SONARAPI=SqApi67
+        #- SONARLABEL=sonarqube-7.3     SONARAPI=SqApi67
+        #- SONARLABEL=sonarqube-7.4     SONARAPI=SqApi67
+        #- SONARLABEL=sonarqube-7.5     SONARAPI=SqApi75
+        #- SONARLABEL=sonarqube-7.6     SONARAPI=SqApi76
         - SONARLABEL=sonarqube-7.7     SONARAPI=SqApi76
 
 matrix:
