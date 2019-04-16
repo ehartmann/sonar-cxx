@@ -90,4 +90,19 @@ public final class CxxUtils {
     throw new IllegalStateException(ex.getMessage(), ex.getCause());
   }
 
+  /**
+   * validateRecovery
+   *
+   * @param message
+   * @param language
+   */
+  public static void validateRecovery(String message, CxxLanguage language) {
+    Optional<Boolean> recovery = language.IsRecoveryEnabled();
+    if (recovery.isPresent() && recovery.get()) {
+      return;
+    }
+    LOG.info("Recovery is disabled, failing analysis : '{}'", message);
+    throw new IllegalStateException(message);
+  }
+
 }
