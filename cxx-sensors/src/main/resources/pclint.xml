@@ -14758,10 +14758,11 @@ handler without any preceding catch clauses is diagnosed by message
     <key>1970</key>
     <name>L1970: use of default capture (__string__) in lambda expression</name>
     <description>This Elective Note diagnoses the use of default capture in a lambda
-expression. string is either = or &amp;. The use of default capture can have
-unintended consequences, even in apparently innocuous situations and as
-such it has been suggested that default capture never be used. For an
-in-depth discussion of the issue, see .</description>
+expression. string is either = or &amp;. The use of default capture
+can have unintended consequences, even in apparently innocuous
+situations and as such it has been suggested that default capture
+never be used. For an in-depth discussion of the issue, see Scott Meyers: Effective Modern C++ (O’Reilly, 2015).
+</description>
     <internalKey>1970</internalKey>
     <severity>MAJOR</severity>
     <type>CODE_SMELL</type>
