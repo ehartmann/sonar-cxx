@@ -71,7 +71,9 @@ public class XunitReportParser implements XmlStreamHandler {
       }
     }
 
-    return new TestCase(name, time.intValue(), status, stack, msg, classname, tcFilename, tsName, tsFilename);
+    return new TestCase(name, time.intValue(), status, stack, msg, classname,
+                        tcFilename != null ? tcFilename : tsFilename,
+                        tsName);
   }
 
   private static double parseTime(SMInputCursor testCaseCursor)

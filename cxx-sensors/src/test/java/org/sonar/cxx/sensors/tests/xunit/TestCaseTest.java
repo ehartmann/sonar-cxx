@@ -31,13 +31,13 @@ public class TestCaseTest {
 
     ioMap.put(
       "<testcase status=\"ok\" time=\"1\" name=\"name\"/>",
-      new TestCase("name", 1, "ok", "", "", "", "", "", ""));
+      new TestCase("name", 1, "ok", "", "", "", "", ""));
     ioMap.put(
       "<testcase status=\"error\" time=\"1\" name=\"name\"><error message=\"errmsg\"><![CDATA[stack]]></error></testcase>",
-      new TestCase("name", 1, "error", "stack", "errmsg", "", "", "", ""));
+      new TestCase("name", 1, "error", "stack", "errmsg", "", "", ""));
     ioMap.put(
       "<testcase status=\"failure\" time=\"1\" name=\"name\"><failure message=\"errmsg\"><![CDATA[stack]]></failure></testcase>",
-      new TestCase("name", 1, "failure", "stack", "errmsg", "", "", "", ""));
+      new TestCase("name", 1, "failure", "stack", "errmsg", "", "", ""));
 
     for (var entry : ioMap.entrySet()) {
       assertEquals(entry.getKey(), entry.getValue().getDetails());

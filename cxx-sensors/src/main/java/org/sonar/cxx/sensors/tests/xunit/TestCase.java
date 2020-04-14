@@ -38,9 +38,8 @@ public class TestCase {
   private final String errorMessage;
   private final int time;
   private final String classname;
-  private final String tcFilename;
-  private final String tsName;
-  private final String tsFilename;
+  private final String filename;
+  private final String testSuiteName;
 
   /**
    * Constructs a testcase instance out of following parameters
@@ -51,42 +50,40 @@ public class TestCase {
    * @params stack The stack trace occurred while executing of this testcase; pass "" if the testcase passed/skipped.
    * @params msg The error message accosiated with this testcase of the execution was errouneous; pass "" if not.
    * @params classname The name of the class this testcase is implemented by
-   * @params tcFilename The path of the file which implements the testcase
-   * @params tsName The name of the testssuite this testcase is in.
-   * @params tsFilename The path of the file which implements the testssuite this testcase is in.
+   * @params filename The path of the file which implements the testcase
+   * @params testSuiteName The name of the testsuite this testcase is in.
    */
-  public TestCase(String name, int time, String status, String stack, String msg,
-                  String classname, String tcFilename, String tsName, String tsFilename) {
-    this.name = name;
+  public TestCase(String testCaseName, int time, String status, String stack, String msg,
+                  String classname, String filename, String testSuiteName) {
+    this.name = testCaseName;
     this.time = time;
     this.stackTrace = stack;
     this.errorMessage = msg;
     this.status = status;
     this.classname = classname;
-    this.tcFilename = tcFilename;
-    this.tsName = tsName;
-    this.tsFilename = tsFilename;
+    this.filename = filename;
+    this.testSuiteName = testSuiteName;
   }
 
   /**
    * Returns the name of the class which is implementing this testcase
    */
   public String getClassname() {
-    return classname != null ? classname : tsName;
+    return classname != null ? classname : testSuiteName;
   }
 
   /**
    * Returns the name of the class which is implementing this testcase
    */
   public String getFullname() {
-    return tsName + ":" + name;
+    return testSuiteName + ":" + name;
   }
 
   /**
    * Returns the name of the file where this testcase is implemented
    */
   public String getFilename() {
-    return tcFilename != null ? tcFilename : tsFilename;
+    return filename;
   }
 
   /**

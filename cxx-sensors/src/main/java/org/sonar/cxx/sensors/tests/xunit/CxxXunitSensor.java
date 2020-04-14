@@ -137,41 +137,11 @@ public class CxxXunitSensor extends CxxReportSensor {
     testsCount -= testsSkipped;
 
     if (testsCount > 0) {
-
-      try {
-        saveProjectMetric(context, CoreMetrics.TESTS, testsCount);
-      } catch (IllegalArgumentException ex) {
-        LOG.error("Cannot save measure TESTS : '{}', ignoring measure", ex.getMessage());
-        CxxUtils.validateRecovery(ex, context.config());
-      }
-
-      try {
-        saveProjectMetric(context, CoreMetrics.TEST_ERRORS, testsErrors);
-      } catch (IllegalArgumentException ex) {
-        LOG.error("Cannot save measure TEST_ERRORS : '{}', ignoring measure", ex.getMessage());
-        CxxUtils.validateRecovery(ex, context.config());
-      }
-
-      try {
-        saveProjectMetric(context, CoreMetrics.TEST_FAILURES, testsFailures);
-      } catch (IllegalArgumentException ex) {
-        LOG.error("Cannot save measure TEST_FAILURES : '{}', ignoring measure", ex.getMessage());
-        CxxUtils.validateRecovery(ex, context.config());
-      }
-
-      try {
-        saveProjectMetric(context, CoreMetrics.SKIPPED_TESTS, testsSkipped);
-      } catch (IllegalArgumentException ex) {
-        LOG.error("Cannot save measure SKIPPED_TESTS : '{}', ignoring measure", ex.getMessage());
-        CxxUtils.validateRecovery(ex, context.config());
-      }
-
-      try {
-        saveProjectMetric(context, CoreMetrics.TEST_EXECUTION_TIME, testsTime);
-      } catch (IllegalArgumentException ex) {
-        LOG.error("Cannot save measure TEST_EXECUTION_TIME : '{}', ignoring measure", ex.getMessage());
-        CxxUtils.validateRecovery(ex, context.config());
-      }
+      saveProjectMetric(context, CoreMetrics.TESTS, testsCount);
+      saveProjectMetric(context, CoreMetrics.TEST_ERRORS, testsErrors);
+      saveProjectMetric(context, CoreMetrics.TEST_FAILURES, testsFailures);
+      saveProjectMetric(context, CoreMetrics.SKIPPED_TESTS, testsSkipped);
+      saveProjectMetric(context, CoreMetrics.TEST_EXECUTION_TIME, testsTime);
     } else {
       LOG.debug("The reports contain no testcases");
     }

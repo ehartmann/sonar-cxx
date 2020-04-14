@@ -54,7 +54,7 @@ public class TestFileTest {
 
     final int EXEC_TIME = 10;
     testFile.addTestCase(new TestCase("name", EXEC_TIME, "status", "stack", "msg",
-      "classname", "tcfilename", "tsname", "tsfilename"));
+                                      "classname", "tcfilename", "tsname"));
 
     assertEquals(testFile.getTests(), testBefore + 1);
     assertEquals(testFile.getTime(), timeBefore + EXEC_TIME);
