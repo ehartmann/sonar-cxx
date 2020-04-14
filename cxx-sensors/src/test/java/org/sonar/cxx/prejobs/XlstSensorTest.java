@@ -67,18 +67,6 @@ public class XlstSensorTest {
   }
 
   @Test
-  public void shouldReportNothing() {
-    SensorContextTester context = SensorContextTester.create(fs.baseDir());
-
-    var sensor = new XlstSensor();
-    logTester.clear();
-    sensor.execute(context);
-
-    List<String> log = logTester.logs(LoggerLevel.ERROR);
-    assertThat(log).isEmpty();
-  }
-
-  @Test
   public void shouldReportNothingWhenNoReportFound() {
     SensorContextTester context = SensorContextTester.create(fs.baseDir());
     settings.setProperty(XlstSensor.OTHER_XSLT_KEY + "1" + XlstSensor.STYLESHEET_KEY, "notexistingpath");
@@ -141,12 +129,29 @@ public class XlstSensorTest {
   }
 
   @Test
+  public void shouldCreateEmptyOutputsMessage() {
+    SensorContextTester context = SensorContextTester.create(fs.baseDir());
+    settings.setProperty(XlstSensor.OTHER_XSLT_KEY + "1" + XlstSensor.STYLESHEET_KEY, "something");
+    settings.setProperty(XlstSensor.OTHER_XSLT_KEY + "1" + XlstSensor.INPUT_KEY, "something");
+    settings.setProperty(XlstSensor.OTHER_XSLT_KEY + "1" + XlstSensor.OUTPUT_KEY, "");
+    settings.setProperty("something", "something");
+    context.setSettings(settings);
+
+    var sensor = new XlstSensor();
+    logTester.clear();
+    sensor.execute(context);
+
+    List<String> log = logTester.logs(LoggerLevel.ERROR);
+    assertThat(log).contains("XLST: sonar.cxx.xslt.1.outputs value is not defined.");
+  }
+
+  @Test
   public void shouldTransformReportExternalXlst()
     throws java.io.IOException, javax.xml.transform.TransformerException {
     SensorContextTester context = SensorContextTester.create(fs.baseDir());
     String stylesheetFile = "prejobs" + File.separator + "xslt-stylesheet.xslt";
     String inputFile = "prejobs" + File.separator + "xslt-input.xml";
-    String outputFile = "prejobs" + File.separator + "xslt-output.xml";
+    String outputFile = "xslt-output.xml";
     settings.setProperty(XlstSensor.OTHER_XSLT_KEY + "1" + XlstSensor.STYLESHEET_KEY, stylesheetFile);
     settings.setProperty(XlstSensor.OTHER_XSLT_KEY + "1" + XlstSensor.INPUT_KEY, inputFile);
     settings.setProperty(XlstSensor.OTHER_XSLT_KEY + "1" + XlstSensor.OUTPUT_KEY, outputFile);
@@ -156,8 +161,8 @@ public class XlstSensorTest {
     logTester.clear();
     sensor.execute(context);
 
-    var reportBefore = new File(fs.baseDir() + "/" + inputFile);
-    var reportAfter = new File(fs.baseDir() + "/" + outputFile);
+    var reportBefore = new File(fs.baseDir() + File.separator + inputFile);
+    var reportAfter = new File(fs.baseDir() + File.separator + "prejobs" + File.separator + "xslt-output.xml");
     Assert.assertTrue("The output file does not exist!", reportAfter.exists() && reportAfter.isFile());
     Assert.assertTrue("The input and output file is equal!", !FileUtils.contentEquals(reportBefore, reportAfter));
   }
@@ -168,7 +173,7 @@ public class XlstSensorTest {
     SensorContextTester context = SensorContextTester.create(fs.baseDir());
     String stylesheetFile = "cppunit-1.x-to-junit-1.0.xsl";
     String inputFile = "prejobs" + File.separator + "cppunit-report.xml";
-    String outputFile = "prejobs" + File.separator + "cppunit-report.after_xslt";
+    String outputFile = "_*.after_xslt";
     settings.setProperty(XlstSensor.OTHER_XSLT_KEY + "1" + XlstSensor.STYLESHEET_KEY, stylesheetFile);
     settings.setProperty(XlstSensor.OTHER_XSLT_KEY + "1" + XlstSensor.INPUT_KEY, inputFile);
     settings.setProperty(XlstSensor.OTHER_XSLT_KEY + "1" + XlstSensor.OUTPUT_KEY, outputFile);
@@ -178,8 +183,8 @@ public class XlstSensorTest {
     logTester.clear();
     sensor.execute(context);
 
-    var reportBefore = new File(fs.baseDir() + "/" + inputFile);
-    var reportAfter = new File(fs.baseDir() + "/" + outputFile);
+    var reportBefore = new File(fs.baseDir() + File.separator + inputFile);
+    var reportAfter = new File(fs.baseDir() + File.separator + "prejobs" + File.separator + "_cppunit-report.after_xslt");
     Assert.assertTrue("The output file does not exist!", reportAfter.exists() && reportAfter.isFile());
     Assert.assertTrue("The input and output file is equal!", !FileUtils.contentEquals(reportBefore, reportAfter));
   }

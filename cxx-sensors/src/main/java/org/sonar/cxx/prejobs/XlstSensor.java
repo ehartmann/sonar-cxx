@@ -21,7 +21,6 @@ package org.sonar.cxx.prejobs;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.List;
 import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
@@ -31,6 +30,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import org.apache.commons.io.FilenameUtils;
 import org.sonar.api.batch.Phase;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
@@ -96,14 +96,9 @@ public class XlstSensor implements ProjectSensor {
         paramError = true;
       }
 
-      final List<String> outputs = Arrays.asList(context.config().getStringArray(outputKey));
+      final String outputs = context.config().get(outputKey).orElse("");
       if (outputs.isEmpty()) {
         LOG.error("XLST: " + outputKey + " value is not defined.");
-        paramError = true;
-      }
-
-      if (inputs.size() != outputs.size()) {
-        LOG.error("XLST: Number of inputs and outputs is not equal.");
         paramError = true;
       }
 
@@ -120,7 +115,7 @@ public class XlstSensor implements ProjectSensor {
                                  final String baseDir,
                                  String stylesheet,
                                  List<File> inputs,
-                                 List<String> outputs) {
+                                 String outputs) {
     for (int j = 0; j < inputs.size(); j++) {
       try {
         InputStream inputStream = this.getClass().getResourceAsStream("/xsl/" + stylesheet);
@@ -130,8 +125,9 @@ public class XlstSensor implements ProjectSensor {
         } else {
           stylesheetFile = new StreamSource(new File(resolveFilename(baseDir, stylesheet)));
         }
-        String normalizedOutputFilename = resolveFilename(baseDir, outputs.get(j));
-        transformFile(stylesheetFile, inputs.get(j), new File(normalizedOutputFilename));
+        File inputFile = inputs.get(j);
+        File outputFile = createOutputFile(inputFile.getPath(), outputs);
+        transformFile(stylesheetFile, inputFile, outputFile);
       } catch (TransformerException | NullPointerException e) {
         String msg = new StringBuilder(256)
           .append("Cannot transform report files: '")
@@ -142,6 +138,13 @@ public class XlstSensor implements ProjectSensor {
         CxxUtils.validateRecovery(e, context.config());
       }
     }
+  }
+
+  private File createOutputFile(String path, String outputs) {
+    if (outputs.contains("*")) {
+      outputs = outputs.replace("*", FilenameUtils.getBaseName(path));
+    }
+    return new File(FilenameUtils.getFullPath(path), outputs);
   }
 
 }
