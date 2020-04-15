@@ -44,7 +44,6 @@ public class TestFileTest {
     assertEquals(0, testFile.getFailures());
     assertEquals(0, testFile.getSkipped());
     assertEquals(0, testFile.getTime());
-    assertEquals("<tests-details></tests-details>", testFile.getDetails());
   }
 
   @Test

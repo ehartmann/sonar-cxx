@@ -19,8 +19,6 @@
  */
 package org.sonar.cxx.sensors.tests.xunit;
 
-import org.apache.commons.lang.StringEscapeUtils;
-
 /**
  * Represents a unit test case. Has a couple of data items like name, status, time etc. associated. Reports testcase
  * details in sonar-conform XML
@@ -87,6 +85,13 @@ public class TestCase {
   }
 
   /**
+   * Returns true if this testcase is ok, false otherwise
+   */
+  public boolean isOk() {
+    return STATUS_OK.equals(status);
+  }
+
+  /**
    * Returns true if this testcase is an error, false otherwise
    */
   public boolean isError() {
@@ -107,36 +112,25 @@ public class TestCase {
     return STATUS_SKIPPED.equals(status);
   }
 
-  public int getTime() {
-    return time;
+  /**
+   * Error message in case testcase is not ok
+   */
+  public String getErrorMessage() {
+    return errorMessage;
   }
 
   /**
-   * Returns execution details as sonar-conform XML
+   * Stack trace in case testcase is not ok
    */
-  public String getDetails() {
-    var details = new StringBuilder(512);
-    details.append("<testcase status=\"")
-      .append(status)
-      .append("\" time=\"")
-      .append(time)
-      .append("\" name=\"")
-      .append(name)
-      .append('\"');
-    if (isError() || isFailure()) {
-      details.append('>')
-        .append(isError() ? "<error message=\"" : "<failure message=\"")
-        .append(StringEscapeUtils.escapeXml(errorMessage))
-        .append("\"><![CDATA[")
-        .append(StringEscapeUtils.escapeXml(stackTrace))
-        .append("]]>")
-        .append(isError() ? "</error>" : "</failure>")
-        .append("</testcase>");
-    } else {
-      details.append("/>");
-    }
+  public String getStackTrace() {
+    return stackTrace;
+  }
 
-    return details.toString();
+  /**
+   * Execution time of testcase
+   */
+  public int getExecutionTime() {
+    return time;
   }
 
 }

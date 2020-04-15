@@ -124,17 +124,17 @@ public class CxxXunitSensor extends CxxReportSensor {
     int testsFailures = 0;
     long testsTime = 0;
     for (var tc : testcases) {
-      if (tc.isSkipped()) {
-        testsSkipped++;
-      } else if (tc.isFailure()) {
+      testsTime += tc.getExecutionTime();
+      testsCount++;
+      if (tc.isFailure()) {
         testsFailures++;
       } else if (tc.isError()) {
         testsErrors++;
+      } else if (tc.isSkipped()) {
+        testsSkipped++;
+        testsCount--;
       }
-      testsCount++;
-      testsTime += tc.getTime();
     }
-    testsCount -= testsSkipped;
 
     if (testsCount > 0) {
       saveProjectMetric(context, CoreMetrics.TESTS, testsCount);

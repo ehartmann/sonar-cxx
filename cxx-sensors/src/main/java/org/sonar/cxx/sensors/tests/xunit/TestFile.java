@@ -29,11 +29,12 @@ import org.sonar.api.batch.fs.InputFile;
  */
 public class TestFile {
 
+  private int tests;
+  private int failures;
   private int errors;
   private int skipped;
-  private int tests;
   private long time;
-  private int failures;
+
   private final List<TestCase> testCases;
   private final InputFile inputFile;
 
@@ -77,29 +78,18 @@ public class TestFile {
    * @param tc the test case to add
    */
   public void addTestCase(TestCase tc) {
-    if (tc.isSkipped()) {
-      skipped++;
-    } else if (tc.isFailure()) {
+    testCases.add(tc);
+    time += tc.getExecutionTime();
+    tests++;
+
+    if (tc.isFailure()) {
       failures++;
     } else if (tc.isError()) {
       errors++;
+    } else if (tc.isSkipped()) {
+      skipped++;
+      tests--;
     }
-    tests++;
-    time += tc.getTime();
-    testCases.add(tc);
-  }
-
-  /**
-   * Returns execution details as sonar-conform XML
-   */
-  public String getDetails() {
-    var details = new StringBuilder(512);
-    details.append("<tests-details>");
-    for (var tc : testCases) {
-      details.append(tc.getDetails());
-    }
-    details.append("</tests-details>");
-    return details.toString();
   }
 
   public InputFile getInputFile() {
