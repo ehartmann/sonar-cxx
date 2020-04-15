@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
@@ -79,8 +80,7 @@ public class CxxXunitSensor extends CxxReportSensor {
       List<File> reports = getReports(context.config(), context.fileSystem().baseDir(), REPORT_PATH_KEY);
       if (!reports.isEmpty()) {
         XunitReportParser parserHandler = parseReport(reports);
-        List<TestCase> testcases = parserHandler.getTestCases();
-        save(context, testcases);
+        save(context, parserHandler.getTestFiles());
       } else {
         LOG.debug("No xUnit reports found, nothing to process");
       }
@@ -116,24 +116,19 @@ public class CxxXunitSensor extends CxxReportSensor {
     return parserHandler;
   }
 
-  private void save(final SensorContext context, List<TestCase> testcases) {
+  private void save(final SensorContext context, Collection<TestFile> testfiles) {
 
     int testsCount = 0;
     int testsSkipped = 0;
     int testsErrors = 0;
     int testsFailures = 0;
     long testsTime = 0;
-    for (var tc : testcases) {
-      testsTime += tc.getExecutionTime();
-      testsCount++;
-      if (tc.isFailure()) {
-        testsFailures++;
-      } else if (tc.isError()) {
-        testsErrors++;
-      } else if (tc.isSkipped()) {
-        testsSkipped++;
-        testsCount--;
-      }
+    for (var tf : testfiles) {
+      testsTime += tf.getExecutionTime();
+      testsCount += tf.getTests();
+      testsFailures += tf.getFailures();
+      testsErrors += tf.getErrors();
+      testsSkipped += tf.getSkipped();
     }
 
     if (testsCount > 0) {

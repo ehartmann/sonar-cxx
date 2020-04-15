@@ -36,10 +36,12 @@ public class XunitReportParserTest {
   public void testParse() throws javax.xml.stream.XMLStreamException {
 
     var ioMap = new TreeMap<String, Integer>();
-    ioMap.put("xunit-result-2.xml", 5);
+
+    // report: number of tests (without skipped)
+    ioMap.put("xunit-result-2.xml", 4);
     ioMap.put("xunit-result-SAMPLE_with_fileName.xml", 3);
     ioMap.put("xunit-result-SAMPLE.xml", 3);
-    ioMap.put("xunit-result-skippedonly.xml", 1);
+    ioMap.put("xunit-result-skippedonly.xml", 0);
     ioMap.put("xunit-result_with_emptyFileName.xml", 3);
     ioMap.put("nested_testsuites.xml", 2);
     ioMap.put("xunit-result-no-testsuite.xml", 0);
@@ -49,7 +51,12 @@ public class XunitReportParserTest {
       parser = new StaxParser(parserHandler, false);
       File report = TestUtils.loadResource(pathPrefix + entry.getKey());
       parser.parse(report);
-      assertEquals((int) entry.getValue(), parserHandler.getTestCases().size());
+
+      int tests = 0;
+      for (var testFile : parserHandler.getTestFiles()) {
+        tests += testFile.getTests();
+      }
+      assertEquals((int) entry.getValue(), tests);
     }
   }
 

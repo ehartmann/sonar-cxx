@@ -21,13 +21,15 @@ package org.sonar.cxx.sensors.tests.xunit;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.sonar.api.batch.fs.InputFile;
 
 /**
- * Represents a test file in Sonar, i.e. a source code file which implements tests. Holds all test cases along with all
- * measures collected from the reports.
+ * Represents a test file in SQ, a source code file which implements tests. Holds all test cases along with all measures
+ * collected from the reports.
  */
 public class TestFile {
+
+  private final String filename;
+  private final List<TestCase> testCases;
 
   private int tests;
   private int failures;
@@ -35,21 +37,19 @@ public class TestFile {
   private int skipped;
   private long time;
 
-  private final List<TestCase> testCases;
-  private final InputFile inputFile;
-
   /**
    * Creates a test file instance which corresponds and represents the passed InputFile instance
    *
-   * @param inputFile The InputFile in SQ which this TestFile proxies
+   * @param filename test file with test cases
    */
-  public TestFile(InputFile inputFile) {
-    this.inputFile = inputFile;
+  public TestFile(String filename) {
+    this.filename = filename;
     this.testCases = new ArrayList<>();
+
   }
 
-  public String getKey() {
-    return inputFile.uri().getPath();
+  public String getFilename() {
+    return filename;
   }
 
   public int getErrors() {
@@ -64,7 +64,7 @@ public class TestFile {
     return tests;
   }
 
-  public long getTime() {
+  public long getExecutionTime() {
     return time;
   }
 
@@ -77,7 +77,7 @@ public class TestFile {
    *
    * @param tc the test case to add
    */
-  public void addTestCase(TestCase tc) {
+  public void add(TestCase tc) {
     testCases.add(tc);
     time += tc.getExecutionTime();
     tests++;
@@ -92,8 +92,8 @@ public class TestFile {
     }
   }
 
-  public InputFile getInputFile() {
-    return inputFile;
+  public List<TestCase> getTestCases() {
+    return new ArrayList<>(testCases);
   }
 
 }
