@@ -184,9 +184,9 @@ public class CxxCoverageSensor extends CxxReportSensor {
           try {
             newCoverage.save();
             LOG.debug("Saved '{}' coverage measures for file '{}'", measures.size(), filePath);
-          } catch (RuntimeException ex) {
-            LOG.error("Cannot save measure for file '{}' , ignoring measure. ", filePath, ex);
-            CxxUtils.validateRecovery(ex, context.config());
+          } catch (RuntimeException e) {
+            var msg = "Cannot save coverage measures for file '" + filePath + "'";
+            CxxUtils.validateRecovery(msg, e, context.config());
           }
         } else {
           LOG.debug("Cannot find the file '{}', ignoring coverage measures", filePath);
@@ -210,10 +210,9 @@ public class CxxCoverageSensor extends CxxReportSensor {
       newCoverage.conditions(measure.getLine(), measure.getConditions(), measure.getCoveredConditions());
       LOG.debug("line '{}' Hits '{}' Conditions '{}:{}'", measure.getLine(), measure.getHits(),
                 measure.getConditions(), measure.getCoveredConditions());
-    } catch (RuntimeException ex) {
-      LOG.error("Cannot save Conditions Hits for Line '{}' , ignoring measure. ",
-                measure.getLine(), ex.getMessage());
-      CxxUtils.validateRecovery(ex, context.config());
+    } catch (RuntimeException e) {
+      var msg = "Cannot save Conditions Hits for Line '" + measure.getLine() + "'";
+      CxxUtils.validateRecovery(msg, e, context.config());
     }
   }
 

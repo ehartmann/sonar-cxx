@@ -126,8 +126,8 @@ class ValgrindReportParser {
     public void stream(SMHierarchicCursor rootCursor) throws XMLStreamException {
       try {
         rootCursor.advance();
-      } catch (com.ctc.wstx.exc.WstxEOFException eofExc) {
-        throw new EmptyReportException("Cannot read Valgrind report", eofExc);
+      } catch (com.ctc.wstx.exc.WstxEOFException e) {
+        throw new EmptyReportException("The 'Valgrind' report is empty", e);
       }
 
       SMInputCursor errorCursor = rootCursor.childElementCursor("error");

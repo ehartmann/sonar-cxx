@@ -27,6 +27,8 @@ import javax.annotation.Nullable;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.cxx.sensors.utils.CxxIssuesReportSensor;
+import org.sonar.cxx.sensors.utils.InvalidReportException;
+import org.sonar.cxx.sensors.utils.ReportException;
 import org.sonar.cxx.utils.CxxReportIssue;
 
 /**
@@ -37,7 +39,7 @@ public abstract class CxxCompilerSensor extends CxxIssuesReportSensor {
   private static final Logger LOG = Loggers.get(CxxCompilerSensor.class);
 
   @Override
-  protected void processReport(File report) throws javax.xml.stream.XMLStreamException {
+  protected void processReport(File report) throws ReportException {
 
     final String reportCharset = getCharset();
     final String reportRegEx = getRegex();
@@ -47,7 +49,7 @@ public abstract class CxxCompilerSensor extends CxxIssuesReportSensor {
       return;
     }
 
-    LOG.info("Processing '{}' initialized with report '{}', Charset= '{}'", getCompilerKey(), report, reportCharset);
+    LOG.info("Processing '{}' report '{}', Charset= '{}'", getCompilerKey(), report, reportCharset);
 
     try ( var scanner = new Scanner(report, reportCharset)) {
       Pattern pattern = Pattern.compile(reportRegEx);
@@ -70,7 +72,7 @@ public abstract class CxxCompilerSensor extends CxxIssuesReportSensor {
         }
       }
     } catch (java.io.FileNotFoundException | java.lang.IllegalArgumentException | java.lang.IllegalStateException e) {
-      LOG.error("processReport Exception: {} - not processed '{}'", report, e);
+      throw new InvalidReportException("The compiler report is invalid", e);
     }
   }
 

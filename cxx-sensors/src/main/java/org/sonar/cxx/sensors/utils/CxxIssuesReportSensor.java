@@ -56,23 +56,13 @@ public abstract class CxxIssuesReportSensor extends CxxReportSensor {
    */
   @Override
   public void executeImpl() {
-    try {
-      LOG.info("Searching reports by relative path with basedir '{}' and search prop '{}'",
-               context.fileSystem().baseDir(), getReportPathKey());
-      List<File> reports = getReports(getReportPathKey());
+    LOG.info("Searching reports by relative path with basedir '{}' and search prop '{}'",
+             context.fileSystem().baseDir(), getReportPathKey());
 
-      for (var report : reports) {
-        LOG.info("Processing report '{}'", report);
-        executeReport(report);
-      }
-    } catch (Exception e) {
-      var msg = new StringBuilder(256)
-        .append("Cannot feed the data into sonar, details: '")
-        .append(CxxUtils.getStackTrace(e))
-        .append("'")
-        .toString();
-      LOG.error(msg);
-      CxxUtils.validateRecovery(e, context.config());
+    List<File> reports = getReports(getReportPathKey());
+    for (var report : reports) {
+      LOG.info("Processing report '{}'", report);
+      executeReport(report);
     }
   }
 
@@ -93,26 +83,22 @@ public abstract class CxxIssuesReportSensor extends CxxReportSensor {
           addFlow(newIssue, issue);
           newIssue.save();
         }
-      } catch (RuntimeException ex) {
-        LOG.error("Could not add the issue '{}':{}', skipping issue", issue.toString(), CxxUtils.getStackTrace(ex));
-        CxxUtils.validateRecovery(ex, context.config());
+      } catch (RuntimeException e) {
+        var msg = "Cannot save the issue '" + issue + "'";
+        CxxUtils.validateRecovery(msg, e, context.config());
       }
     }
   }
 
   /**
-   * @param context
-   * @param report
-   * @param prevViolationsCount
-   * @throws Exception
+   * @param report to read
    */
-  private void executeReport(File report) throws Exception {
+  protected void executeReport(File report) {
     try {
       processReport(report);
-    } catch (EmptyReportException e) {
-      LOG.warn("The report '{}' seems to be empty, ignoring.", report);
-      LOG.debug("Cannot read report", e);
-      CxxUtils.validateRecovery(e, context.config());
+    } catch (ReportException e) {
+      var msg = e.getMessage() + ", report='" + report + "'";
+      CxxUtils.validateRecovery(msg, e, context.config());
     }
   }
 
@@ -126,9 +112,9 @@ public abstract class CxxIssuesReportSensor extends CxxReportSensor {
         } else if (lineNr > lines) { // https://jira.sonarsource.com/browse/SONAR-6792
           lineNr = lines;
         }
-      } catch (java.lang.NumberFormatException nfe) {
-        LOG.warn("Skipping invalid line number: {}", line);
-        CxxUtils.validateRecovery(nfe, context.config());
+      } catch (java.lang.NumberFormatException e) {
+        var msg = "Invalid line number: '" + line + "'";
+        CxxUtils.validateRecovery(msg, e, context.config());
         lineNr = -1;
       }
     }
@@ -193,7 +179,7 @@ public abstract class CxxIssuesReportSensor extends CxxReportSensor {
     }
   }
 
-  protected abstract void processReport(File report) throws Exception;
+  protected abstract void processReport(File report) throws ReportException;
 
   protected abstract String getReportPathKey();
 

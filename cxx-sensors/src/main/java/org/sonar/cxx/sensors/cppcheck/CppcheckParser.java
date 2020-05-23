@@ -56,9 +56,7 @@ public class CppcheckParser {
     return msg;
   }
 
-  public void processReport(File report)
-    throws javax.xml.stream.XMLStreamException {
-    LOG.debug("Processing 'Cppcheck V2' format");
+  public void processReport(File report) throws javax.xml.stream.XMLStreamException {
     var parser = new StaxParser(new StaxParser.XmlStreamHandler() {
       /**
        * {@inheritDoc}
@@ -69,8 +67,8 @@ public class CppcheckParser {
 
         try {
           rootCursor.advance();
-        } catch (com.ctc.wstx.exc.WstxEOFException eofExc) {
-          throw new EmptyReportException("Cannot read cppcheck report (format V2)", eofExc);
+        } catch (com.ctc.wstx.exc.WstxEOFException e) {
+          throw new EmptyReportException("The 'Cppcheck V2' report is empty", e);
         }
 
         try {
