@@ -77,7 +77,6 @@ public class CxxCppCheckSensor extends CxxIssuesReportSensor {
     CppcheckParser parser = new CppcheckParser(this);
     try {
       parser.processReport(report);
-      LOG.info("Added report '{}' (parsed by: {})", report, parser);
     } catch (XMLStreamException e) {
       throw new InvalidReportException("The 'Cppcheck V2' report is invalid", e);
     }

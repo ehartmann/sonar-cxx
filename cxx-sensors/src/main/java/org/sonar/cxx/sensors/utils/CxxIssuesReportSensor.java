@@ -56,12 +56,11 @@ public abstract class CxxIssuesReportSensor extends CxxReportSensor {
    */
   @Override
   public void executeImpl() {
-    LOG.info("Searching reports by relative path with basedir '{}' and search prop '{}'",
-             context.fileSystem().baseDir(), getReportPathKey());
+    LOG.debug("Searching reports by relative path with basedir '{}' and search prop '{}'",
+              context.fileSystem().baseDir(), getReportPathKey());
 
     List<File> reports = getReports(getReportPathKey());
     for (var report : reports) {
-      LOG.info("Processing report '{}'", report);
       executeReport(report);
     }
   }
@@ -95,7 +94,9 @@ public abstract class CxxIssuesReportSensor extends CxxReportSensor {
    */
   protected void executeReport(File report) {
     try {
+      LOG.info("Processing report '{}'", report);
       processReport(report);
+      LOG.info("Processing successful '{}'", report);
     } catch (ReportException e) {
       var msg = e.getMessage() + ", report='" + report + "'";
       CxxUtils.validateRecovery(msg, e, context.config());

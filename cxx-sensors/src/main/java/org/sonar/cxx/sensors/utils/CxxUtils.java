@@ -74,7 +74,7 @@ public final class CxxUtils {
     }
     Optional<Boolean> recovery = config.getBoolean(CxxReportSensor.ERROR_RECOVERY_KEY);
     if (recovery.isPresent() && recovery.get()) {
-      LOG.error(message + ", skipping");
+      LOG.warn(message + ", skipping");
       return;
     }
     LOG.info("Error recovery is disabled");
@@ -145,7 +145,7 @@ public final class CxxUtils {
       return Collections.emptyList();
     }
 
-    LOG.info("Import '{}' report file(s)", existingReportPaths.length);
+    LOG.debug("Found '{}' report file(s)", existingReportPaths.length);
     return Arrays.stream(existingReportPaths).map(File::new).collect(Collectors.toList());
   }
 
