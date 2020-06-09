@@ -19,6 +19,7 @@
  */
 package org.sonar.cxx.sensors.coverage;
 
+import org.sonar.cxx.sensors.coverage.cobertura.CoberturaParser;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;

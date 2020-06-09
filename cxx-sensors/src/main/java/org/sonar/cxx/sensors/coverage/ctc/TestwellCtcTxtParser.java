@@ -20,7 +20,7 @@
  /*
  * Derived from https://github.com/Londran/sonar-ctc/blob/master/src/main/java/org/sonar/plugins/ctc/api/parser/CtcTextParser.java
  */
-package org.sonar.cxx.sensors.coverage;
+package org.sonar.cxx.sensors.coverage.ctc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,10 +32,12 @@ import java.util.regex.Matcher;
 import org.apache.commons.io.FilenameUtils;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
-import static org.sonar.cxx.sensors.coverage.TestwellCtcTxtResult.FILE_HEADER;
-import static org.sonar.cxx.sensors.coverage.TestwellCtcTxtResult.FILE_RESULT;
-import static org.sonar.cxx.sensors.coverage.TestwellCtcTxtResult.LINE_RESULT;
-import static org.sonar.cxx.sensors.coverage.TestwellCtcTxtResult.SECTION_SEP;
+import org.sonar.cxx.sensors.coverage.CoverageMeasures;
+import org.sonar.cxx.sensors.coverage.CxxCoverageParser;
+import static org.sonar.cxx.sensors.coverage.ctc.TestwellCtcTxtResult.FILE_HEADER;
+import static org.sonar.cxx.sensors.coverage.ctc.TestwellCtcTxtResult.FILE_RESULT;
+import static org.sonar.cxx.sensors.coverage.ctc.TestwellCtcTxtResult.LINE_RESULT;
+import static org.sonar.cxx.sensors.coverage.ctc.TestwellCtcTxtResult.SECTION_SEP;
 
 /**
  * {@inheritDoc}

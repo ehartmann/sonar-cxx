@@ -19,6 +19,10 @@
  */
 package org.sonar.cxx.sensors.coverage;
 
+import org.sonar.cxx.sensors.coverage.ctc.TestwellCtcTxtParser;
+import org.sonar.cxx.sensors.coverage.vs.VisualStudioParser;
+import org.sonar.cxx.sensors.coverage.cobertura.CoberturaParser;
+import org.sonar.cxx.sensors.coverage.bullseye.BullseyeParser;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;

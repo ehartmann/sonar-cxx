@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.cxx.sensors.coverage;
+package org.sonar.cxx.sensors.coverage.bullseye;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -31,6 +31,8 @@ import org.codehaus.staxmate.in.SMInputCursor;
 import org.sonar.api.utils.PathUtils;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
+import org.sonar.cxx.sensors.coverage.CoverageMeasures;
+import org.sonar.cxx.sensors.coverage.CxxCoverageParser;
 import org.sonar.cxx.sensors.utils.StaxParser;
 
 /**
