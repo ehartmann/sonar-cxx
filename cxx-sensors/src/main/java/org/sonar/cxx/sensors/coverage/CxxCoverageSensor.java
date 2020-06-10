@@ -19,10 +19,6 @@
  */
 package org.sonar.cxx.sensors.coverage;
 
-import org.sonar.cxx.sensors.coverage.ctc.TestwellCtcTxtParser;
-import org.sonar.cxx.sensors.coverage.vs.VisualStudioParser;
-import org.sonar.cxx.sensors.coverage.cobertura.CoberturaParser;
-import org.sonar.cxx.sensors.coverage.bullseye.BullseyeParser;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,12 +31,15 @@ import javax.xml.stream.XMLStreamException;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.batch.sensor.coverage.NewCoverage;
-import org.sonar.api.config.Configuration;
 import org.sonar.api.config.PropertyDefinition;
 import org.sonar.api.resources.Qualifiers;
 import org.sonar.api.utils.PathUtils;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
+import org.sonar.cxx.sensors.coverage.bullseye.BullseyeParser;
+import org.sonar.cxx.sensors.coverage.cobertura.CoberturaParser;
+import org.sonar.cxx.sensors.coverage.ctc.TestwellCtcTxtParser;
+import org.sonar.cxx.sensors.coverage.vs.VisualStudioParser;
 import org.sonar.cxx.sensors.utils.CxxReportSensor;
 import org.sonar.cxx.sensors.utils.CxxUtils;
 import org.sonar.cxx.sensors.utils.EmptyReportException;
@@ -123,16 +122,7 @@ public class CxxCoverageSensor extends CxxReportSensor {
    */
   @Override
   public void executeImpl() {
-    Configuration conf = context.config();
-    String[] reportsKey = conf.getStringArray(REPORT_PATH_KEY);
-    LOG.info("Searching coverage reports by path with basedir '{}' and search prop '{}'",
-             context.fileSystem().baseDir(), REPORT_PATH_KEY);
-    LOG.info("Searching for coverage reports '{}'", Arrays.toString(reportsKey));
-    LOG.info("Coverage BaseDir '{}' ", context.fileSystem().baseDir());
-
     if (context.config().hasKey(REPORT_PATH_KEY)) {
-      LOG.debug("Parsing unit test coverage reports");
-
       List<File> reports = getReports(REPORT_PATH_KEY);
       Map<String, CoverageMeasures> coverageMeasures = processReports(reports, this.cache.unitCoverageCache());
       saveMeasures(coverageMeasures);
