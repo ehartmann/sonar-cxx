@@ -55,15 +55,13 @@ public class CxxCoverageSensor extends CxxReportSensor {
   private static final Logger LOG = Loggers.get(CxxCoverageSensor.class);
 
   private final List<CoverageParser> parsers = new LinkedList<>();
-  private final CxxCoverageCache cache;
 
   /**
    * {@inheritDoc}
    *
    * @param cache for all coverage data
    */
-  public CxxCoverageSensor(CxxCoverageCache cache) {
-    this.cache = cache;
+  public CxxCoverageSensor() {
     parsers.add(new CoberturaParser());
     parsers.add(new BullseyeParser());
     parsers.add(new VisualStudioParser());
@@ -124,39 +122,24 @@ public class CxxCoverageSensor extends CxxReportSensor {
   public void executeImpl() {
     if (context.config().hasKey(REPORT_PATH_KEY)) {
       List<File> reports = getReports(REPORT_PATH_KEY);
-      Map<String, CoverageMeasures> coverageMeasures = processReports(reports, this.cache.unitCoverageCache());
-      saveMeasures(coverageMeasures);
+      processReports(reports);
     }
   }
 
-  private Map<String, CoverageMeasures> processReports(List<File> reports,
-                                                       Map<String, Map<String, CoverageMeasures>> cacheCov) {
+  private void processReports(List<File> reports) {
     Map<String, CoverageMeasures> measuresTotal = new HashMap<>();
 
     for (var report : reports) {
-      if (!cacheCov.containsKey(report.getAbsolutePath())) {
-        for (var parser : parsers) {
-          try {
-            parseCoverageReport(parser, report, measuresTotal);
-            LOG.debug("cached measures for '{}' : current cache content data = '{}'", report.getAbsolutePath(),
-                      cacheCov.size());
-
-            cacheCov.put(report.getAbsolutePath(), measuresTotal);
-            // Only use first coverage parser which handles the data correctly
-            break;
-          } catch (EmptyReportException e) {
-            LOG.debug("Report is empty {}", e.getMessage());
-          }
+      for (var parser : parsers) {
+        try {
+          parseCoverageReport(parser, report, measuresTotal);
+          saveMeasures(measuresTotal);
+          break;
+        } catch (EmptyReportException e) {
+          LOG.debug("Report is empty {}", e.getMessage());
         }
-        if (cacheCov.get(report.getAbsolutePath()) != null) {
-          measuresTotal.putAll(cacheCov.get(report.getAbsolutePath()));
-        }
-      } else {
-        measuresTotal = cacheCov.get(report.getAbsolutePath());
-        LOG.debug("Processing report '{}' skipped - already in cache", report);
       }
     }
-    return measuresTotal;
   }
 
   private void saveMeasures(Map<String, CoverageMeasures> coverageMeasures) {

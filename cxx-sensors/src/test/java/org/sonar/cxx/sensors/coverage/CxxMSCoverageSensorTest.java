@@ -56,7 +56,7 @@ public class CxxMSCoverageSensorTest {
       .initMetadata("asd\nasdas\nasda\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
       .build());
 
-    var sensor = new CxxCoverageSensor(new CxxCoverageCache());
+    var sensor = new CxxCoverageSensor();
     sensor.execute(context);
 
     var oneHitlinesA = new int[]{12, 14, 16, 19, 20, 21, 23, 25, 26, 27, 28};
@@ -85,7 +85,7 @@ public class CxxMSCoverageSensorTest {
       .initMetadata("asd\nasdas\nasda\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
       .build());
 
-    var sensor = new CxxCoverageSensor(new CxxCoverageCache());
+    var sensor = new CxxCoverageSensor();
     sensor.execute(context);
   }
 
@@ -100,7 +100,7 @@ public class CxxMSCoverageSensorTest {
       .initMetadata("asd\nasdas\nasda\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
       .build());
 
-    var sensor = new CxxCoverageSensor(new CxxCoverageCache());
+    var sensor = new CxxCoverageSensor();
     sensor.execute(context);
 
     assertThat(context.lineHits("ProjectKey:source/motorcontroller/motorcontroller.cpp", 1)).isNull();
@@ -110,7 +110,7 @@ public class CxxMSCoverageSensorTest {
   public void sensorDescriptor() {
     context = SensorContextTester.create(fs.baseDir());
     var descriptor = new DefaultSensorDescriptor();
-    var sensor = new CxxCoverageSensor(new CxxCoverageCache());
+    var sensor = new CxxCoverageSensor();
     sensor.describe(descriptor);
 
     var softly = new SoftAssertions();

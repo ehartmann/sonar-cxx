@@ -34,7 +34,6 @@ import org.sonar.cxx.sensors.compiler.gcc.CxxCompilerGccRuleRepository;
 import org.sonar.cxx.sensors.compiler.gcc.CxxCompilerGccSensor;
 import org.sonar.cxx.sensors.compiler.vc.CxxCompilerVcRuleRepository;
 import org.sonar.cxx.sensors.compiler.vc.CxxCompilerVcSensor;
-import org.sonar.cxx.sensors.coverage.CxxCoverageCache;
 import org.sonar.cxx.sensors.coverage.CxxCoverageSensor;
 import org.sonar.cxx.sensors.cppcheck.CxxCppCheckRuleRepository;
 import org.sonar.cxx.sensors.cppcheck.CxxCppCheckSensor;
@@ -101,7 +100,6 @@ public final class CxxPlugin implements Plugin {
     var l = new ArrayList<Object>();
 
     // utility classes
-    l.add(CxxCoverageCache.class);
     l.add(CxxUnitTestResultsAggregator.class);
 
     // metrics

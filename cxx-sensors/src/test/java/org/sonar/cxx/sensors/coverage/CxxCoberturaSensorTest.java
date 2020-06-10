@@ -19,7 +19,6 @@
  */
 package org.sonar.cxx.sensors.coverage;
 
-import org.sonar.cxx.sensors.coverage.cobertura.CoberturaParser;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,6 +36,7 @@ import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.internal.MapSettings;
 import org.sonar.api.utils.PathUtils;
 import org.sonar.api.utils.log.LogTester;
+import org.sonar.cxx.sensors.coverage.cobertura.CoberturaParser;
 import org.sonar.cxx.sensors.utils.TestUtils;
 
 public class CxxCoberturaSensorTest {
@@ -156,7 +156,7 @@ public class CxxCoberturaSensorTest {
     context.fileSystem().add(TestInputFileBuilder.create("ProjectKey", "sources/utils/code_chunks.cpp")
       .setLanguage("cxx").initMetadata("asd\nasdas\nasda\n").build());
 
-    var sensor = new CxxCoverageSensor(new CxxCoverageCache());
+    var sensor = new CxxCoverageSensor();
     sensor.execute(context);
 
     assertThat(context.lineHits("ProjectKey:sources/utils/code_chunks.cpp", 1)).isEqualTo(1);
@@ -186,7 +186,7 @@ public class CxxCoberturaSensorTest {
     context.fileSystem().add(TestInputFileBuilder.create("ProjectKey", "sources/utils/code_chunks.cpp")
       .setLanguage("cxx").initMetadata("asd\nasdas\nasda\n").build());
 
-    var sensor = new CxxCoverageSensor(new CxxCoverageCache());
+    var sensor = new CxxCoverageSensor();
     sensor.execute(context);
 
     assertThat(context.lineHits("ProjectKey:sources/utils/code_chunks.cpp", 1)).isEqualTo(1);
@@ -202,7 +202,7 @@ public class CxxCoberturaSensorTest {
     settings.setProperty(CxxCoverageSensor.REPORT_PATH_KEY, reportPathsValue);
     context.setSettings(settings);
 
-    var sensor = new CxxCoverageSensor(new CxxCoverageCache());
+    var sensor = new CxxCoverageSensor();
     sensor.execute(context);
 
     List<String> log = logTester.logs();
@@ -218,7 +218,7 @@ public class CxxCoberturaSensorTest {
                          "coverage-reports/cobertura/specific-cases/cobertura-bignumberofhits.xml");
     context.setSettings(settings);
 
-    var sensor = new CxxCoverageSensor(new CxxCoverageCache());
+    var sensor = new CxxCoverageSensor();
     sensor.execute(context);
 
     assertThat(linesOfCodeByFile.isEmpty()).isTrue();
@@ -238,7 +238,7 @@ public class CxxCoberturaSensorTest {
     context.fileSystem().add(TestInputFileBuilder.create("ProjectKey", "sources/utils/code_chunks.cpp")
       .setLanguage("cxx").initMetadata("asd\nasdas\nasda\n").build());
 
-    var sensor = new CxxCoverageSensor(new CxxCoverageCache());
+    var sensor = new CxxCoverageSensor();
     sensor.execute(context);
 
     assertThat(context.lineHits("ProjectKey:sources/application/main.cpp", 1)).isNull();
@@ -260,7 +260,7 @@ public class CxxCoberturaSensorTest {
     context.fileSystem().add(TestInputFileBuilder.create("ProjectKey", "sources/utils/code_chunks.cpp")
       .setLanguage("cxx").initMetadata("asd\nasdas\nasda\n").build());
 
-    var sensor = new CxxCoverageSensor(new CxxCoverageCache());
+    var sensor = new CxxCoverageSensor();
     sensor.execute(context);
 
     assertThat(context.lineHits("ProjectKey:sources/application/main.cpp", 1)).isNull();
@@ -282,7 +282,7 @@ public class CxxCoberturaSensorTest {
       .setLanguage("cxx").initMetadata("asd\nasdas\nasda\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
       .build());
 
-    var sensor = new CxxCoverageSensor(new CxxCoverageCache());
+    var sensor = new CxxCoverageSensor();
     sensor.execute(context);
 
     var oneHitlinesA = new int[]{4, 5, 6, 8, 13, 15, 16, 25};
