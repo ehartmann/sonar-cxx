@@ -43,13 +43,13 @@ import org.sonar.cxx.sensors.coverage.vs.VisualStudioParser;
 import org.sonar.cxx.sensors.utils.CxxReportSensor;
 import org.sonar.cxx.sensors.utils.CxxUtils;
 import org.sonar.cxx.sensors.utils.EmptyReportException;
+import org.sonar.cxx.sensors.utils.ReportException;
 
 /**
  * {@inheritDoc}
  */
 public class CxxCoverageSensor extends CxxReportSensor {
 
-  // Configuration properties before SQ 6.2
   public static final String REPORT_PATH_KEY = "sonar.cxx.coverage.reportPaths";
 
   private static final Logger LOG = Loggers.get(CxxCoverageSensor.class);
@@ -70,7 +70,7 @@ public class CxxCoverageSensor extends CxxReportSensor {
 
   public static List<PropertyDefinition> properties() {
     return Collections.unmodifiableList(Arrays.asList(
-      PropertyDefinition.builder(REPORT_PATH_KEY)
+      PropertyDefinition.builder(getReportPathsKey())
         .name("Coverage report(s)")
         .description("List of paths to reports containing coverage data, relative to projects root."
                        + " The values are separated by commas."
@@ -84,35 +84,12 @@ public class CxxCoverageSensor extends CxxReportSensor {
     ));
   }
 
-  /**
-   * @param parser
-   * @param report
-   * @param measuresTotal
-   * @return true if report was parsed and results are available otherwise false
-   */
-  private static void parseCoverageReport(CoverageParser parser, File report,
-                                          Map<String, CoverageMeasures> measuresTotal) {
-    var measuresForReport = new HashMap<String, CoverageMeasures>();
-    try {
-      parser.parse(report, measuresForReport);
-    } catch (XMLStreamException e) {
-      throw new EmptyReportException("Coverage report " + report + " cannot be parsed by " + parser, e);
-    }
-
-    if (measuresForReport.isEmpty()) {
-      throw new EmptyReportException("Coverage report " + report + " result is empty (parsed by " + parser + ")");
-    }
-
-    measuresTotal.putAll(measuresForReport);
-    LOG.info("Added coverage report '{}' (parsed by: {})", report, parser);
-  }
-
   @Override
   public void describe(SensorDescriptor descriptor) {
     descriptor
       .name("CXX coverage report import")
       .onlyOnLanguage("cxx")
-      .onlyWhenConfiguration(conf -> conf.hasKey(REPORT_PATH_KEY));
+      .onlyWhenConfiguration(conf -> conf.hasKey(getReportPathsKey()));
   }
 
   /**
@@ -120,24 +97,53 @@ public class CxxCoverageSensor extends CxxReportSensor {
    */
   @Override
   public void executeImpl() {
-    if (context.config().hasKey(REPORT_PATH_KEY)) {
-      List<File> reports = getReports(REPORT_PATH_KEY);
-      processReports(reports);
+    List<File> reports = getReports(getReportPathsKey());
+    for (var report : reports) {
+      executeReport(report);
     }
   }
 
-  private void processReports(List<File> reports) {
+  protected static String getReportPathsKey() {
+    return REPORT_PATH_KEY;
+  }
+
+  /**
+   * @param report to read
+   */
+  protected void executeReport(File report) {
+    try {
+      LOG.info("Processing report '{}'", report);
+      processReport(report);
+      LOG.info("Processing successful");
+    } catch (ReportException e) {
+      var msg = e.getMessage() + ", report='" + report + "'";
+      CxxUtils.validateRecovery(msg, e, context.config());
+    }
+  }
+
+  protected void processReport(File report) throws ReportException {
     Map<String, CoverageMeasures> measuresTotal = new HashMap<>();
 
-    for (var report : reports) {
-      for (var parser : parsers) {
+    for (var parser : parsers) {
+      try {
+        var measuresForReport = new HashMap<String, CoverageMeasures>();
         try {
-          parseCoverageReport(parser, report, measuresTotal);
-          saveMeasures(measuresTotal);
-          break;
-        } catch (EmptyReportException e) {
-          LOG.debug("Report is empty {}", e.getMessage());
+          parser.parse(report, measuresForReport);
+        } catch (XMLStreamException e) {
+          throw new EmptyReportException("Coverage report" + report + "cannot be parsed by" + parser, e);
         }
+
+        if (measuresForReport.isEmpty()) {
+          throw new EmptyReportException("Coverage report " + report + " result is empty (parsed by " + parser + ")");
+        }
+
+        measuresTotal.putAll(measuresForReport);
+        LOG.info("Added coverage report '{}' (parsed by: {})", report, parser);
+
+        saveMeasures(measuresTotal);
+        break;
+      } catch (EmptyReportException e) {
+        LOG.debug("Report is empty {}", e.getMessage());
       }
     }
   }
