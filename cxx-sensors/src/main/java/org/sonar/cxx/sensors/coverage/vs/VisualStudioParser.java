@@ -20,6 +20,7 @@
 package org.sonar.cxx.sensors.coverage.vs;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import org.codehaus.staxmate.in.SMHierarchicCursor;
@@ -27,19 +28,18 @@ import org.codehaus.staxmate.in.SMInputCursor;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.cxx.sensors.coverage.CoverageMeasures;
-import org.sonar.cxx.sensors.coverage.CxxCoverageParser;
+import org.sonar.cxx.sensors.coverage.CoverageParser;
+import org.sonar.cxx.sensors.utils.EmptyReportException;
+import org.sonar.cxx.sensors.utils.InvalidReportException;
+import org.sonar.cxx.sensors.utils.ReportException;
 import org.sonar.cxx.sensors.utils.StaxParser;
 
 /**
  * {@inheritDoc}
  */
-public class VisualStudioParser extends CxxCoverageParser {
+public class VisualStudioParser implements CoverageParser {
 
   private static final Logger LOG = Loggers.get(VisualStudioParser.class);
-
-  public VisualStudioParser() {
-    // no operation but necessary for list of coverage parsers
-  }
 
   private static void collectModuleMeasures(SMInputCursor module, Map<String, CoverageMeasures> coverageData)
     throws XMLStreamException {
@@ -117,14 +117,23 @@ public class VisualStudioParser extends CxxCoverageParser {
    * {@inheritDoc}
    */
   @Override
-  public void parse(File report, final Map<String, CoverageMeasures> coverageData)
-    throws XMLStreamException {
+  public Map<String, CoverageMeasures> parse(File report) throws ReportException {
     LOG.debug("Processing 'Visual Studio Coverage' format");
-    var parser = new StaxParser((SMHierarchicCursor rootCursor) -> {
-      rootCursor.advance();
-      collectModuleMeasures(rootCursor.descendantElementCursor("module"), coverageData);
-    });
-    parser.parse(report);
+    var coverageData = new HashMap<String, CoverageMeasures>();
+    try {
+      var parser = new StaxParser((SMHierarchicCursor rootCursor) -> {
+        try {
+          rootCursor.advance();
+        } catch (com.ctc.wstx.exc.WstxEOFException e) {
+          throw new EmptyReportException("Coverage report " + report + " result is empty (parsed by " + this + ")");
+        }
+        collectModuleMeasures(rootCursor.descendantElementCursor("module"), coverageData);
+      });
+      parser.parse(report);
+    } catch (XMLStreamException e) {
+      throw new InvalidReportException("Visual Studio coverage report '" + report + "' cannot be parsed.", e);
+    }
+    return coverageData;
   }
 
   @Override
