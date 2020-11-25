@@ -52,7 +52,7 @@ def CDATA(text=None):
 et._original_serialize_xml = et._serialize_xml
 
 
-def _serialize_xml(write, elem, encoding, qnames, namespaces):
+def _serialize_xml(write, elem, qnames, namespaces, short_empty_elements=True):
     if elem.tag == '![CDATA[':
         tail = "" if elem.tail is None else elem.tail
         try:
@@ -61,7 +61,8 @@ def _serialize_xml(write, elem, encoding, qnames, namespaces):
             write(("<%s%s]]>%s" % (elem.tag, elem.text, tail)).encode('utf-8'))
 
     else:
-        et._original_serialize_xml(write, elem, encoding, qnames, namespaces)
+        et._original_serialize_xml(write, elem, qnames, namespaces, short_empty_elements)
+
 
 et._serialize_xml = et._serialize['xml'] = _serialize_xml
 
@@ -77,7 +78,8 @@ def _header():
 def write_rules_xml(root, f):
     indent(root)
     f.write(_header())
-    et.ElementTree(root).write(f)
+    et.ElementTree(root).write(f, encoding='unicode')
+    f.flush()
 
 
 def parse_rules_xml(path):
@@ -109,12 +111,12 @@ def call_xmllint(file_path):
                          stderr=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode != 0:
-        print "### XMLLINT", file_path
-        print "### ERR"
-        print err
-        print "### OUT"
-        print out
-        print "\n"
+        print("### XMLLINT", file_path)
+        print("### ERR")
+        print(err)
+        print("### OUT")
+        print(out)
+        print("\n")
         return True
     return False
 
@@ -125,18 +127,18 @@ def call_tidy(file_path):
                          stderr=subprocess.PIPE)
     out, err = p.communicate()
     if p.returncode != 0:
-        print "### TIDY ", file_path
-        print "### ERR"
-        print err
-        print "### SUGGESTION FOR FIXING"
-        print out
-        print "\n"
+        print("### TIDY ", file_path)
+        print("### ERR")
+        print(err)
+        print("### SUGGESTION FOR FIXING")
+        print(out)
+        print("\n")
         return True
     return False
 
 
 def check_rules(path):
-    print "### CHECK ", path
+    print("### CHECK ", path)
     has_xmllint_errors = call_xmllint(path)
     if has_xmllint_errors:
         return 1
@@ -169,7 +171,7 @@ def check_rules(path):
     if has_tidy_errors:
         return 2
 
-    print "no errors found"
+    print("no errors found")
     return 0
 
 
@@ -178,41 +180,41 @@ def compare_rules(old_path, new_path):
     new_keys, new_keys_mapping = parse_rules_xml(new_path)
     old_keys_set = set(old_keys)
     new_keys_set = set(new_keys)
-    print "# OLD RULE SET vs NEW RULE SET\n"
+    print("# OLD RULE SET vs NEW RULE SET\n")
 
-    print "## OLD RULE SET\n"
-    print "nr of xml entries: ", len(old_keys), "\n"
-    print "nr of unique rules: ", len(old_keys_set), "\n"
-    print "rules which are only in the old rule set:"
+    print("## OLD RULE SET\n")
+    print("nr of xml entries: ", len(old_keys), "\n")
+    print("nr of unique rules: ", len(old_keys_set), "\n")
+    print("rules which are only in the old rule set:")
     only_in_old = old_keys_set.difference(new_keys_set)
     for key in sorted(only_in_old):
-        print "*", key
-    print ""
+        print("*", key)
+    print("")
 
-    print "## NEW RULE SET\n"
-    print "nr of xml entries: ", len(new_keys), "\n"
-    print "nr of unique rules: ", len(new_keys_set), "\n"
-    print "rules which are only in the new rule set:"
+    print("## NEW RULE SET\n")
+    print("nr of xml entries: ", len(new_keys), "\n")
+    print("nr of unique rules: ", len(new_keys_set), "\n")
+    print("rules which are only in the new rule set:")
     only_in_new = new_keys_set.difference(old_keys_set)
     for key in sorted(only_in_new):
-        print "*", key
-    print ""
+        print("*", key)
+    print("")
 
-    print "## COMMON RULES\n"
+    print("## COMMON RULES\n")
     common_keys = old_keys_set.intersection(new_keys_set)
-    print "nr of rules: ", len(common_keys), "\n"
+    print("nr of rules: ", len(common_keys), "\n")
     for key in sorted(common_keys):
-        print "*", key
-    print ""
+        print("*", key)
+    print("")
 
-    print "### NEW RULES WHICH MUST BE ADDED\n"
-    print "```XML"
+    print("### NEW RULES WHICH MUST BE ADDED\n")
+    print("```XML")
     for key in sorted(only_in_new):
         rule_tag = new_keys_mapping[key]
         indent(rule_tag)
         make_rules_description_to_cdata(rule_tag)
         et.ElementTree(rule_tag).write(sys.stdout)
-    print "```\n"
+    print("```\n")
 
     # create a rule xml from the new rules, where rules are stored in the same
     # order as in the old rule file. this will make xml files comparable by
@@ -231,17 +233,17 @@ def compare_rules(old_path, new_path):
     with open(new_path + ".comparable", 'w') as f:
         write_rules_xml(comparable_rules, f)
 
-    print """### DIFF EXISTRING vs GENERATED"""
-    print "run\n\n"
-    print "```bash"
-    print "<your favorite diff>", os.path.abspath(old_path), os.path.abspath(new_path) + ".comparable # e.g."
-    print "meld", os.path.abspath(old_path), os.path.abspath(new_path) + ".comparable"
-    print "```\n"
+    print("""### DIFF EXISTRING vs GENERATED""")
+    print("run\n\n")
+    print("```bash")
+    print("<your favorite diff>", os.path.abspath(old_path), os.path.abspath(new_path) + ".comparable # e.g.")
+    print("meld", os.path.abspath(old_path), os.path.abspath(new_path) + ".comparable")
+    print("```\n")
 
 
 def print_usage_and_exit():
     script_name = os.path.basename(sys.argv[0])
-    print """%s comparerules <old_rules.xml> <new_rules.xml>
+    print("""%s comparerules <old_rules.xml> <new_rules.xml>
 %s check <rules.xml>
 
 comparerules: generates <new_rules.xml.comparable> which re-sorts new rules according to the order of old_rules.xml
@@ -249,7 +251,7 @@ comparerules: generates <new_rules.xml.comparable> which re-sorts new rules acco
               also generates the human-readable summary to STDOUT
 
 check:        for each rule in <rules.xml> generate a file "/tmp/<rule_key>.ruledump", which contains the HTML code of rules description
-              check each *.ruledump file with tidy in order to validate the HTML description""" % (script_name, script_name)
+              check each *.ruledump file with tidy in order to validate the HTML description""" % (script_name, script_name))
     sys.exit(1)
 
 if __name__ == "__main__":
