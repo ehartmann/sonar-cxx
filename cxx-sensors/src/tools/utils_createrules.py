@@ -128,6 +128,8 @@ def call_tidy(file_path):
     out, err = p.communicate()
     if p.returncode != 0:
         print("### TIDY ", file_path)
+        with open(file_path, 'r') as f:
+            print(f.read())
         print("### ERR")
         print(err)
         print("### SUGGESTION FOR FIXING")
