@@ -2,6 +2,7 @@
 # pip install selenium-requests
 
 from bs4 import BeautifulSoup
+from bs4.dammit import EntitySubstitution
 from selenium import webdriver
 import re
 import sys
@@ -268,7 +269,8 @@ def parse_warning_page(page_source, warning):
             desc += str(p)
             break
     if not desc:
-        desc = warning['name']
+        # repeat header in description to have something
+        desc = '<p>'  + EntitySubstitution().substitute_html(warning['name']) + '</p>'
     warning['description'] = desc
     return warning
 

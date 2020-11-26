@@ -661,7 +661,6 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     <remediationFunction>LINEAR</remediationFunction>
     <remediationFunctionGapMultiplier>5min</remediationFunctionGapMultiplier>
     </rule>
-
   <rule>
     <key>C4056</key>
     <name>C4056: overflow in floating point constant arithmetic</name>
@@ -1409,7 +1408,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     <name>C4141: 'modifier' : used more than once</name>
     <description>
       <![CDATA[
-C4141: 'modifier' : used more than once
+<p>C4141: 'modifier' : used more than once</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-1-c4141?view=msvc-160" target="_blank">C4141</a></p>]]>
       </description>
@@ -1716,6 +1715,7 @@ C4141: 'modifier' : used more than once
     <key>C4167</key>
     <name>C4167: function : only available as an intrinsic function</name>
     <description>
+
       <![CDATA[
 <p>The <strong>#pragma function</strong> tries to force the compiler to use a conventional call to a function that must be used in intrinsic form. The pragma is ignored.</p>
 <h2>Microsoft Documentation</h2>
@@ -1759,7 +1759,7 @@ C4141: 'modifier' : used more than once
     <name>C4174: 'name' : not available as a #pragma component</name>
     <description>
       <![CDATA[
-C4174: 'name' : not available as a #pragma component
+<p>C4174: 'name' : not available as a #pragma component</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-1-c4174?view=msvc-160" target="_blank">C4174</a></p>]]>
       </description>
@@ -6250,7 +6250,6 @@ C4174: 'name' : not available as a #pragma component
     </rule>
   <rule>
     <key>C4688</key>
-
     <name>C4688: 'constraint': constraint list contains assembly private type 'type'</name>
     <description>
       <![CDATA[
@@ -9362,7 +9361,7 @@ C4174: 'name' : not available as a #pragma component
     <name>C6330: Incorrect type passed as parameter in call to function</name>
     <description>
       <![CDATA[
-C6330: Incorrect type passed as parameter in call to function
+<p>C6330: Incorrect type passed as parameter in call to function</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c6330?view=msvc-160" target="_blank">C6330</a></p>]]>
       </description>
@@ -9460,7 +9459,7 @@ C6330: Incorrect type passed as parameter in call to function
     <name>C6340: Mismatch on sign: Incorrect type passed as parameter in call to function</name>
     <description>
       <![CDATA[
-C6340: Mismatch on sign: Incorrect type passed as parameter in call to function
+<p>C6340: Mismatch on sign: Incorrect type passed as parameter in call to function</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c6340?view=msvc-160" target="_blank">C6340</a></p>]]>
       </description>
@@ -9880,7 +9879,7 @@ C6340: Mismatch on sign: Incorrect type passed as parameter in call to function
     <name>C6527: Invalid annotation: NeedsRelease property may not be used on values of void type</name>
     <description>
       <![CDATA[
-C6527: Invalid annotation: NeedsRelease property may not be used on values of void type
+<p>C6527: Invalid annotation: NeedsRelease property may not be used on values of void type</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c6527?view=msvc-160" target="_blank">C6527</a></p>]]>
       </description>
@@ -9908,7 +9907,7 @@ C6527: Invalid annotation: NeedsRelease property may not be used on values of vo
     <name>C6540: The use of attribute annotations on this function will invalidate all of its existing__declspecannotations</name>
     <description>
       <![CDATA[
-C6540: The use of attribute annotations on this function will invalidate all of its existing__declspecannotations
+<p>C6540: The use of attribute annotations on this function will invalidate all of its existing__declspecannotations</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c6540?view=msvc-160" target="_blank">C6540</a></p>]]>
       </description>
@@ -9922,7 +9921,7 @@ C6540: The use of attribute annotations on this function will invalidate all of 
     <name>C6551: Invalid size specification: expression not parsable</name>
     <description>
       <![CDATA[
-C6551: Invalid size specification: expression not parsable
+<p>C6551: Invalid size specification: expression not parsable</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c6551?view=msvc-160" target="_blank">C6551</a></p>]]>
       </description>
@@ -9936,7 +9935,7 @@ C6551: Invalid size specification: expression not parsable
     <name>C6552: InvalidDeref=orNotref=: expression not parsable</name>
     <description>
       <![CDATA[
-C6552: InvalidDeref=orNotref=: expression not parsable
+<p>C6552: InvalidDeref=orNotref=: expression not parsable</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c6552?view=msvc-160" target="_blank">C6552</a></p>]]>
       </description>
@@ -10034,7 +10033,7 @@ C6552: InvalidDeref=orNotref=: expression not parsable
     <name>C6707: Unexpected Model Error: &lt;why&gt;</name>
     <description>
       <![CDATA[
-C6707: Unexpected Model Error: <why>
+<p>C6707: Unexpected Model Error: &lt;why&gt;</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c6707?view=msvc-160" target="_blank">C6707</a></p>]]>
       </description>
@@ -10258,7 +10257,7 @@ C6707: Unexpected Model Error: <why>
     <name>C26140: Undefined lock kind &lt;lock&gt; in annotation &lt;annotation&gt; on lock &lt;lock&gt;</name>
     <description>
       <![CDATA[
-C26140: Undefined lock kind <lock> in annotation <annotation> on lock <lock>
+<p>C26140: Undefined lock kind &lt;lock&gt; in annotation &lt;annotation&gt; on lock &lt;lock&gt;</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c26140?view=msvc-160" target="_blank">C26140</a></p>]]>
       </description>
@@ -10999,6 +10998,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c26461?view=msvc-160" target="_blank">C26461</a></p>]]>
       </description>
     <severity>MAJOR</severity>
+
     <type>CODE_SMELL</type>
     <remediationFunction>LINEAR</remediationFunction>
     <remediationFunctionGapMultiplier>5min</remediationFunctionGapMultiplier>
@@ -11873,6 +11873,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C28164</key>
+
     <name>C28164: The argument is being passed to a function that expects a pointer to an object (not a pointer to a pointer)</name>
     <description>
       <![CDATA[
@@ -12450,7 +12451,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     <name>C28233: pre, post, or deref applied to a block</name>
     <description>
       <![CDATA[
-C28233: pre, post, or deref applied to a block
+<p>C28233: pre, post, or deref applied to a block</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c28233?view=msvc-160" target="_blank">C28233</a></p>]]>
       </description>
@@ -12702,7 +12703,7 @@ C28233: pre, post, or deref applied to a block
     <name>C28262: A syntax error in the annotation was found in function &lt;function&gt; for annotation &lt;name&gt;</name>
     <description>
       <![CDATA[
-C28262: A syntax error in the annotation was found in function <function> for annotation <name>
+<p>C28262: A syntax error in the annotation was found in function &lt;function&gt; for annotation &lt;name&gt;</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c28262?view=msvc-160" target="_blank">C28262</a></p>]]>
       </description>
@@ -12730,7 +12731,7 @@ C28262: A syntax error in the annotation was found in function <function> for an
     <name>C28267: A syntax error in the annotations was found annotation &lt;name&gt; in the function &lt;function&gt;</name>
     <description>
       <![CDATA[
-C28267: A syntax error in the annotations was found annotation <name> in the function <function>
+<p>C28267: A syntax error in the annotations was found annotation &lt;name&gt; in the function &lt;function&gt;</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c28267?view=msvc-160" target="_blank">C28267</a></p>]]>
       </description>
@@ -13278,3 +13279,4 @@ somewhere along the line that eventually returns it or assigns it to a variable 
     <remediationFunctionGapMultiplier>5min</remediationFunctionGapMultiplier>
     </rule>
   </rules>
+
