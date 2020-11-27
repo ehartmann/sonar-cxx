@@ -1629,7 +1629,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4161</key>
-    <name>C4161: #pragmapragma(pop...) : more pops than pushes</name>
+    <name>C4161: #pragma pragma(pop...) : more pops than pushes</name>
     <description>
       <![CDATA[
 <p>Because your source code contains one more pop than pushes for pragma <em>pragma</em>, the stack may not behave as you expect. To avoid the warning, be sure that the number of pops does not exceed the number of pushes.</p>
@@ -1715,7 +1715,6 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     <key>C4167</key>
     <name>C4167: function : only available as an intrinsic function</name>
     <description>
-
       <![CDATA[
 <p>The <strong>#pragma function</strong> tries to force the compiler to use a conventional call to a function that must be used in intrinsic form. The pragma is ignored.</p>
 <h2>Microsoft Documentation</h2>
@@ -3688,10 +3687,10 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4383</key>
-    <name>C4383: 'instance_dereference_operator' : the meaning of dereferencing a handle can change, when a user-defined 'operator' operator exists; write the operator as a static function to be explicit about the operand</name>
+    <name>C4383: 'instance_dereference_operator' : the meaning of dereferencing a handle can change, when a user-defined 'operator' operator exists</name>
     <description>
       <![CDATA[
-<p>When you add a user-defined instance override of the dereference operator in a managed type, you potentially override the ability of the type's dereference operator to return the handle's object. Consider writing a static, user-defined dereference operator.</p>
+<p>'instance_dereference_operator' : the meaning of dereferencing a handle can change, when a user-defined 'operator' operator exists; write the operator as a static function to be explicit about the operand</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-1-c4383?view=msvc-160" target="_blank">C4383</a></p>]]>
       </description>
@@ -3900,6 +3899,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     <key>C4401</key>
     <name>C4401: 'bitfield' : member is bit field</name>
     <description>
+
       <![CDATA[
 <p>Inline assembly code tries to access a bit-field member. Inline assembly cannot access bit-field members, so the last packing boundary before the bit-field member is used.</p>
 <h2>Microsoft Documentation</h2>
@@ -4164,10 +4164,10 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4436</key>
-    <name>C4436: dynamic_cast from virtual base 'class1' to 'class2' in constructor or destructor could fail with partially-constructed object        Compile with /vd2 or define 'class2' with #pragma vtordisp(2) in effect</name>
+    <name>C4436: dynamic_cast from virtual base 'class1' to 'class2' in constructor or destructor could fail with partially-constructed object</name>
     <description>
       <![CDATA[
-<p>The compiler has encountered a <strong><code>dynamic_cast</code></strong> operation with the following characteristics.</p>
+<p>dynamic_cast from virtual base 'class1' to 'class2' in constructor or destructor could fail with partially-constructed object. Compile with /vd2 or define 'class2' with #pragma vtordisp(2) in effect</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-1-c4436?view=msvc-160" target="_blank">C4436</a></p>]]>
       </description>
@@ -4346,7 +4346,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4463</key>
-    <name>C4463: overflow; assigningvalueto bit-field that can only hold values fromlow_valuetohigh_value</name>
+    <name>C4463: overflow; assigning value to bit-field that can only hold values from low_value to high_value</name>
     <description>
       <![CDATA[
 <p>The assigned <em>value</em> is outside the range of values that the bit-field can hold. Signed bit-field types use the high-order bit for the sign, so if <em>n</em> is the bit-field size, the range for signed bit-fields is -2<sup>n-1</sup> to 2<sup>n-1</sup>-1, while unsigned bit-fields have a range from 0 to 2<sup>n</sup>-1.</p>
@@ -4402,7 +4402,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4473</key>
-    <name>C4473: 'function' : not enough arguments passed for format stringplaceholders and their parameters expectnumbervariadic arguments, butnumberwere providedthe missing variadic argumentindexis required by format string 'format_string'this argument is used by a conversion specifierthis argument is used as a field widththis argument is used as a precisionthis argument is used as a buffer size</name>
+    <name>C4473: 'function' : not enough arguments passed for format string</name>
     <description>
       <![CDATA[
 <p>The compiler detected a mismatch between the number of arguments required to satisfy the placeholders in a format string, and the number of arguments supplied. Correct use of the printf and scanf families of variadic functions requires that you supply as many arguments as specified by the format string. Certain placeholders require additional arguments, to specify the width, precision, or buffer size, as well as an argument for the content. A mismatch generally means there is a bug in your code.</p>
@@ -4416,7 +4416,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4477</key>
-    <name>C4477: 'function' : format string 'string' requires an argument of type 'type', but variadic argumentnumberhas type 'type'</name>
+    <name>C4477: 'function' : format string 'string' requires an argument of type 'type', but variadic argument number has type 'type'</name>
     <description>
       <![CDATA[
 <p>The compiler detected a mismatch between the type of argument required to satisfy the placeholder in a format string, and the type of argument supplied. Correct use of the printf and scanf families of variadic functions requires that you supply arguments of the types specified by the format string. A mismatch generally means there is a bug in your code.</p>
@@ -5116,7 +5116,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4556</key>
-    <name>C4556: value of intrinsic immediate argument 'value' is out of range 'lowerbound-upperbound'</name>
+    <name>C4556: value of intrinsic immediate argument 'value' is out of range 'lowerbound - upperbound'</name>
     <description>
       <![CDATA[
 <p>An intrinsic matches a hardware instruction. The hardware instruction has a fixed number of bits to encode the constant. If <em>value</em> is out of range, it will not encode properly. The compiler truncates the extra bits.</p>
@@ -5242,7 +5242,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4571</key>
-    <name>C4571: Informational:catch(...)semantics changed since Visual C++ 7.1; structured exceptions (SEH) are no longer caught</name>
+    <name>C4571: Informational: catch(...) semantics changed since Visual C++ 7.1; structured exceptions (SEH) are no longer caught</name>
     <description>
       <![CDATA[
 <p>C4571 is generated for every <code>catch(...)</code> block when you specify the <strong><code>/EHs</code></strong> compiler option.</p>
@@ -6684,7 +6684,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4742</key>
-    <name>C4742: 'variable' has different alignment in 'file1' and 'file2':number1andnumber2</name>
+    <name>C4742: 'variable' has different alignment in 'file1' and 'file2': number1 and number2</name>
     <description>
       <![CDATA[
 <p>An external variable that was referenced or defined in two files has different alignment in those files.</p>
@@ -6698,7 +6698,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4743</key>
-    <name>C4743: 'type' has different size in 'file1' and 'file2':numberandnumberbytes</name>
+    <name>C4743: 'type' has different size in 'file1' and 'file2': number and number bytes</name>
     <description>
       <![CDATA[
 <p>An external variable referenced or defined in two files has different types in those files, and the compiler determined that the size of the variable in <em>file1</em> differs from the size of the variable in <em>file2</em>.</p>
@@ -6838,7 +6838,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4789</key>
-    <name>C4789: buffer 'identifier' of sizeNbytes will be overrun;Mbytes will be written starting at offsetL</name>
+    <name>C4789: buffer 'identifier' of size N bytes will be overrun; M bytes will be written starting at offset L</name>
     <description>
       <![CDATA[
 <p><strong>C4789</strong> warns about buffer overruns when specific C run-time (CRT) functions are used. It can also report size mismatches when parameters are passed or assignments are made. The warning is possible if the data sizes are known at compile time. This warning is for situations that might elude typical data-size mismatch detection.</p>
@@ -7216,7 +7216,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4866</key>
-    <name>C4866: 'file(line_number)' compiler may not enforce left-to-right evaluation order for call tooperator_name</name>
+    <name>C4866: 'file(line_number)' compiler may not enforce left-to-right evaluation order for call to operator_name</name>
     <description>
       <![CDATA[
 <p>Starting in C++17, the operands of the operators <strong>-&gt;*</strong>, <strong>[]</strong>, <strong>&gt;&gt;</strong>, and <strong>&lt;&lt;</strong> must be evaluated in left-to-right order. There are two cases in which the compiler is unable to guarantee this order:</p>
@@ -7468,7 +7468,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4931</key>
-    <name>C4931: we are assuming the type library was built fornumber-bit pointers</name>
+    <name>C4931: we are assuming the type library was built for number-bit pointers</name>
     <description>
       <![CDATA[
 <p>Explicit information was not supplied with the <strong>ptrsize</strong> attribute of the <a data-linktype="relative-path" href="https://docs.microsoft.com/en-us/cpp/preprocessor/hash-import-directive-cpp?view=msvc-160">#import</a> directive; the compiler concluded that pointer size of the type library is <em>number</em>.</p>
@@ -7482,7 +7482,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4932</key>
-    <name>C4932: __identifier(identifier_1)and__identifier(identifier_2)are indistinguishable</name>
+    <name>C4932: __identifier(identifier_1) and __identifier(identifier_2) are indistinguishable</name>
     <description>
       <![CDATA[
 <p>The compiler is unable to distinguish between <strong><code>_finally</code></strong> and <strong><code>__finally</code></strong> or <strong><code>__try</code></strong> and <strong><code>_try</code></strong> as a parameter passed to <a data-linktype="relative-path" href="https://docs.microsoft.com/en-us/cpp/extensions/identifier-cpp-cli?view=msvc-160"><code>__identifier</code></a>. You should not attempt to use them both as identifiers in the same program, as it will result in a <a data-linktype="relative-path" href="https://docs.microsoft.com/en-us/cpp/error-messages/compiler-errors-1/compiler-error-c2374?view=msvc-160">C2374</a> error.</p>
@@ -7902,10 +7902,10 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4996</key>
-    <name>C4996: Your code uses a function, class member, variable, or typedef that's markeddeprecated. Symbols are deprecated by using a__declspec(deprecated)modifier, or the C++14[[deprecated]]attribute. The actual C4996 warning message is specified by thedeprecatedmodifier or attribute of the declaration</name>
+    <name>C4996: Your code uses a function, class member, variable, or typedef that's marked deprecated</name>
     <description>
       <![CDATA[
-<p>Many functions, member functions, template functions, and global variables in Visual Studio libraries are <em>deprecated</em>. Some, such as POSIX and Microsoft-specific functions, are deprecated because they now have a different preferred name. Some C runtime library functions are deprecated because they're insecure and have a more secure variant. Others are deprecated because they're obsolete. The deprecation messages usually include a suggested replacement for the deprecated function or global variable.</p>
+<p>Your code uses a function, class member, variable, or typedef that's marked <em>deprecated</em>. Symbols are deprecated by using a <a data-linktype="relative-path" href="https://docs.microsoft.com/en-us/cpp/cpp/deprecated-cpp?view=msvc-160"><code>__declspec(deprecated)</code></a> modifier, or the C++14 <a data-linktype="relative-path" href="https://docs.microsoft.com/en-us/cpp/cpp/attributes?view=msvc-160"><code>[[deprecated]]</code></a> attribute. The actual C4996 warning message is specified by the <code>deprecated</code> modifier or attribute of the declaration.</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-3-c4996?view=msvc-160" target="_blank">C4996</a></p>]]>
       </description>
@@ -7944,7 +7944,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C5038</key>
-    <name>C5038: data member 'member1' will be initialized after data member 'member2'data member 'member' will be initialized after base class 'base_class'</name>
+    <name>C5038: data member 'member1' will be initialized after data member 'member2'</name>
     <description>
       <![CDATA[
 <p>Class members are initialized in the order they're declared, not the order they appear in initializer lists. This warning indicates the order of initialization isn't the same as the declaration order of data members or base classes. This order can lead to undefined runtime behavior, if the initialization of one member in the list depends on the initialization of a member that's declared later.</p>
@@ -8070,7 +8070,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C6031</key>
-    <name>C6031: return value ignored:called-functioncould return unexpected value</name>
+    <name>C6031: return value ignored: called-function could return unexpected value</name>
     <description>
       <![CDATA[
 <p>This warning indicates the caller doesn't check a function's return value for failure. Depending on which function is being called, this defect can lead to seemingly random program misbehavior. That includes crashes and data corruptions in error conditions or low-resource situations.</p>
@@ -8308,7 +8308,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C6217</key>
-    <name>C6217: Implicit cast between semantically different integer types: testing HRESULT with 'not'. Consider usingSUCCEEDEDorFAILEDmacro instead</name>
+    <name>C6217: Implicit cast between semantically different integer types: testing HRESULT with 'not'. Consider using SUCCEEDED or FAILED macro instead</name>
     <description>
       <![CDATA[
 <p>This warning indicates that an <code>HRESULT</code> is being tested with the not (<code>!</code>) operator. A success (<code>S_OK</code>) in <code>HRESULT</code> is indicated by a value of 0. However, 0 indicates failure for a Boolean type. Testing <code>HRESULT</code> with the not operator (<code>!</code>) to determine which code block to run can cause following the wrong code path. This will lead to unwanted results.</p>
@@ -8322,7 +8322,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C6219</key>
-    <name>C6219: Implicit cast between semantically different integer types: comparing HRESULT to 1 or TRUE. Consider usingSUCCEEDEDorFAILEDmacro instead</name>
+    <name>C6219: Implicit cast between semantically different integer types: comparing HRESULT to 1 or TRUE. Consider using SUCCEEDED or FAILED macro instead</name>
     <description>
       <![CDATA[
 <p>This warning indicates an <code>HRESULT</code> is being compared with an explicit, non-<code>HRESULT</code> value of one (1). This comparison is likely to lead to incorrect results, because the typical success value of <code>HRESULT</code> (<code>S_OK</code>) is 0. If you compare this value to a Boolean type it's implicitly converted to false.</p>
@@ -8602,7 +8602,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C6262</key>
-    <name>C6262: Function usesconstant_1bytes of stack: exceeds /analyze:stacksizeconstant_2. Consider moving some data to heap</name>
+    <name>C6262: Function uses constant_1 bytes of stack: exceeds /analyze:stacksize constant_2. Consider moving some data to heap</name>
     <description>
       <![CDATA[
 <p>This warning indicates that stack usage that exceeds a preset threshold (<em>constant_2</em>) has been detected in a function. The default stack frame size for this warning is 16 KB for user mode, 1 KB for kernel mode. Stack—even in user mode—is limited, and failure to commit a page of stack causes a stack overflow exception. Kernel mode has a 12 KB stack size limit, which can't be increased. Try to aggressively limit stack use in kernel-mode code.</p>
@@ -9512,7 +9512,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C6385</key>
-    <name>C6385: invalid data: accessingbuffer-name, the readable size issize1bytes, butsize2bytes may be read: Lines:x,y</name>
+    <name>C6385: invalid data: accessing buffer-name, the readable size is size1 bytes, but size2 bytes may be read: Lines: x, y</name>
     <description>
       <![CDATA[
 <p>The readable extent of the buffer might be smaller than the index used to read from it. Attempts to read data outside the valid range leads to buffer overrun.</p>
@@ -9610,7 +9610,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C6412</key>
-    <name>C6412: Potential buffer overrun while writing to buffer. The writable size iswrite_sizebytes, butwrite_indexbytes may be written</name>
+    <name>C6412: Potential buffer overrun while writing to buffer. The writable size is write_size bytes, but write_index bytes may be written</name>
     <description>
       <![CDATA[
 <p>This warning indicates that the value of the index that is used to write to the buffer can exceed the writeable size of the buffer.</p>
@@ -9904,10 +9904,10 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C6540</key>
-    <name>C6540: The use of attribute annotations on this function will invalidate all of its existing__declspecannotations</name>
+    <name>C6540: The use of attribute annotations on this function will invalidate all of its existing __declspec annotations</name>
     <description>
       <![CDATA[
-<p>C6540: The use of attribute annotations on this function will invalidate all of its existing__declspecannotations</p>
+<p>C6540: The use of attribute annotations on this function will invalidate all of its existing __declspec annotations</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c6540?view=msvc-160" target="_blank">C6540</a></p>]]>
       </description>
@@ -9932,10 +9932,10 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C6552</key>
-    <name>C6552: InvalidDeref=orNotref=: expression not parsable</name>
+    <name>C6552: Invalid Deref= or Notref=: expression not parsable</name>
     <description>
       <![CDATA[
-<p>C6552: InvalidDeref=orNotref=: expression not parsable</p>
+<p>C6552: Invalid Deref= or Notref=: expression not parsable</p>
 <h2>Microsoft Documentation</h2>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c6552?view=msvc-160" target="_blank">C6552</a></p>]]>
       </description>
@@ -10834,7 +10834,7 @@ Deleting such a pointer may lead to immediate memory corruption due to double de
     </rule>
   <rule>
     <key>C26447</key>
-    <name>C26447: The function is declarednoexceptbut calls functionfunction_namethat may throw exceptions (f.6)</name>
+    <name>C26447: The function is declared noexcept but calls function function_name that may throw exceptions (f.6)</name>
     <description>
       <![CDATA[
 <p>C++ Core Guidelines:<br/>
@@ -10891,7 +10891,7 @@ Deleting such a pointer may lead to immediate memory corruption due to double de
     </rule>
   <rule>
     <key>C26451</key>
-    <name>C26451: Arithmetic overflow: Using operator 'operator' on asize-abyte value and then casting the result to asize-bbyte value. Cast the value to the wider type before calling operator 'operator' to avoid overflow</name>
+    <name>C26451: Arithmetic overflow: Using operator 'operator' on a size-a byte value and then casting the result to a size-b byte value. Cast the value to the wider type before calling operator 'operator' to avoid overflow</name>
     <description>
       <![CDATA[
 <p>This warning indicates incorrect behavior that results from integral promotion rules and types larger than the ones in which arithmetic is typically performed.</p>
@@ -10998,7 +10998,6 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
 <p><a href="https://docs.microsoft.com/en-us/cpp/code-quality/c26461?view=msvc-160" target="_blank">C26461</a></p>]]>
       </description>
     <severity>MAJOR</severity>
-
     <type>CODE_SMELL</type>
     <remediationFunction>LINEAR</remediationFunction>
     <remediationFunctionGapMultiplier>5min</remediationFunctionGapMultiplier>
@@ -11383,7 +11382,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C26496</key>
-    <name>C26496: The variable 'variable' is assigned only once, mark it asconst</name>
+    <name>C26496: The variable 'variable' is assigned only once, mark it as const</name>
     <description>
       <![CDATA[
 <p><a data-linktype="external" href="https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#con4-use-const-to-define-objects-with-values-that-do-not-change-after-construction">C++ Core Guidelines con.4</a>.</p>
@@ -11523,7 +11522,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C26817</key>
-    <name>C26817: Potentially expensive copy of variablenamein range-for loop. Consider making it a const reference (es.71)</name>
+    <name>C26817: Potentially expensive copy of variable name in range-for loop. Consider making it a const reference (es.71)</name>
     <description>
       <![CDATA[
 <p>For more information, see <a data-linktype="external" href="https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#note-214">ES.71 notes</a> in the C++ Core Guidelines.</p>
@@ -11621,7 +11620,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C28023</key>
-    <name>C28023: The function being assigned or passed should have a_Function_class_annotation for at least one of the class(es) in: &lt;classlist&gt;</name>
+    <name>C28023: The function being assigned or passed should have a _Function_class_ annotation for at least one of the class(es) in: &lt;classlist&gt;</name>
     <description>
       <![CDATA[
 <p>This warning is usually reported when only one function class is in use and a callback of the appropriate type is not declared.</p>
@@ -11873,7 +11872,6 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C28164</key>
-
     <name>C28164: The argument is being passed to a function that expects a pointer to an object (not a pointer to a pointer)</name>
     <description>
       <![CDATA[
@@ -12056,7 +12054,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C28205</key>
-    <name>C28205: function&gt; :_Success_or_On_failure_used in an illegal context</name>
+    <name>C28205: function&gt; : _Success_ or _On_failure_ used in an illegal context</name>
     <description>
       <![CDATA[
 <p>The <code>_Success_</code> and <code>_On_failure_</code> annotations can only be used on function return values.</p>
@@ -12070,7 +12068,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C28206</key>
-    <name>C28206: &lt;expression&gt; : left operand points to a struct, use-&gt;</name>
+    <name>C28206: &lt;expression&gt; : left operand points to a struct, use -&gt;</name>
     <description>
       <![CDATA[
 <p>This warning is reported when the struct pointer dereference notation <code>-&gt;</code> was expected.</p>
@@ -12126,7 +12124,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C28210</key>
-    <name>C28210: Annotations for the_On_failure_context must not be in explicit pre context</name>
+    <name>C28210: Annotations for the _On_failure_ context must not be in explicit pre context</name>
     <description>
       <![CDATA[
 <p>Annotations <code>_On_failure_</code> must be explicitly or implicitly indicated in <code>__post</code> context, that is, to be applied after the function returns.  Use <code>_drv_out</code> to ensure this.</p>
@@ -12168,7 +12166,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C28213</key>
-    <name>C28213: The_Use_decl_annotations_annotation must be used to reference, without modification, a prior declaration</name>
+    <name>C28213: The _Use_decl_annotations_ annotation must be used to reference, without modification, a prior declaration</name>
     <description>
       <![CDATA[
 <p><code>_Use_decl_annotations_</code> tells the compiler to use the annotations from an earlier declaration of the function.  If no earlier declaration can be found, or if the current declaration makes changes to the annotations than this warning is emitted.</p>
@@ -12994,7 +12992,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C28302</key>
-    <name>C28302: For C++ reference-parameter &lt;parameter_name&gt;, an extra_Deref_operator was found on &lt;annotation&gt;</name>
+    <name>C28302: For C++ reference-parameter &lt;parameter_name&gt;, an extra _Deref_ operator was found on &lt;annotation&gt;</name>
     <description>
       <![CDATA[
 <p>This warning is reported when an extra level of <code>_Deref_</code> is used on a parameter of a reference type such as <code>T &amp;a</code>.  A common mistake when using SAL1 annotations is to use <code>__deref</code> on a reference type.  Reference types are understood by SAL so all annotations are already applied to the underlying type.  This is typically not an issue in SAL2 because the free-floating <code>__deref</code> annotation was removed.  If the intention is to apply an annotation to a sub-type then you should instead use the SAL2 <code>_AT_</code> or <code>_Outref_</code> annotations.</p>
@@ -13008,7 +13006,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C28303</key>
-    <name>C28303: For C++ reference-parameter &lt;parameter_name&gt;, an ambiguous_Deref_operator was found on &lt;annotation&gt;</name>
+    <name>C28303: For C++ reference-parameter &lt;parameter_name&gt;, an ambiguous _Deref_ operator was found on &lt;annotation&gt;</name>
     <description>
       <![CDATA[
 <p>This warning similar to warning C28302 and is reported when an extra level of <code>_Deref_</code> is used on a parameter.</p>
@@ -13022,7 +13020,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C28304</key>
-    <name>C28304: For C++ reference-parameter &lt;parameter_name&gt;, an improperly placed_Notref_operator was found applied to &lt;token&gt;</name>
+    <name>C28304: For C++ reference-parameter &lt;parameter_name&gt;, an improperly placed _Notref_ operator was found applied to &lt;token&gt;</name>
     <description>
       <![CDATA[
 <p>The <code>_Notref_</code> operator should only be used in special circumstances involving C++ reference parameters and only in system-provided macros. It must be immediately followed by a <code>_Deref_</code> operator or a functional annotation.</p>
@@ -13191,7 +13189,7 @@ that expects an initialized VARIANT.</p>
     </rule>
   <rule>
     <key>C33004</key>
-    <name>C33004: VARIANT 'var', which is marked asOutwas cleared before being initialized (expression 'expr')</name>
+    <name>C33004: VARIANT 'var', which is marked as Out was cleared before being initialized (expression 'expr')</name>
     <description>
       <![CDATA[
 <p>This warning is triggered when a VARIANT parameter with _Out_ SAL annotation, which may haven't been
@@ -13279,4 +13277,4 @@ somewhere along the line that eventually returns it or assigns it to a variable 
     <remediationFunctionGapMultiplier>5min</remediationFunctionGapMultiplier>
     </rule>
   </rules>
-
+  

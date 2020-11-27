@@ -149,26 +149,25 @@ def check_rules(path):
     keys, keys_mapping = parse_rules_xml(path)
     for key in keys:
         for rule_tag in keys_mapping[key].iter('rule'):
-            for description_tag in rule_tag.iter('description'):
-                description_dump_path = "/tmp/" + key + ".ruledump"
-                with open(description_dump_path, "w") as f:
-                    html_start = u"""<!DOCTYPE html>
+            name_tag = rule_tag.find('name')
+            description_tag = rule_tag.find('description')
+            description_dump_path = "/tmp/" + key + ".ruledump"
+            with open(description_dump_path, "w") as f:
+                html = u"""
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset=\"utf-8\">
-    <title>Rule Description</title>
+    <title>{name}</title>
   </head>
   <body>
-"""
-                    html_stop = u"""
+  {description}
   </body>
-</html>"""
-
-                    f.write(html_start)
-                    f.write(description_tag.text.encode("UTF-8"))
-                    f.write(html_stop)
-                is_tidy_error = call_tidy(description_dump_path)
-                has_tidy_errors = has_tidy_errors or is_tidy_error
+</html>
+""".format(name=name_tag.text.encode("UTF-8"), description=description_tag.text.encode("UTF-8"))
+                f.write(html)
+            is_tidy_error = call_tidy(description_dump_path)
+            has_tidy_errors = has_tidy_errors or is_tidy_error
 
     if has_tidy_errors:
         return 2

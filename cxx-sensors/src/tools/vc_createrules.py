@@ -229,7 +229,9 @@ def parse_warning_hrefs(page_source, warnings):
 def name(elem, id, default_name):
     text = ''
     if elem:
-        for string in elem.stripped_strings:
+        for string in elem.strings:
+            if string == '\n':
+                break
             text += string
         prefix = 'Warning '
         if text.startswith(prefix):
@@ -261,12 +263,17 @@ def parse_warning_page(page_source, warning):
 
     desc = ''
     for p in  content.select('main > p'):
+        txt = str(p)
         if 'Compiler Warning ' in warning['name']:
             # compiler messages: first p element is header
-             warning['name'] = name(p, id, warning['name'])
+            if len(txt) < 200:
+                warning['name'] = name(p, id, warning['name'])
+            else:
+                desc += txt
+                break
         else:
             # use only first p block: XML otherwise becomes too large
-            desc += str(p)
+            desc += txt
             break
     if not desc:
         # repeat header in description to have something
