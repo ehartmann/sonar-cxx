@@ -52,7 +52,19 @@ def CDATA(text=None):
 et._original_serialize_xml = et._serialize_xml
 
 
-def _serialize_xml(write, elem, qnames, namespaces, short_empty_elements=True):
+def _serialize_xml_2(write, elem, encoding, qnames, namespaces):
+    if elem.tag == '![CDATA[':
+        tail = "" if elem.tail is None else elem.tail
+        try:
+            write("<%s%s]]>%s" % (elem.tag, elem.text, tail))
+        except UnicodeEncodeError:
+            write(("<%s%s]]>%s" % (elem.tag, elem.text, tail)).encode('utf-8'))
+
+    else:
+        et._original_serialize_xml(write, elem, encoding, qnames, namespaces)
+
+
+def _serialize_xml_3(write, elem, qnames, namespaces, short_empty_elements):
     if elem.tag == '![CDATA[':
         tail = "" if elem.tail is None else elem.tail
         try:
@@ -64,7 +76,10 @@ def _serialize_xml(write, elem, qnames, namespaces, short_empty_elements=True):
         et._original_serialize_xml(write, elem, qnames, namespaces, short_empty_elements)
 
 
-et._serialize_xml = et._serialize['xml'] = _serialize_xml
+if sys.version_info[0] > 2:
+    et._serialize_xml = et._serialize['xml'] = _serialize_xml_3
+else:
+    et._serialize_xml = et._serialize['xml'] = _serialize_xml_2
 
 
 def get_cdata_capable_xml_etree():
@@ -160,12 +175,10 @@ def check_rules(path):
     <meta charset=\"utf-8\">
     <title>{name}</title>
   </head>
-  <body>
-  {description}
-  </body>
+  <body>{description}</body>
 </html>
-""".format(name=name_tag.text.encode("UTF-8"), description=description_tag.text.encode("UTF-8"))
-                f.write(html)
+""".format(name=name_tag.text, description=description_tag.text)
+                f.write(html.encode("UTF-8"))
             is_tidy_error = call_tidy(description_dump_path)
             has_tidy_errors = has_tidy_errors or is_tidy_error
 
