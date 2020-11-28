@@ -154,6 +154,19 @@ def call_tidy(file_path):
     return False
 
 
+def escape(s):
+    # in case it's already escaped
+    s = s.replace("&amp;", "&")
+    s = s.replace("&lt;", "<")
+    s = s.replace("&gt;", ">")
+    s = s.replace("&quot;", '"')
+    s = s.replace("&", "&amp;") # Must be done first!
+    s = s.replace("<", "&lt;")
+    s = s.replace(">", "&gt;")
+    s = s.replace('"', "&quot;")
+    return s
+
+    
 def check_rules(path):
     print("### CHECK ", path)
     has_xmllint_errors = call_xmllint(path)
@@ -161,15 +174,18 @@ def check_rules(path):
         return 1
 
     has_tidy_errors = False
+    has_len_errors = False
     keys, keys_mapping = parse_rules_xml(path)
     for key in keys:
         for rule_tag in keys_mapping[key].iter('rule'):
             name_tag = rule_tag.find('name')
             description_tag = rule_tag.find('description')
+            if len(name_tag) > 200:
+                print("### ERR: <name> too long (max 200)")
+                has_len_errors = True             
             description_dump_path = "/tmp/" + key + ".ruledump"
             with open(description_dump_path, "w") as f:
-                html = u"""
-<!DOCTYPE html>
+                html = u"""<!DOCTYPE html>
 <html>
   <head>
     <meta charset=\"utf-8\">
@@ -177,7 +193,7 @@ def check_rules(path):
   </head>
   <body>{description}</body>
 </html>
-""".format(name=name_tag.text, description=description_tag.text)
+""".format(name=escape(name_tag.text), description=description_tag.text)
                 f.write(html.encode("UTF-8"))
             is_tidy_error = call_tidy(description_dump_path)
             has_tidy_errors = has_tidy_errors or is_tidy_error
@@ -185,6 +201,9 @@ def check_rules(path):
     if has_tidy_errors:
         return 2
 
+    if has_len_errors:
+        return 3
+        
     print("no errors found")
     return 0
 

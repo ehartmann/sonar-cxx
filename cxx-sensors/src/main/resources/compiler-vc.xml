@@ -2875,7 +2875,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4288</key>
-    <name>C4288: nonstandard extension used : 'var' : loop control variable declared in the for-loop is used outside the for-loop scope; it conflicts with the declaration in the outer scope</name>
+    <name>C4288: nonstandard extension used</name>
     <description>
       <![CDATA[
 <p>When compiling with <a data-linktype="relative-path" href="https://docs.microsoft.com/en-us/cpp/build/reference/za-ze-disable-language-extensions?view=msvc-160"><code>/Ze</code></a> and <strong>/Zc:forscope-</strong>, a variable declared in a <strong><code>for</code></strong> loop was used after the <a data-linktype="relative-path" href="https://docs.microsoft.com/en-us/cpp/cpp/for-statement-cpp?view=msvc-160">for</a>-loop scope. A Microsoft extension to the C++ language allows this variable to remain in scope, and C4288 reminds you that the first declaration of the variable is not used.</p>
@@ -4304,7 +4304,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C4460</key>
-    <name>C4460: WinRT or CLR operator 'operator', has parameter passed by reference. WinRT or CLR operator 'operator' has different semantics from C++ operator 'operator', did you intend to pass by value?</name>
+    <name>C4460: WinRT or CLR operator 'operator', has parameter passed by reference</name>
     <description>
       <![CDATA[
 <p>You passed a value by reference to a user-defined Windows Runtime or CLR operator. If the value is changed inside the function, note that the value returned after the function call will be assigned the return value of the function. In standard C++, the changed value is reflected after the function call.</p>
@@ -9232,7 +9232,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C6318</key>
-    <name>C6318: Ill-defined __try/__except: use of the constant EXCEPTION_CONTINUE_SEARCH or another constant that evaluates to zero in the exception-filter expression. The code in the exception handler block is not executed</name>
+    <name>C6318: Ill-defined __try/__except: use of the constant EXCEPTION_CONTINUE_SEARCH or another constant that evaluates to zero in the exception-filter expression</name>
     <description>
       <![CDATA[
 <p>This warning indicates that if an exception occurs in the protected block of this structured exception handler, the exception will not be handled because the constant <code>EXCECPTION_CONTINUE_SEARCH</code> is used in the exception filter expression.</p>
@@ -10212,7 +10212,7 @@ Under strict ANSI compatibility (<a data-linktype="relative-path" href="https://
     </rule>
   <rule>
     <key>C26130</key>
-    <name>C26130: Missing annotation _Requires_lock_held_(&lt;lock&gt;) or _No_competing_thread_ at function &lt;func&gt;. Otherwise it could be a race condition. Variable &lt;var&gt; should be protected by lock &lt;lock&gt;</name>
+    <name>C26130: Missing annotation _Requires_lock_held_(&lt;lock&gt;) or _No_competing_thread_ at function &lt;func&gt;</name>
     <description>
       <![CDATA[
 <p>Warning C26130 is issued when the analyzer detects a potential race condition but infers that the function is likely to be run in a single threaded mode, for example, when the function is in the initialization stage based on certain heuristics.</p>
@@ -10891,7 +10891,7 @@ Deleting such a pointer may lead to immediate memory corruption due to double de
     </rule>
   <rule>
     <key>C26451</key>
-    <name>C26451: Arithmetic overflow: Using operator 'operator' on a size-a byte value and then casting the result to a size-b byte value. Cast the value to the wider type before calling operator 'operator' to avoid overflow</name>
+    <name>C26451: Arithmetic overflow: Using operator 'operator' on a size-a byte value and then casting the result to a size-b byte value</name>
     <description>
       <![CDATA[
 <p>This warning indicates incorrect behavior that results from integral promotion rules and types larger than the ones in which arithmetic is typically performed.</p>
@@ -13090,7 +13090,7 @@ C4293 is a similar check in the Microsoft C++ compiler.</p>
     </rule>
   <rule>
     <key>C28309</key>
-    <name>C28309: &lt;parameter_name&gt;: Annotation operands must be integer/enum/pointer types. Void operands and C++ overloaded operators are not supported. Floats are approximated as integers. Types: &lt;typelist&gt;</name>
+    <name>C28309: &lt;parameter_name&gt;: Annotation operands must be integer/enum/pointer types</name>
     <description>
       <![CDATA[
 <p>You've tried to use a void or a function in an annotation expression, and Code Analysis can't handle it.  This error typically occurs when an <code>operator==</code> that's implemented as a function is used, but other cases may also occur. Examine the types in &lt;typelist&gt; for clues about what's wrong.</p>
