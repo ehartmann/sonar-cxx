@@ -33,26 +33,27 @@ SONAR_WARN_RE = re.compile(".* WARN .*")
 SONAR_WARN_TO_IGNORE_RE = re.compile(".*H2 database should.*|.*Starting search|.*Starting web")
 SONAR_LOG_FOLDER = "logs"
 
-RED = ""
-YELLOW = ""
-GREEN = ""
-RESET = ""
-RESET_ALL = ""
-BRIGHT = ""
-try:
-    import colorama
-    colorama.init()
-    RED = colorama.Fore.RED
-    YELLOW = colorama.Fore.YELLOW
-    GREEN = colorama.Fore.GREEN
-    RESET = colorama.Fore.RESET
-    BRIGHT = colorama.Style.BRIGHT
-    RESET_ALL = colorama.Style.RESET_ALL
-    if os.environ.get("APPVEYOR"):
-        # AppVeyor does handle the escape sequences
-        colorama.deinit()    
-except ImportError:
-    pass
+RED = "\u001b[31m"
+YELLOW = "\u001b[33m"
+GREEN = "\u001b[32m"
+BRIGHT = "\u001b[1m"
+RESET = "\u001b[0m"
+RESET_ALL = "\u001b[0m"
+#try:
+#    import colorama
+#    colorama.init()
+#    RED = colorama.Fore.RED
+#    YELLOW = colorama.Fore.YELLOW
+#    GREEN = colorama.Fore.GREEN
+#    RESET = colorama.Fore.RESET
+#    BRIGHT = colorama.Style.BRIGHT
+#    RESET_ALL = colorama.Style.RESET_ALL
+#    if os.environ.get("APPVEYOR"):
+#        # AppVeyor does handle the escape sequences
+#        colorama.deinit()    
+#except ImportError:
+#    print("Can't init colorama!")
+#    pass
 
 INDENT = "    "    
 SONAR_URL = "http://localhost:9000"
