@@ -48,6 +48,9 @@ try:
     RESET = colorama.Fore.RESET
     BRIGHT = colorama.Style.BRIGHT
     RESET_ALL = colorama.Style.RESET_ALL
+    if os.environ.get("APPVEYOR"):
+        # AppVeyor does handle the escape sequences
+        colorama.deinit()    
 except ImportError:
     pass
 

@@ -62,6 +62,9 @@ try:
     RESET = colorama.Fore.RESET
     BRIGHT = colorama.Style.BRIGHT
     RESET_ALL = colorama.Style.RESET_ALL
+    if os.environ.get("APPVEYOR"):
+        # AppVeyor does handle the escape sequences
+        colorama.deinit()
 except ImportError:
     pass
 
@@ -72,8 +75,12 @@ except ImportError:
 def before_all(context):
     global didstartsonar
 
-    print(BRIGHT + "\nSonarQube already running... " + RESET_ALL)
-    
+    sys.stdout.write(BRIGHT + 80 * "-" + "\n")
+    sys.stdout.write("starting SonarQube ...\n")
+    sys.stdout.write(80 * "-" + RESET_ALL + "\n")    
+    sys.stdout.flush() 
+
+    print(BRIGHT + "\nSonarQube already running? " + RESET_ALL)    
     if is_webui_up():
         print("\n" + INDENT + "using the SonarQube already running on '%s'\n\n" % SONAR_URL)
         return
@@ -110,11 +117,15 @@ def before_all(context):
 
 def after_all(context):
     if didstartsonar:
+        sys.stdout.write(BRIGHT + 80 * "-" + "\n")
+        sys.stdout.write("stopping SonarQube ...\n")
+        sys.stdout.write(80 * "-" + RESET_ALL + "\n")    
+        sys.stdout.flush()    
         sonarhome = os.environ.get("SONARHOME", None)
         stop_sonar(sonarhome)
-        sys.stdout.write(80 * "-" + "\n")
+        sys.stdout.write(BRIGHT + 80 * "-" + "\n")
         sys.stdout.write("Summary:\n")
-        sys.stdout.write(80 * "-" + "\n")        
+        sys.stdout.write(80 * "-" + RESET_ALL + "\n")        
         sys.stdout.flush()
 
 def before_feature(context, feature):
@@ -188,10 +199,6 @@ def start_sonar(sonarhome):
 
 
 def stop_sonar(sonarhome):
-    sys.stdout.write(80 * "-" + "\n")
-    sys.stdout.write("stopping SonarQube ...\n")
-    sys.stdout.write(80 * "-" + "\n")    
-    sys.stdout.flush()
     rc = check_call(stop_script(sonarhome))
     if rc != 0 or not wait_for_sonar(300, is_webui_down):
         sys.stdout.write(RED + "FAILED\n" + RESET)
@@ -263,6 +270,9 @@ def stop_script(sonarhome):
     global sq_process
     command = None
 
+    sys.stdout.write("STOP ")
+    sys.stdout.flush()
+    
     if platform.system() == "Linux":
         script = linux_script(sonarhome)
         if script:
@@ -270,14 +280,13 @@ def stop_script(sonarhome):
     elif platform.system() == "Darwin":
         command = [os.path.join(sonarhome, "bin/macosx-universal-64/sonar.sh"), "stop"]
     elif platform.system() == "Windows":
+        sys.stdout.write("\n")
         command = ["TASKKILL", "/F", "/PID", "{}".format(sq_process.pid), "/T"]
         sq_process = None
     if command is None:
         msg = "Dont know how to find the stop script for the platform %s-%s" % (platform.system(), platform.machine())
         raise UnsupportedPlatform(msg)
-
-    sys.stdout.write("STOP ")
-    sys.stdout.flush()
+    
     return command
 
 
