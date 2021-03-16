@@ -119,7 +119,7 @@ public class CxxDrMemorySensor extends CxxIssuesReportSensor {
       } else {
         Location lastOwnFrame = getLastOwnFrame(error);
         if (lastOwnFrame == null) {
-          LOG.warn("Cannot find a project file to assign the DrMemory error '{}' to", error);
+          LOG.warn("Cannot find a file to assign the DrMemory error '{}' to", error);
           continue;
         }
         var fileIssue = new CxxReportIssue(error.getType().getId(),
