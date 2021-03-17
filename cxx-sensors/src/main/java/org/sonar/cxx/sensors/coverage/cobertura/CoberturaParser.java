@@ -115,7 +115,6 @@ public class CoberturaParser implements CoverageParser {
    */
   @Override
   public Map<String, CoverageMeasures> parse(File report) {
-    LOG.debug("Processing 'Cobertura Coverage' format");
     var coverageData = new HashMap<String, CoverageMeasures>();
     try {
       baseDir = Paths.get(".");

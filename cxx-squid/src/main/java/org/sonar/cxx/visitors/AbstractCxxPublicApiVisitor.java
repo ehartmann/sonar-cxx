@@ -375,8 +375,6 @@ public abstract class AbstractCxxPublicApiVisitor<G extends Grammar> extends Squ
 
   @Override
   public void visitFile(AstNode astNode) {
-    LOG.debug("API File: {}", getContext().getFile().getName());
-
     skipFile = true;
 
     if (headerFileSuffixes != null) {

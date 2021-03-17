@@ -77,7 +77,6 @@ public class BullseyeParser implements CoverageParser {
    */
   @Override
   public Map<String, CoverageMeasures> parse(File report)  {
-    LOG.debug("Processing 'Bullseye Coverage' format");
     var coverageData = new HashMap<String, CoverageMeasures>();
     try {
       var topLevelparser = new StaxParser((SMHierarchicCursor rootCursor) -> {

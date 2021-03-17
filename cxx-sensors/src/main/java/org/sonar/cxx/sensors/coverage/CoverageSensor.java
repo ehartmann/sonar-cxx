@@ -66,7 +66,6 @@ public abstract class CoverageSensor extends CxxReportSensor {
     try {
       LOG.info("Processing report '{}'", report);
       processReport(report);
-      LOG.info("Processing successful");
     } catch (EmptyReportException e) {
       LOG.warn(e.getMessage());
     } catch (ReportException e) {
@@ -109,7 +108,7 @@ public abstract class CoverageSensor extends CxxReportSensor {
           }
         }
       } else {
-        LOG.error("Cannot sanitize file path '{}'", entry.getKey());
+        LOG.warn("Cannot sanitize file path '{}', ignoring coverage measures", entry.getKey());
       }
     }
   }

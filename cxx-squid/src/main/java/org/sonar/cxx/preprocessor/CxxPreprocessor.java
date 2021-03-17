@@ -172,6 +172,7 @@ public class CxxPreprocessor extends Preprocessor {
     // make sure, that the following code is executed for a new file only
     if (currentContextFile != context.getFile()) {
       currentContextFile = context.getFile();
+      LOG.debug("start preprocessing '{}'", currentContextFile);
 
       unitCodeProvider = new SourceCodeProvider(currentContextFile);
       unitMacros = new MapChain<>();
@@ -564,12 +565,12 @@ public class CxxPreprocessor extends Preprocessor {
     // A macro definition lasts (independent of block structure) until a corresponding #undef directive is encountered
     // or (if none is encountered) until the end of the translation unit.
 
-    LOG.debug("finished preprocessing '{}'", file);
-
     analysedFiles.clear();
     unitMacros = null;
     unitCodeProvider = null;
     currentContextFile = null;
+
+    LOG.debug("finished preprocessing '{}'", file);
   }
 
   public SourceCodeProvider getCodeProvider() {
@@ -939,13 +940,11 @@ public class CxxPreprocessor extends Preprocessor {
       }
 
       String defineString = "#define " + define;
-
-      LOG.debug("parsing external macro: '{}'", defineString);
       Macro macro = parseMacroDefinition(defineString);
 
       if (macro != null) {
-        LOG.debug("storing external macro: '{}'", macro);
         result.put(macro.name, macro);
+        LOG.debug("preprocessor: use macro: '{}'", macro);
       }
     }
     return result;
@@ -1091,13 +1090,13 @@ public class CxxPreprocessor extends Preprocessor {
     File includedFile = findIncludedFile(ast, token, filename);
     if (includedFile == null) {
       missingIncludeFilesCounter++;
-      LOG.debug("[" + filename + ":" + token.getLine() + "]: cannot find include file '" + token.getValue() + "'");
+      LOG.debug("[" + filename + ":" + token.getLine() + "]: preprocessor cannot find include file '" + token.getValue() + "'");
     } else if (analysedFiles.add(includedFile.getAbsoluteFile())) {
       unitCodeProvider.pushFileState(includedFile);
       try {
         IncludeLexer.create(this).lex(getCodeProvider().getSourceCode(includedFile, charset));
       } catch (IOException e) {
-        LOG.error("[{}: Cannot read include file]: {}", includedFile.getAbsoluteFile(), e.getMessage());
+        LOG.error("[{}: preprocessor cannot read include file]: {}", includedFile.getAbsoluteFile(), e.getMessage());
       } finally {
         unitCodeProvider.popFileState();
       }

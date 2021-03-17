@@ -67,13 +67,13 @@ public class SourceCodeProvider {
         path = path.toRealPath(); // IOException if the file does not exist
 
         if (Files.isDirectory(path)) {
-          LOG.debug("add include path: '{}'", path.toString());
+          LOG.debug("preprocessor: add include file search directory: '{}'", path.toString());
           includeRoots.add(path);
         } else {
-          LOG.warn("invalid include root '{}'", path.toString());
+          LOG.warn("preprocessor: invalid file directory '{}'", path.toString());
         }
       } catch (IOException | InvalidPathException e) {
-        LOG.error("invalid include root '{}'", path.toString());
+        LOG.error("preprocessor: invalid file directory '{}'", path.toString());
       }
     }
   }

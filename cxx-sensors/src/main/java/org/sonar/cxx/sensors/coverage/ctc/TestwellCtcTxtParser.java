@@ -59,7 +59,6 @@ public class TestwellCtcTxtParser implements CoverageParser {
    */
   @Override
   public Map<String, CoverageMeasures> parse(File report) {
-    LOG.debug("Processing 'Testwell CTC++ Coverage' format");
     var coverageData = new HashMap<String, CoverageMeasures>();
     try ( var scanner = new TextScanner(report, StandardCharsets.UTF_8.name())) {
       scanner.useDelimiter(SECTION_SEP);

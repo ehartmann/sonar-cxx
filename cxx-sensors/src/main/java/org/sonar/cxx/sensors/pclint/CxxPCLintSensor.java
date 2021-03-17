@@ -92,8 +92,6 @@ public class CxxPCLintSensor extends CxxIssuesReportSensor {
 
   @Override
   protected void processReport(File report) {
-    LOG.debug("Processing 'PC-Lint' report '{}'", report.getName());
-
     var parser = new StaxParser(new StaxParser.XmlStreamHandler() {
       /**
        * {@inheritDoc}
