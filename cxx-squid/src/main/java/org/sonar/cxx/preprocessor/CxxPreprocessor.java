@@ -188,19 +188,24 @@ public class CxxPreprocessor extends Preprocessor {
         globalMacros = new MapChain<>();
         globalMacros.putAll(unitMacros);
 
-        LOG.debug("global include directories: {}", unitCodeProvider.getIncludeRoots());
-        LOG.debug("global macros: {}", globalMacros);
+        if(LOG.isDebugEnabled()) {
+          LOG.debug("global include directories: {}", unitCodeProvider.getIncludeRoots());
+          LOG.debug("global macros: {}", globalMacros);
+        }
       }
 
       LOG.debug("process unit '{}'", currentContextFile);
 
       // add unit specific stuff
-      addUnitIncludeDirectories(path);
-      addUnitMacros(path);
-      addUnitForcedIncludes(path);
-
-      LOG.debug("unit include directories: {}", unitCodeProvider.getIncludeRoots());
-      LOG.debug("unit macros: {}", unitMacros);
+      boolean changes = addUnitIncludeDirectories(path);
+      if (changes && LOG.isDebugEnabled() ) {
+        LOG.debug("unit include directories: {}", unitCodeProvider.getIncludeRoots());
+      }
+      changes = addUnitMacros(path);
+      changes |= addUnitForcedIncludes(path);
+      if (changes && LOG.isDebugEnabled()) {
+        LOG.debug("unit macros: {}", unitMacros);
+      }
     }
   }
 
@@ -640,15 +645,17 @@ public class CxxPreprocessor extends Preprocessor {
     }
   }
 
-  private void addUnitMacros(String level) {
+  private boolean addUnitMacros(String level) {
     var defines = squidConfig.getLevelValues(level, CxxSquidConfiguration.DEFINES);
     if (!defines.isEmpty()) {
       Collections.reverse(defines);
       var macros = parseMacroDefinitions(defines);
       if (!macros.isEmpty()) {
         unitMacros.putAll(macros);
+        return true;
       }
     }
+    return false;
   }
 
   private void addGlobalIncludeDirectories() {
@@ -656,10 +663,12 @@ public class CxxPreprocessor extends Preprocessor {
     unitCodeProvider.setIncludeRoots(globalIncludeDirectories,squidConfig.getBaseDir());
   }
 
-  private void addUnitIncludeDirectories(String level) {
+  private boolean addUnitIncludeDirectories(String level) {
     List<String> unitIncludeDirectories = squidConfig.getLevelValues(level, CxxSquidConfiguration.INCLUDE_DIRECTORIES);
+    boolean hasUnitIncludes = !unitIncludeDirectories.isEmpty();
     unitIncludeDirectories.addAll(globalIncludeDirectories);
     unitCodeProvider.setIncludeRoots(unitIncludeDirectories,squidConfig.getBaseDir());
+    return hasUnitIncludes;
   }
 
   private void addGlobalForcedIncludes() {
@@ -675,7 +684,8 @@ public class CxxPreprocessor extends Preprocessor {
   /**
    * Parse the configured forced includes and store it into the macro library.
    */
-  private void addUnitForcedIncludes(String level) {
+  private boolean addUnitForcedIncludes(String level) {
+    int oldHash = unitMacros.hashCode();
     for (var include : squidConfig.getLevelValues(level, CxxSquidConfiguration.FORCE_INCLUDES)) {
       if (!include.isEmpty()) {
         LOG.debug("parsing force include: '{}'", include);
@@ -683,6 +693,7 @@ public class CxxPreprocessor extends Preprocessor {
                          squidConfig.getCharset());
       }
     }
+    return oldHash != unitMacros.hashCode();
   }
 
   private PreprocessorAction handleIfdefLine(AstNode ast, Token token, String filename) {
