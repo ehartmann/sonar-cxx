@@ -108,9 +108,10 @@ public class MapChain<K, V> {
 
   @Override
   public String toString() {
-    String mapAsString = enabled.keySet().stream()
+
+    String mapAsString = enabled.values().stream()
       .map(key -> key + "=" + enabled.get(key))
-      .collect(Collectors.joining(", ", "{", "}"));
+      .collect(Collectors.joining(", ", "[", "]"));
     return mapAsString;
   }
 
