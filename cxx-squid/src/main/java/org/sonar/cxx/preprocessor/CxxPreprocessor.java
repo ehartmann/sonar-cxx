@@ -172,7 +172,6 @@ public class CxxPreprocessor extends Preprocessor {
     // make sure, that the following code is executed for a new file only
     if (currentContextFile != context.getFile()) {
       currentContextFile = context.getFile();
-      LOG.debug("start preprocessing '{}'", currentContextFile);
 
       unitCodeProvider = new SourceCodeProvider(currentContextFile);
       unitMacros = new MapChain<>();
@@ -188,12 +187,20 @@ public class CxxPreprocessor extends Preprocessor {
         addGlobalForcedIncludes();
         globalMacros = new MapChain<>();
         globalMacros.putAll(unitMacros);
+
+        LOG.debug("global include directories: {}", unitCodeProvider.getIncludeRoots());
+        LOG.debug("global macros: {}", globalMacros);
       }
+
+      LOG.debug("process unit '{}'", currentContextFile);
 
       // add unit specific stuff
       addUnitIncludeDirectories(path);
       addUnitMacros(path);
       addUnitForcedIncludes(path);
+
+      LOG.debug("unit include directories: {}", unitCodeProvider.getIncludeRoots());
+      LOG.debug("unit macros: {}", unitMacros);
     }
   }
 
@@ -569,8 +576,6 @@ public class CxxPreprocessor extends Preprocessor {
     unitMacros = null;
     unitCodeProvider = null;
     currentContextFile = null;
-
-    LOG.debug("finished preprocessing '{}'", file);
   }
 
   public SourceCodeProvider getCodeProvider() {
@@ -944,7 +949,6 @@ public class CxxPreprocessor extends Preprocessor {
 
       if (macro != null) {
         result.put(macro.name, macro);
-        LOG.debug("preprocessor: use macro: '{}'", macro);
       }
     }
     return result;
