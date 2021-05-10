@@ -27,8 +27,8 @@ import org.sonar.cxx.CxxAstScanner;
 import org.sonar.cxx.checks.CxxFileTester;
 import org.sonar.cxx.checks.CxxFileTesterHelper;
 import org.sonar.cxx.config.CxxSquidConfiguration;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.cxx.squidbridge.api.SourceFile;
+import org.sonar.cxx.squidbridge.checks.CheckMessagesVerifier;
 
 public class ParsingErrorCheckTest {
 

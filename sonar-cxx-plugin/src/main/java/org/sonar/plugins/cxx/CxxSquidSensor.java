@@ -64,11 +64,11 @@ import org.sonar.cxx.visitors.CxxCpdVisitor;
 import org.sonar.cxx.visitors.CxxHighlighterVisitor;
 import org.sonar.cxx.visitors.CxxPublicApiVisitor;
 import org.sonar.cxx.visitors.MultiLocatitionSquidCheck;
-import org.sonar.squidbridge.AstScanner;
-import org.sonar.squidbridge.SquidAstVisitor;
-import org.sonar.squidbridge.api.SourceCode;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.indexer.QueryByType;
+import org.sonar.cxx.squidbridge.AstScanner;
+import org.sonar.cxx.squidbridge.SquidAstVisitor;
+import org.sonar.cxx.squidbridge.api.SourceCode;
+import org.sonar.cxx.squidbridge.api.SourceFile;
+import org.sonar.cxx.squidbridge.indexer.QueryByType;
 
 /**
  * {@inheritDoc}

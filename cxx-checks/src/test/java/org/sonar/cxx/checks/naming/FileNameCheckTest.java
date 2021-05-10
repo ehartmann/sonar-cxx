@@ -26,8 +26,8 @@ import org.junit.Test;
 import org.sonar.cxx.CxxAstScanner;
 import org.sonar.cxx.checks.CxxFileTester;
 import org.sonar.cxx.checks.CxxFileTesterHelper;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifierRule;
+import org.sonar.cxx.squidbridge.api.SourceFile;
+import org.sonar.cxx.squidbridge.checks.CheckMessagesVerifierRule;
 
 public class FileNameCheckTest {
 

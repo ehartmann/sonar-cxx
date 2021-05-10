@@ -31,7 +31,7 @@ import org.sonar.cxx.checks.CxxFileTesterHelper;
 import org.sonar.cxx.utils.CxxReportIssue;
 import org.sonar.cxx.utils.CxxReportLocation;
 import org.sonar.cxx.visitors.MultiLocatitionSquidCheck;
-import org.sonar.squidbridge.api.SourceFile;
+import org.sonar.cxx.squidbridge.api.SourceFile;
 
 public class FunctionCognitiveComplexityCheckTest {
 

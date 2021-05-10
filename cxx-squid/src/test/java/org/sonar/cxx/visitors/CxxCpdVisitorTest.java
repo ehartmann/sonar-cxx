@@ -30,7 +30,7 @@ import org.sonar.cxx.CxxAstScanner;
 import org.sonar.cxx.api.CxxMetric;
 import org.sonar.cxx.config.CxxSquidConfiguration;
 import org.sonar.cxx.utils.TestUtils;
-import org.sonar.squidbridge.api.SourceFile;
+import org.sonar.cxx.squidbridge.api.SourceFile;
 
 public class CxxCpdVisitorTest {
 

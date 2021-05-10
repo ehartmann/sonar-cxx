@@ -30,10 +30,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 import org.sonar.cxx.api.CxxMetric;
-import org.sonar.squidbridge.AstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.api.SourceProject;
-import org.sonar.squidbridge.indexer.QueryByType;
+import org.sonar.cxx.squidbridge.AstScanner;
+import org.sonar.cxx.squidbridge.api.SourceFile;
+import org.sonar.cxx.squidbridge.api.SourceProject;
+import org.sonar.cxx.squidbridge.indexer.QueryByType;
 
 public class CxxAstScannerTest {
 

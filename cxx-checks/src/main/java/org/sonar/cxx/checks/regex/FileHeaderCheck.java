@@ -32,9 +32,9 @@ import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.cxx.checks.utils.CheckUtils;
 import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
-import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.checks.SquidCheck;
+import org.sonar.cxx.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.cxx.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.cxx.squidbridge.checks.SquidCheck;
 
 /**
  * FileHeaderCheck - similar Vera++ rule T013 "No copyright notice found"

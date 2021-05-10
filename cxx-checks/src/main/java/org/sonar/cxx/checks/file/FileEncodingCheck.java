@@ -28,9 +28,9 @@ import java.nio.file.Files;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
-import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.NoSqale;
-import org.sonar.squidbridge.checks.SquidCheck;
+import org.sonar.cxx.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.cxx.squidbridge.annotations.NoSqale;
+import org.sonar.cxx.squidbridge.checks.SquidCheck;
 
 /**
  * FileEncodingCheck

@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.sonar.cxx.CxxAstScanner;
 import org.sonar.cxx.api.CxxMetric;
 import org.sonar.cxx.utils.TestUtils;
-import org.sonar.squidbridge.api.SourceFile;
+import org.sonar.cxx.squidbridge.api.SourceFile;
 
 public class CxxFileLinesVisitorTest {
 

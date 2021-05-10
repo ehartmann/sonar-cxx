@@ -42,21 +42,21 @@ import org.sonar.cxx.visitors.CxxLinesOfCodeInFunctionBodyVisitor;
 import org.sonar.cxx.visitors.CxxLinesOfCodeVisitor;
 import org.sonar.cxx.visitors.CxxParseErrorLoggerVisitor;
 import org.sonar.cxx.visitors.CxxPublicApiVisitor;
-import org.sonar.squidbridge.AstScanner;
-import org.sonar.squidbridge.CommentAnalyser;
-import org.sonar.squidbridge.SourceCodeBuilderVisitor;
-import org.sonar.squidbridge.SquidAstVisitor;
-import org.sonar.squidbridge.SquidAstVisitorContextImpl;
-import org.sonar.squidbridge.api.SourceClass;
-import org.sonar.squidbridge.api.SourceCode;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.api.SourceFunction;
-import org.sonar.squidbridge.api.SourceProject;
-import org.sonar.squidbridge.indexer.QueryByType;
-import org.sonar.squidbridge.metrics.CommentsVisitor;
-import org.sonar.squidbridge.metrics.ComplexityVisitor;
-import org.sonar.squidbridge.metrics.CounterVisitor;
-import org.sonar.squidbridge.metrics.LinesVisitor;
+import org.sonar.cxx.squidbridge.AstScanner;
+import org.sonar.cxx.squidbridge.CommentAnalyser;
+import org.sonar.cxx.squidbridge.SourceCodeBuilderVisitor;
+import org.sonar.cxx.squidbridge.SquidAstVisitor;
+import org.sonar.cxx.squidbridge.SquidAstVisitorContextImpl;
+import org.sonar.cxx.squidbridge.api.SourceClass;
+import org.sonar.cxx.squidbridge.api.SourceCode;
+import org.sonar.cxx.squidbridge.api.SourceFile;
+import org.sonar.cxx.squidbridge.api.SourceFunction;
+import org.sonar.cxx.squidbridge.api.SourceProject;
+import org.sonar.cxx.squidbridge.indexer.QueryByType;
+import org.sonar.cxx.squidbridge.metrics.CommentsVisitor;
+import org.sonar.cxx.squidbridge.metrics.ComplexityVisitor;
+import org.sonar.cxx.squidbridge.metrics.CounterVisitor;
+import org.sonar.cxx.squidbridge.metrics.LinesVisitor;
 
 public final class CxxAstScanner {
 

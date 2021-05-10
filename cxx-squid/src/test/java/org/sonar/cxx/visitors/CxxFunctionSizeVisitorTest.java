@@ -27,7 +27,7 @@ import org.sonar.cxx.CxxFileTester;
 import org.sonar.cxx.CxxFileTesterHelper;
 import org.sonar.cxx.api.CxxMetric;
 import org.sonar.cxx.config.CxxSquidConfiguration;
-import org.sonar.squidbridge.api.SourceFile;
+import org.sonar.cxx.squidbridge.api.SourceFile;
 
 public class CxxFunctionSizeVisitorTest {
 
