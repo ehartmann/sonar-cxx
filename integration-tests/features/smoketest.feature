@@ -142,7 +142,7 @@ Feature: Smoketests
     And rule "cppcheck:uninitvar" is activated
     And rule "cppcheck:unusedFunction" is activated
     And rule "cppcheck:missingInclude" is activated
-    When I run sonar-scanner with "-X -Dsonar.sourceEncoding=UTF-16LE"
+    When I run sonar-scanner with "-X"
     Then the analysis finishes successfully
     And the analysis in server has completed
     And the analysis log contains no error/warning messages except those matching:

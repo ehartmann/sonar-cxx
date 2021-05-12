@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.InterruptedIOException;
 import java.util.Collection;
 import java.util.List;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.cxx.squidbridge.api.AnalysisException;
@@ -79,10 +80,12 @@ public class AstScanner<G extends Grammar> {
     scanFiles(ImmutableList.of(file));
   }
 
+  public void scanInputFile(InputFile inputFile) {
+    scanInputFiles(ImmutableList.of(inputFile));
+  }
+
   public void scanFiles(Collection<File> files) {
-    for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
-      visitor.init();
-    }
+    initVisitors();
 
     AstWalker astWalker = new AstWalker(visitors);
 
@@ -93,53 +96,95 @@ public class AstScanner<G extends Grammar> {
       Exception parseException = null;
       AstNode ast = null;
       try {
-        ast = parser.parse(file);
-      } catch (RecognitionException e) {
-        checkInterrupted(e);
-        parseException = e;
-        LOG.error("Unable to parse file: " + file.getAbsolutePath());
-        LOG.error(e.getMessage());
-      } catch (Exception e) {
-        checkInterrupted(e);
-        parseException = e;
-        LOG.error("Unable to parse file: " + file.getAbsolutePath(), e);
+        try {
+          ast = parser.parse(file);
+        } catch (Exception e) {
+          parseException = handleParseException(file, e);
+        }
+        walkAndVisit(astWalker, ast, parseException);
       } catch (Throwable e) {
         throw new AnalysisException("Unable to parse file: " + file.getAbsolutePath(), e);
       }
+    }
 
+    destroyVisitors();
+    decorateSquidTree();
+  }
+
+  public void scanInputFiles(Iterable<InputFile> inputFiles) {
+    initVisitors();
+
+    AstWalker astWalker = new AstWalker(visitors);
+
+    for (InputFile inputFile : inputFiles) {
+      File file = new File(inputFile.uri().getPath());
+      checkCancel();
+      context.setFile(file, filesMetric);
+
+      Exception parseException = null;
+      AstNode ast = null;
       try {
-        if (parseException == null) {
-          astWalker.walkAndVisit(ast);
-        } else {
-          // process parse error
-          for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
-            visitor.visitFile(ast);
-          }
-          for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
-            if (visitor instanceof AstScannerExceptionHandler) {
-              if (parseException instanceof RecognitionException) {
-                ((AstScannerExceptionHandler) visitor)
-                  .processRecognitionException((RecognitionException) parseException);
-              } else {
-                ((AstScannerExceptionHandler) visitor).processException(parseException);
-              }
-            }
-          }
-          for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
-            visitor.leaveFile(ast);
-          }
+        try {
+          ast = parser.parse(inputFile.contents());
+        } catch (Exception e) {
+          parseException = handleParseException(file, e);
         }
-        context.popTillSourceProject();
+        walkAndVisit(astWalker, ast, parseException);
       } catch (Throwable e) {
-        throw new AnalysisException("Unable to analyze file: " + file.getAbsolutePath(), e);
+        throw new AnalysisException("Unable to parse file: " + file.getAbsolutePath(), e);
       }
     }
 
+    destroyVisitors();
+    decorateSquidTree();
+  }
+
+  private Exception handleParseException(File file, Exception e) {
+    checkInterrupted(e);
+    if (e instanceof RecognitionException) {
+      LOG.error("Unable to parse file: " + file.getAbsolutePath());
+      LOG.error(e.getMessage());
+    } else {
+      LOG.error("Unable to parse file: " + file.getAbsolutePath(), e);
+    }
+    return e;
+  }
+
+  private void walkAndVisit(AstWalker astWalker, AstNode ast, Exception parseException) throws Throwable {
+    if (parseException == null) {
+      astWalker.walkAndVisit(ast);
+    } else {
+      // process parse error
+      for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
+        visitor.visitFile(ast);
+      }
+      for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
+        if (visitor instanceof AstScannerExceptionHandler) {
+          if (parseException instanceof RecognitionException) {
+            ((AstScannerExceptionHandler) visitor)
+              .processRecognitionException((RecognitionException) parseException);
+          } else {
+            ((AstScannerExceptionHandler) visitor).processException(parseException);
+          }
+        }
+      }
+      for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
+        visitor.leaveFile(ast);
+      }
+    }
+    context.popTillSourceProject();
+  }
+
+  private void initVisitors() {
+    for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
+      visitor.init();
+    }
+  }
+
+  private void destroyVisitors() {
     for (SquidAstVisitor<? extends Grammar> visitor : visitors) {
       visitor.destroy();
     }
-
-    decorateSquidTree();
   }
 
   /**
