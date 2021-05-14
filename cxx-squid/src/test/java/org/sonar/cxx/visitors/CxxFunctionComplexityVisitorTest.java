@@ -37,9 +37,9 @@ public class CxxFunctionComplexityVisitorTest {
     CxxSquidConfiguration squidConfig = new CxxSquidConfiguration();
     squidConfig.add(CxxSquidConfiguration.SONAR_PROJECT_PROPERTIES, CxxSquidConfiguration.FUNCTION_COMPLEXITY_THRESHOLD,
                     "5");
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/metrics/FunctionComplexity.cc",
+    var tester = CxxFileTesterHelper.create("src/test/resources/metrics/FunctionComplexity.cc",
                                                                    ".", "");
-    SourceFile file = CxxAstScanner.scanSingleFileConfig(tester.asFile(), squidConfig);
+    SourceFile file = CxxAstScanner.scanSingleInputFileConfig(tester.asInputFile(), squidConfig);
 
     var softly = new SoftAssertions();
     softly.assertThat(file.getInt(CxxMetric.COMPLEX_FUNCTIONS)).isEqualTo(4);
@@ -50,8 +50,8 @@ public class CxxFunctionComplexityVisitorTest {
   @Test
   public void testPublishMeasuresForEmptyFile() throws IOException {
 
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/metrics/EmptyFile.cc", ".", "");
-    SourceFile file = CxxAstScanner.scanSingleFile(tester.asFile());
+    var tester = CxxFileTesterHelper.create("src/test/resources/metrics/EmptyFile.cc", ".", "");
+    SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile());
 
     var softly = new SoftAssertions();
     softly.assertThat(file.getInt(CxxMetric.COMPLEX_FUNCTIONS)).isZero();

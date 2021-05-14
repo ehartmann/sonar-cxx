@@ -33,6 +33,10 @@ import org.sonar.api.batch.sensor.internal.SensorContextTester;
 
 public class CxxFileTesterHelper {
 
+  private CxxFileTesterHelper() {
+    // utility class
+  }
+
   public static CxxFileTester create(String fileName, String basePath)
     throws UnsupportedEncodingException, IOException {
     return create(fileName, basePath, Charset.defaultCharset());

@@ -22,7 +22,6 @@ package org.sonar.cxx;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Grammar;
-import java.io.File;
 import static java.lang.Math.min;
 import java.util.Collection;
 import org.sonar.api.batch.fs.InputFile;
@@ -67,15 +66,10 @@ public final class CxxAstScanner {
   /**
    * Helper method for testing checks without having to deploy them on a Sonar instance.
    *
-   * @param file is the file to be checked
+   * @param inputFile is the file to be checked
    * @param visitors AST checks and visitors to use
    * @return file checked with measures and issues
    */
-  @SafeVarargs
-  public static SourceFile scanSingleFile(File file, SquidAstVisitor<Grammar>... visitors) {
-    return scanSingleFileConfig(file, new CxxSquidConfiguration(), visitors);
-  }
-
   @SafeVarargs
   public static SourceFile scanSingleInputFile(InputFile inputFile, SquidAstVisitor<Grammar>... visitors) {
     return scanSingleInputFileConfig(inputFile, new CxxSquidConfiguration(), visitors);
@@ -84,26 +78,11 @@ public final class CxxAstScanner {
   /**
    * Helper method for scanning a single file
    *
-   * @param file is the file to be checked
+   * @param inputFile is the file to be checked
    * @param squidConfig the Squid configuration
    * @param visitors AST checks and visitors to use
    * @return file checked with measures and issues
    */
-  public static SourceFile scanSingleFileConfig(File file, CxxSquidConfiguration squidConfig,
-                                                SquidAstVisitor<Grammar>... visitors) {
-    if (!file.isFile()) {
-      throw new IllegalArgumentException("File '" + file + "' not found.");
-    }
-    AstScanner<Grammar> scanner = create(squidConfig, visitors);
-    scanner.scanFile(file);
-    Collection<SourceCode> sources = scanner.getIndex().search(new QueryByType(SourceFile.class));
-    if (sources.size() != 1) {
-      throw new IllegalStateException("Only one SourceFile was expected whereas "
-                                        + sources.size() + " has been returned.");
-    }
-    return (SourceFile) sources.iterator().next();
-  }
-
   public static SourceFile scanSingleInputFileConfig(InputFile inputFile, CxxSquidConfiguration squidConfig,
                                                      SquidAstVisitor<Grammar>... visitors) {
     if (!inputFile.isFile()) {
