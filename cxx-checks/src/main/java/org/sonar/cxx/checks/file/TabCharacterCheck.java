@@ -23,12 +23,12 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.cxx.checks.utils.CheckUtils;
 import org.sonar.cxx.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.cxx.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.cxx.squidbridge.checks.SquidCheck;
@@ -67,7 +67,7 @@ public class TabCharacterCheck extends SquidCheck<Grammar> implements CxxCharset
 
   @Override
   public void visitFile(AstNode astNode) {
-    try ( var br = new BufferedReader(CheckUtils.getInputSteam(getContext().getInputFile().file(), defaultCharset))) {
+    try ( var br = new BufferedReader(new InputStreamReader(getContext().getInputFile().inputStream()))) {
       String line;
       int nr = 0;
 
