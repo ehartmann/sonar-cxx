@@ -37,8 +37,8 @@ public class TabCharacterCheckTest {
   public void fileWithTabsOneMessagePerFile() throws UnsupportedEncodingException, IOException {
     check.createLineViolation = false;
 
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/checks/TabCharacter.cc", ".");
-    SourceFile file = CxxAstScanner.scanSingleFile(tester.asFile(), check);
+    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/TabCharacter.cc", ".");
+    SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().withMessage("Replace all tab characters in this file by sequences of white-spaces.")
@@ -49,8 +49,8 @@ public class TabCharacterCheckTest {
   @SuppressWarnings("squid:S2699") // ... verify contains the assertion
   public void fileWithTabsOneMessagePerLine() throws UnsupportedEncodingException, IOException {
     check.createLineViolation = true;
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/checks/TabCharacter.cc", ".");
-    SourceFile file = CxxAstScanner.scanSingleFile(tester.asFile(), check);
+    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/TabCharacter.cc", ".");
+    SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(3).withMessage("Replace all tab characters in this line by sequences of white-spaces.")
@@ -62,8 +62,8 @@ public class TabCharacterCheckTest {
   @SuppressWarnings("squid:S2699") // ... verify contains the assertion
   public void fileWithoutTabs() throws UnsupportedEncodingException, IOException {
     check.createLineViolation = false;
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/checks/NonEmptyFile.cc", ".");
-    SourceFile file = CxxAstScanner.scanSingleFile(tester.asFile(), check);
+    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/NonEmptyFile.cc", ".");
+    SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .noMore();

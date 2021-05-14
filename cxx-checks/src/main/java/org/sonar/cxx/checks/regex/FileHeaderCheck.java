@@ -31,10 +31,10 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.cxx.checks.utils.CheckUtils;
-import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
 import org.sonar.cxx.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.cxx.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.cxx.squidbridge.checks.SquidCheck;
+import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
 
 /**
  * FileHeaderCheck - similar Vera++ rule T013 "No copyright notice found"
@@ -105,7 +105,7 @@ public class FileHeaderCheck extends SquidCheck<Grammar> implements CxxCharsetAw
   public void visitFile(AstNode astNode) {
     try {
       if (isRegularExpression) {
-        String fileContent = CheckUtils.getFileContent(getContext().getFile(), defaultCharset);
+        String fileContent = getContext().getInputFile().contents();
         checkRegularExpression(fileContent);
       } else {
         try ( var br = new BufferedReader(CheckUtils.getInputSteam(getContext().getFile(), defaultCharset))) {

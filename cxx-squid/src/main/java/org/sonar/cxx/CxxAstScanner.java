@@ -25,23 +25,11 @@ import com.sonar.sslr.api.Grammar;
 import java.io.File;
 import static java.lang.Math.min;
 import java.util.Collection;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.cxx.api.CxxMetric;
 import org.sonar.cxx.config.CxxSquidConfiguration;
 import org.sonar.cxx.parser.CxxGrammarImpl;
 import org.sonar.cxx.parser.CxxParser;
-import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
-import org.sonar.cxx.visitors.CxxCognitiveComplexityVisitor;
-import org.sonar.cxx.visitors.CxxCpdVisitor;
-import org.sonar.cxx.visitors.CxxCyclomaticComplexityVisitor;
-import org.sonar.cxx.visitors.CxxFileLinesVisitor;
-import org.sonar.cxx.visitors.CxxFileVisitor;
-import org.sonar.cxx.visitors.CxxFunctionComplexityVisitor;
-import org.sonar.cxx.visitors.CxxFunctionSizeVisitor;
-import org.sonar.cxx.visitors.CxxHighlighterVisitor;
-import org.sonar.cxx.visitors.CxxLinesOfCodeInFunctionBodyVisitor;
-import org.sonar.cxx.visitors.CxxLinesOfCodeVisitor;
-import org.sonar.cxx.visitors.CxxParseErrorLoggerVisitor;
-import org.sonar.cxx.visitors.CxxPublicApiVisitor;
 import org.sonar.cxx.squidbridge.AstScanner;
 import org.sonar.cxx.squidbridge.CommentAnalyser;
 import org.sonar.cxx.squidbridge.SourceCodeBuilderVisitor;
@@ -57,6 +45,19 @@ import org.sonar.cxx.squidbridge.metrics.CommentsVisitor;
 import org.sonar.cxx.squidbridge.metrics.ComplexityVisitor;
 import org.sonar.cxx.squidbridge.metrics.CounterVisitor;
 import org.sonar.cxx.squidbridge.metrics.LinesVisitor;
+import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
+import org.sonar.cxx.visitors.CxxCognitiveComplexityVisitor;
+import org.sonar.cxx.visitors.CxxCpdVisitor;
+import org.sonar.cxx.visitors.CxxCyclomaticComplexityVisitor;
+import org.sonar.cxx.visitors.CxxFileLinesVisitor;
+import org.sonar.cxx.visitors.CxxFileVisitor;
+import org.sonar.cxx.visitors.CxxFunctionComplexityVisitor;
+import org.sonar.cxx.visitors.CxxFunctionSizeVisitor;
+import org.sonar.cxx.visitors.CxxHighlighterVisitor;
+import org.sonar.cxx.visitors.CxxLinesOfCodeInFunctionBodyVisitor;
+import org.sonar.cxx.visitors.CxxLinesOfCodeVisitor;
+import org.sonar.cxx.visitors.CxxParseErrorLoggerVisitor;
+import org.sonar.cxx.visitors.CxxPublicApiVisitor;
 
 public final class CxxAstScanner {
 
@@ -75,6 +76,11 @@ public final class CxxAstScanner {
     return scanSingleFileConfig(file, new CxxSquidConfiguration(), visitors);
   }
 
+  @SafeVarargs
+  public static SourceFile scanSingleInputFile(InputFile inputFile, SquidAstVisitor<Grammar>... visitors) {
+    return scanSingleInputFileConfig(inputFile, new CxxSquidConfiguration(), visitors);
+  }
+
   /**
    * Helper method for scanning a single file
    *
@@ -90,6 +96,21 @@ public final class CxxAstScanner {
     }
     AstScanner<Grammar> scanner = create(squidConfig, visitors);
     scanner.scanFile(file);
+    Collection<SourceCode> sources = scanner.getIndex().search(new QueryByType(SourceFile.class));
+    if (sources.size() != 1) {
+      throw new IllegalStateException("Only one SourceFile was expected whereas "
+                                        + sources.size() + " has been returned.");
+    }
+    return (SourceFile) sources.iterator().next();
+  }
+
+  public static SourceFile scanSingleInputFileConfig(InputFile inputFile, CxxSquidConfiguration squidConfig,
+                                                     SquidAstVisitor<Grammar>... visitors) {
+    if (!inputFile.isFile()) {
+      throw new IllegalArgumentException("File '" + inputFile.toString() + "' not found.");
+    }
+    AstScanner<Grammar> scanner = create(squidConfig, visitors);
+    scanner.scanInputFile(inputFile);
     Collection<SourceCode> sources = scanner.getIndex().search(new QueryByType(SourceFile.class));
     if (sources.size() != 1) {
       throw new IllegalStateException("Only one SourceFile was expected whereas "

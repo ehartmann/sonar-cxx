@@ -39,9 +39,9 @@ public class FileEncodingCheckTest {
   @SuppressWarnings("squid:S2699") // ... verify contains the assertion
   public void testAsciiFileAsciiEncoding() throws UnsupportedEncodingException, IOException {
     var squidConfig = new CxxSquidConfiguration("", StandardCharsets.US_ASCII);
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/checks/TabCharacter.cc", ".",
-                                                                   StandardCharsets.US_ASCII);
-    SourceFile file = CxxAstScanner.scanSingleFileConfig(tester.asFile(), squidConfig, check);
+    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/TabCharacter.cc", ".",
+                                                      StandardCharsets.US_ASCII);
+    SourceFile file = CxxAstScanner.scanSingleInputFileConfig(tester.asInputFile(), squidConfig, check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .noMore();
@@ -51,9 +51,9 @@ public class FileEncodingCheckTest {
   @SuppressWarnings("squid:S2699") // ... verify contains the assertion
   public void testAsciiFileUtf8Encoding() throws UnsupportedEncodingException, IOException {
     var squidConfig = new CxxSquidConfiguration("", StandardCharsets.UTF_8);
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/checks/TabCharacter.cc", ".",
-                                                                   StandardCharsets.UTF_8);
-    SourceFile file = CxxAstScanner.scanSingleFileConfig(tester.asFile(), squidConfig, check);
+    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/TabCharacter.cc", ".",
+                                                      StandardCharsets.UTF_8);
+    SourceFile file = CxxAstScanner.scanSingleInputFileConfig(tester.asInputFile(), squidConfig, check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .noMore();
@@ -63,9 +63,9 @@ public class FileEncodingCheckTest {
   @SuppressWarnings("squid:S2699") // ... verify contains the assertion
   public void testUnicodeFileUtf16Encoding() throws UnsupportedEncodingException, IOException {
     var squidConfig = new CxxSquidConfiguration("", StandardCharsets.UTF_16);
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/checks/Unicode.cc", ".",
-                                                                   StandardCharsets.UTF_16);
-    SourceFile file = CxxAstScanner.scanSingleFileConfig(tester.asFile(), squidConfig, check);
+    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/Unicode.cc", ".",
+                                                      StandardCharsets.UTF_16);
+    SourceFile file = CxxAstScanner.scanSingleInputFileConfig(tester.asInputFile(), squidConfig, check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .noMore();
   }
@@ -75,9 +75,9 @@ public class FileEncodingCheckTest {
   public void testUnicodeFileAsciiEncoding() throws IOException {
     Charset charset = StandardCharsets.US_ASCII;
     var squidConfig = new CxxSquidConfiguration("", charset);
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/checks/Unicode.cc", ".",
-                                                                   charset);
-    SourceFile file = CxxAstScanner.scanSingleFileConfig(tester.asFile(), squidConfig, check);
+    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/Unicode.cc", ".",
+                                                      charset);
+    SourceFile file = CxxAstScanner.scanSingleInputFileConfig(tester.asInputFile(), squidConfig, check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().withMessage("Not all characters of the file can be encoded with the predefined charset " + charset.name()
                             + ".")

@@ -39,8 +39,9 @@ public class ParsingErrorCheckTest {
     squidConfig.add(CxxSquidConfiguration.SONAR_PROJECT_PROPERTIES, CxxSquidConfiguration.ERROR_RECOVERY_ENABLED,
                     "false");
 
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/checks/parsingError1.cc", ".");
-    SourceFile file = CxxAstScanner.scanSingleFileConfig(tester.asFile(), squidConfig, new ParsingErrorCheck());
+    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/parsingError1.cc", ".");
+    SourceFile file = CxxAstScanner
+      .scanSingleInputFileConfig(tester.asInputFile(), squidConfig, new ParsingErrorCheck());
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(4).withMessageThat(containsString("Parse error"))
@@ -54,8 +55,9 @@ public class ParsingErrorCheckTest {
     squidConfig.add(CxxSquidConfiguration.SONAR_PROJECT_PROPERTIES, CxxSquidConfiguration.ERROR_RECOVERY_ENABLED,
                     "false");
 
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/checks/parsingError2.cc", ".");
-    SourceFile file = CxxAstScanner.scanSingleFileConfig(tester.asFile(), squidConfig, new ParsingErrorCheck());
+    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/parsingError2.cc", ".");
+    SourceFile file = CxxAstScanner
+      .scanSingleInputFileConfig(tester.asInputFile(), squidConfig, new ParsingErrorCheck());
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(2).withMessageThat(containsString("Parse error"))

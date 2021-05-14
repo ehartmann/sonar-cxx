@@ -36,8 +36,8 @@ public class TooLongLineCheckTest {
   @SuppressWarnings("squid:S2699") // ... verify contains the assertion
   public void test() throws UnsupportedEncodingException, IOException {
     check.maximumLineLength = 20;
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/checks/LineLength.cc", ".");
-    SourceFile file = CxxAstScanner.scanSingleFile(tester.asFile(), check);
+    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/LineLength.cc", ".");
+    SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(5).withMessage("Split this 28 characters long line (which is greater than 20 authorized).")

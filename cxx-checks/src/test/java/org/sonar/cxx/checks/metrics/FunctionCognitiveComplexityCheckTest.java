@@ -28,10 +28,10 @@ import org.junit.Test;
 import org.sonar.cxx.CxxAstScanner;
 import org.sonar.cxx.checks.CxxFileTester;
 import org.sonar.cxx.checks.CxxFileTesterHelper;
+import org.sonar.cxx.squidbridge.api.SourceFile;
 import org.sonar.cxx.utils.CxxReportIssue;
 import org.sonar.cxx.utils.CxxReportLocation;
 import org.sonar.cxx.visitors.MultiLocatitionSquidCheck;
-import org.sonar.cxx.squidbridge.api.SourceFile;
 
 public class FunctionCognitiveComplexityCheckTest {
 
@@ -39,9 +39,9 @@ public class FunctionCognitiveComplexityCheckTest {
   public void check() throws UnsupportedEncodingException, IOException {
     var check = new FunctionCognitiveComplexityCheck();
     check.setMaxComplexity(5);
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester(
+    CxxFileTester tester = CxxFileTesterHelper.create(
       "src/test/resources/checks/FunctionCognitiveComplexity.cc", ".");
-    SourceFile file = CxxAstScanner.scanSingleFile(tester.asFile(), check);
+    SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     Set<CxxReportIssue> issues = MultiLocatitionSquidCheck.getMultiLocationCheckMessages(file);
     assertThat(issues).isNotNull();
 

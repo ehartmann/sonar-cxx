@@ -32,8 +32,8 @@ public class MethodNameCheckTest {
   @SuppressWarnings("squid:S2699") // ... verify contains the assertion
   public void test() throws Exception {
     var check = new MethodNameCheck();
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/checks/MethodName.cc", ".");
-    SourceFile file = CxxAstScanner.scanSingleFile(tester.asFile(), check);
+    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/MethodName.cc", ".");
+    SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(12).withMessage(
       "Rename method \"Badly_Named_Method2\" to match the regular expression ^[A-Z][A-Za-z0-9]{2,30}$.")

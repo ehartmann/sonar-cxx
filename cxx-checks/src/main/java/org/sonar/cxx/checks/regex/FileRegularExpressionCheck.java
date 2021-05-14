@@ -32,10 +32,10 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.cxx.checks.utils.CheckUtils;
-import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
 import org.sonar.cxx.squidbridge.annotations.NoSqale;
 import org.sonar.cxx.squidbridge.annotations.RuleTemplate;
 import org.sonar.cxx.squidbridge.checks.SquidCheck;
+import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
 
 /**
  * FileRegularExpressionCheck
@@ -123,7 +123,7 @@ public class FileRegularExpressionCheck extends SquidCheck<Grammar> implements C
     }
 
     try {
-      String fileContent = CheckUtils.getFileContent(getContext().getFile(), defaultCharset);
+      String fileContent = getContext().getInputFile().contents();
       Matcher matcher = pattern.matcher(fileContent);
 
       if (compare(invertRegularExpression, matcher.find())) {

@@ -107,10 +107,6 @@ public class CheckUtils {
     return lines;
   }
 
-  public static String getFileContent(File source, Charset defaultCharset) throws IOException {
-    return getFileLines(source, defaultCharset).stream().collect(Collectors.joining(System.lineSeparator()));
-  }
-
   public static InputStreamReader getInputSteam(File source, Charset defaultCharset) throws IOException {
     BOMInputStream bomInputStream = null;
     try {

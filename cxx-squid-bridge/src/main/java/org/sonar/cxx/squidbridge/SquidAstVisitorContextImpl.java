@@ -29,6 +29,7 @@ import com.sonar.sslr.api.Token;
 import java.io.File;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.cxx.squidbridge.api.CheckMessage;
 import org.sonar.cxx.squidbridge.api.CodeCheck;
 import org.sonar.cxx.squidbridge.api.SourceCode;
@@ -41,6 +42,7 @@ public class SquidAstVisitorContextImpl<G extends Grammar> extends SquidAstVisit
   private final Deque<SourceCode> sourceCodeStack = new ArrayDeque<SourceCode>();
   private G grammar;
   private File file;
+  private InputFile inputFile;
   private final SourceProject project;
   private CommentAnalyser commentAnalyser;
 
@@ -102,6 +104,11 @@ public class SquidAstVisitorContextImpl<G extends Grammar> extends SquidAstVisit
     peekSourceCode().setMeasure(filesMetric, 1);
   }
 
+  public void setInputFile(InputFile inputFile, MetricDef filesMetric) {
+    this.inputFile = inputFile;
+    setFile(new File(inputFile.uri().getPath()), filesMetric);
+  }
+
   protected void popTillSourceProject() {
     while (!(peekSourceCode() instanceof SourceProject)) {
       popSourceCode();
@@ -114,6 +121,14 @@ public class SquidAstVisitorContextImpl<G extends Grammar> extends SquidAstVisit
   @Override
   public File getFile() {
     return file;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public InputFile getInputFile() {
+    return inputFile;
   }
 
   public SourceProject getProject() {

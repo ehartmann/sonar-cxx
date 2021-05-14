@@ -33,8 +33,8 @@ public class ClassNameCheckTest {
   public void test() throws Exception {
     var check = new ClassNameCheck();
 
-    CxxFileTester tester = CxxFileTesterHelper.CreateCxxFileTester("src/test/resources/checks/ClassName.cc", ".");
-    SourceFile file = CxxAstScanner.scanSingleFile(tester.asFile(), check);
+    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/ClassName.cc", ".");
+    SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(3).withMessage(
       "Rename class \"MyClass_WithNotCompliantName1\" to match the regular expression ^[A-Z_][a-zA-Z0-9]+$.")

@@ -119,7 +119,7 @@ public class AstScanner<G extends Grammar> {
     for (InputFile inputFile : inputFiles) {
       File file = new File(inputFile.uri().getPath());
       checkCancel();
-      context.setFile(file, filesMetric);
+      context.setInputFile(inputFile, filesMetric);
 
       Exception parseException = null;
       AstNode ast = null;
