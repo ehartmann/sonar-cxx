@@ -22,7 +22,6 @@ package org.sonar.cxx.checks.file;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.cxx.squidbridge.annotations.ActivatedByDefault;
@@ -39,24 +38,23 @@ import org.sonar.cxx.tag.Tag;
 @SqaleConstantRemediation("1min")
 public class MissingNewLineAtEndOfFileCheck extends SquidCheck<Grammar> {
 
-  private static boolean endsWithNewline(RandomAccessFile randomAccessFile) throws IOException {
-    if (randomAccessFile.length() < 1) {
-      return false;
-    }
-    randomAccessFile.seek(randomAccessFile.length() - 1);
-    byte lastByte = randomAccessFile.readByte();
-    return lastByte == '\n' || lastByte == '\r';
-  }
-
   @Override
   public void visitFile(AstNode astNode) {
-    try ( var randomAccessFile = new RandomAccessFile(getContext().getInputFile().file(), "r")) {
-      if (!endsWithNewline(randomAccessFile)) {
+    try {
+      if (isEmptyOrNotEndingWithNewLine(getContext().getInputFile().contents())) {
         getContext().createFileViolation(this, "Add a new line at the end of this file.");
       }
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }
+  }
+
+  private static boolean isEmptyOrNotEndingWithNewLine(String content) {
+    if (content.isEmpty()) {
+      return true;
+    }
+    char lastChar = content.charAt(content.length() - 1);
+    return lastChar != '\n' && lastChar != '\r';
   }
 
 }
