@@ -38,7 +38,7 @@ public class FileHeaderCheckTest {
     var check = new FileHeaderCheck();
     check.headerFormat = "// copyright 2005";
 
-    CxxFileTester tester = CxxFileTesterHelper
+    var tester = CxxFileTesterHelper
       .create("src/test/resources/checks/FileHeaderCheck/Class1.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     assertThat(file.getCheckMessages()).isNullOrEmpty();
@@ -110,7 +110,7 @@ public class FileHeaderCheckTest {
     check.headerFormat = "// copyright \\d\\d\\d";
     check.isRegularExpression = true;
 
-    CxxFileTester tester = CxxFileTesterHelper
+    var tester = CxxFileTesterHelper
       .create("src/test/resources/checks/FileHeaderCheck/Regex1.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(null).withMessage(

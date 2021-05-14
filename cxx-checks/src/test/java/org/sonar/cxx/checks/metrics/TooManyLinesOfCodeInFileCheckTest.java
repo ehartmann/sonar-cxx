@@ -36,7 +36,7 @@ public class TooManyLinesOfCodeInFileCheckTest {
   @SuppressWarnings("squid:S2699") // ... verify contains the assertion
   public void test() throws UnsupportedEncodingException, IOException {
     check.setMax(1);
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/complexity.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/complexity.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
@@ -48,7 +48,7 @@ public class TooManyLinesOfCodeInFileCheckTest {
   @Test
   @SuppressWarnings("squid:S2699") // ... verify contains the assertion
   public void test2() throws UnsupportedEncodingException, IOException {
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/complexity.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/complexity.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())

@@ -38,7 +38,7 @@ public class TooManyLinesOfCodeInFunctionCheckTest {
   @SuppressWarnings("squid:S2699") // ... verify contains the assertion
   public void test() throws UnsupportedEncodingException, IOException {
     check.setMax(6);
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/FunctionLength.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/FunctionLength.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(21)

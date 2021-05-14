@@ -37,7 +37,7 @@ public class XPathCheckTest {
     check.xpathQuery = "//declaration";
     check.message = "Avoid declarations!! ";
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/xpath.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/xpath.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(1).withMessage(check.message)
@@ -52,7 +52,7 @@ public class XPathCheckTest {
     check.xpathQuery = "//declaration";
     check.message = "Avoid declarations!! ";
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/xpath.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/xpath.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(1).withMessage(check.message)
@@ -67,7 +67,7 @@ public class XPathCheckTest {
     check.xpathQuery = "//declaration";
     check.message = "Avoid declarations!! ";
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/xpath.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/xpath.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(1).withMessage(check.message)
@@ -82,7 +82,7 @@ public class XPathCheckTest {
     check.xpathQuery = "//declaration";
     check.message = "Avoid declarations!! ";
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/xpath.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/xpath.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .noMore();
@@ -97,7 +97,7 @@ public class XPathCheckTest {
     check.xpathQuery = "//declaration";
     check.message = "Avoid declarations!! ";
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/xpath.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/xpath.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(1).withMessage(check.message)

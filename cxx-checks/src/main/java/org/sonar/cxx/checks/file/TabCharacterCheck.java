@@ -29,11 +29,11 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.cxx.checks.utils.CheckUtils;
-import org.sonar.cxx.tag.Tag;
-import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
 import org.sonar.cxx.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.cxx.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.cxx.squidbridge.checks.SquidCheck;
+import org.sonar.cxx.tag.Tag;
+import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
 
 /**
  * TabCharacterCheck - similar Vera++ rule L002 "Don't use tab characters"
@@ -67,7 +67,7 @@ public class TabCharacterCheck extends SquidCheck<Grammar> implements CxxCharset
 
   @Override
   public void visitFile(AstNode astNode) {
-    try ( var br = new BufferedReader(CheckUtils.getInputSteam(getContext().getFile(), defaultCharset))) {
+    try ( var br = new BufferedReader(CheckUtils.getInputSteam(getContext().getInputFile().file(), defaultCharset))) {
       String line;
       int nr = 0;
 

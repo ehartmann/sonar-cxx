@@ -33,7 +33,7 @@ public class FunctionNameCheckTest {
   public void test() throws Exception {
     var check = new FunctionNameCheck();
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/FunctionName.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/FunctionName.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(8).withMessage(

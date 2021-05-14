@@ -86,7 +86,7 @@ public class XPathCheck extends AbstractXPathCheck<Grammar> {
   public void visitFile(AstNode fileNode) {
     if (!matchFilePattern.isEmpty()) {
       WildcardPattern pattern = WildcardPattern.create(matchFilePattern);
-      String path = PathUtils.sanitize(getContext().getFile().getPath());
+      String path = PathUtils.sanitize(getContext().getInputFile().file().getPath());
       if (!compare(invertFilePattern, pattern.match(path))) {
         return;
       }

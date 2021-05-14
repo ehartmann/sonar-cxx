@@ -25,10 +25,10 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.cxx.tag.Tag;
 import org.sonar.cxx.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.cxx.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.cxx.squidbridge.checks.SquidCheck;
+import org.sonar.cxx.tag.Tag;
 
 @Rule(
   key = "MissingNewLineAtEndOfFile",
@@ -50,7 +50,7 @@ public class MissingNewLineAtEndOfFileCheck extends SquidCheck<Grammar> {
 
   @Override
   public void visitFile(AstNode astNode) {
-    try (var randomAccessFile = new RandomAccessFile(getContext().getFile(), "r")) {
+    try ( var randomAccessFile = new RandomAccessFile(getContext().getInputFile().file(), "r")) {
       if (!endsWithNewline(randomAccessFile)) {
         getContext().createFileViolation(this, "Add a new line at the end of this file.");
       }

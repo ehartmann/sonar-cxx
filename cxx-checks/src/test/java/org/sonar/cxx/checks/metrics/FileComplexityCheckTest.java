@@ -40,7 +40,7 @@ public class FileComplexityCheckTest {
     var check = new FileComplexityCheck();
     check.setMaxComplexity(1);
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/functions.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/functions.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
 
     Set<CxxReportIssue> issues = MultiLocatitionSquidCheck.getMultiLocationCheckMessages(file);

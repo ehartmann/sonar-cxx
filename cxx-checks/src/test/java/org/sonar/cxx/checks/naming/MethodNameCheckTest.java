@@ -32,7 +32,7 @@ public class MethodNameCheckTest {
   @SuppressWarnings("squid:S2699") // ... verify contains the assertion
   public void test() throws Exception {
     var check = new MethodNameCheck();
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/MethodName.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/MethodName.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(12).withMessage(

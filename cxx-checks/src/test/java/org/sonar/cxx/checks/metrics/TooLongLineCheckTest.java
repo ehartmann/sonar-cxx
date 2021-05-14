@@ -36,7 +36,7 @@ public class TooLongLineCheckTest {
   @SuppressWarnings("squid:S2699") // ... verify contains the assertion
   public void test() throws UnsupportedEncodingException, IOException {
     check.maximumLineLength = 20;
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/LineLength.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/LineLength.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())

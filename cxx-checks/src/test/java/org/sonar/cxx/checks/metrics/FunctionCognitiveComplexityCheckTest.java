@@ -26,7 +26,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 import org.sonar.cxx.CxxAstScanner;
-import org.sonar.cxx.checks.CxxFileTester;
 import org.sonar.cxx.checks.CxxFileTesterHelper;
 import org.sonar.cxx.squidbridge.api.SourceFile;
 import org.sonar.cxx.utils.CxxReportIssue;
@@ -39,8 +38,7 @@ public class FunctionCognitiveComplexityCheckTest {
   public void check() throws UnsupportedEncodingException, IOException {
     var check = new FunctionCognitiveComplexityCheck();
     check.setMaxComplexity(5);
-    CxxFileTester tester = CxxFileTesterHelper.create(
-      "src/test/resources/checks/FunctionCognitiveComplexity.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/FunctionCognitiveComplexity.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     Set<CxxReportIssue> issues = MultiLocatitionSquidCheck.getMultiLocationCheckMessages(file);
     assertThat(issues).isNotNull();

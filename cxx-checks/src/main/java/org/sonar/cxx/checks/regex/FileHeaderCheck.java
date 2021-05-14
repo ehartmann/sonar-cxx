@@ -108,7 +108,7 @@ public class FileHeaderCheck extends SquidCheck<Grammar> implements CxxCharsetAw
         String fileContent = getContext().getInputFile().contents();
         checkRegularExpression(fileContent);
       } else {
-        try ( var br = new BufferedReader(CheckUtils.getInputSteam(getContext().getFile(), defaultCharset))) {
+        try ( var br = new BufferedReader(CheckUtils.getInputSteam(getContext().getInputFile().file(), defaultCharset))) {
           if (!matches(expectedLines, br)) {
             getContext().createFileViolation(this, MESSAGE);
           }

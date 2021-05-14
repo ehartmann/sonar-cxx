@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import org.junit.Test;
 import org.sonar.cxx.CxxAstScanner;
-import org.sonar.cxx.checks.CxxFileTester;
 import org.sonar.cxx.checks.CxxFileTesterHelper;
 import org.sonar.cxx.config.CxxSquidConfiguration;
 import org.sonar.cxx.squidbridge.api.SourceFile;
@@ -38,9 +37,9 @@ public class ParsingErrorRecoveryCheckTest {
     squidConfig.add(CxxSquidConfiguration.SONAR_PROJECT_PROPERTIES, CxxSquidConfiguration.ERROR_RECOVERY_ENABLED,
                     "true");
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/parsingError3.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/parsingError3.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFileConfig(tester.asInputFile(), squidConfig,
-                                                         new ParsingErrorRecoveryCheck());
+                                                              new ParsingErrorRecoveryCheck());
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(2).withMessage("C++ Parser can't read code. Declaration is skipped.")

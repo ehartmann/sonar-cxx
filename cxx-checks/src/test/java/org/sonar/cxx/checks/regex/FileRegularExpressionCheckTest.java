@@ -38,7 +38,7 @@ public class FileRegularExpressionCheckTest {
     var check = new FileRegularExpressionCheck();
     check.regularExpression = "stdafx\\.h";
     check.message = "Found 'stdafx.h' in file!";
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/FileRegEx.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/FileRegEx.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
@@ -55,7 +55,7 @@ public class FileRegularExpressionCheckTest {
     check.invertRegularExpression = true;
     check.message = "Found no 'stdafx.h' in file!";
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/FileRegExInvert.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/FileRegExInvert.cc", ".");
 
     SourceFile file = CxxAstScanner.scanSingleInputFileConfig(tester.asInputFile(), squidConfig, check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
@@ -71,7 +71,7 @@ public class FileRegularExpressionCheckTest {
     check.regularExpression = "stdafx\\.h";
     check.message = "Found 'stdafx.h' in file!";
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/FileRegEx.cc", ".",
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/FileRegEx.cc", ".",
                                                       StandardCharsets.US_ASCII);
 
     SourceFile file = CxxAstScanner.scanSingleInputFileConfig(tester.asInputFile(), squidConfig, check);
@@ -89,7 +89,7 @@ public class FileRegularExpressionCheckTest {
     check.regularExpression = "#include\\s+\"stdafx\\.h\"";
     check.message = "Found '#include \"stdafx.h\"' in a .cc file!";
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/FileRegEx.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/FileRegEx.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFileConfig(tester.asInputFile(), squidConfig, check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
@@ -108,7 +108,7 @@ public class FileRegularExpressionCheckTest {
     check.invertRegularExpression = true;
     check.message = "Found no '#include \"stdafx.h\"' in a file with not '.h' file extension!";
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/FileRegExInvert.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/FileRegExInvert.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFileConfig(tester.asInputFile(), squidConfig, check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())

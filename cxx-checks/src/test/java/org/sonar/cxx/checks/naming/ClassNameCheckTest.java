@@ -33,7 +33,7 @@ public class ClassNameCheckTest {
   public void test() throws Exception {
     var check = new ClassNameCheck();
 
-    CxxFileTester tester = CxxFileTesterHelper.create("src/test/resources/checks/ClassName.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/ClassName.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(3).withMessage(

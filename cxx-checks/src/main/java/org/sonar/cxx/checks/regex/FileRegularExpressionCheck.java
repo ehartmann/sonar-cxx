@@ -137,7 +137,7 @@ public class FileRegularExpressionCheck extends SquidCheck<Grammar> implements C
   private boolean matchFile() {
     if (!matchFilePattern.isEmpty()) {
       WildcardPattern filePattern = WildcardPattern.create(matchFilePattern);
-      String path = PathUtils.sanitize(getContext().getFile().getPath());
+      String path = PathUtils.sanitize(getContext().getInputFile().file().getPath());
       return path != null ? filePattern.match(path) : false;
     }
     return true;

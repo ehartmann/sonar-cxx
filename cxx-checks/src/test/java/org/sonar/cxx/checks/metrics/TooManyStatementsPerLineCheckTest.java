@@ -24,7 +24,6 @@ import java.io.UnsupportedEncodingException;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 import org.sonar.cxx.CxxAstScanner;
-import org.sonar.cxx.checks.CxxFileTester;
 import org.sonar.cxx.checks.CxxFileTesterHelper;
 import org.sonar.cxx.squidbridge.api.SourceFile;
 import org.sonar.cxx.squidbridge.checks.CheckMessagesVerifier;
@@ -37,8 +36,7 @@ public class TooManyStatementsPerLineCheckTest {
     var check = new TooManyStatementsPerLineCheck();
     check.excludeCaseBreak = false;
 
-    CxxFileTester tester = CxxFileTesterHelper.create(
-      "src/test/resources/checks/TooManyStatementsPerLine.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/TooManyStatementsPerLine.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
@@ -64,8 +62,7 @@ public class TooManyStatementsPerLineCheckTest {
     var check = new TooManyStatementsPerLineCheck();
     check.excludeCaseBreak = true;
 
-    CxxFileTester tester = CxxFileTesterHelper.create(
-      "src/test/resources/checks/TooManyStatementsPerLine.cc", ".");
+    var tester = CxxFileTesterHelper.create("src/test/resources/checks/TooManyStatementsPerLine.cc", ".");
     SourceFile file = CxxAstScanner.scanSingleInputFile(tester.asInputFile(), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(17).withMessage(
