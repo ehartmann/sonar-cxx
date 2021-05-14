@@ -21,8 +21,6 @@ package org.sonar.cxx.checks.file;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
@@ -30,7 +28,6 @@ import org.sonar.cxx.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.cxx.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.cxx.squidbridge.checks.SquidCheck;
 import org.sonar.cxx.tag.Tag;
-import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
 
 /**
  * TabCharacterCheck - similar Vera++ rule L002 "Don't use tab characters"
@@ -43,7 +40,7 @@ import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
   priority = Priority.MINOR)
 @ActivatedByDefault
 @SqaleConstantRemediation("5min")
-public class TabCharacterCheck extends SquidCheck<Grammar> implements CxxCharsetAwareVisitor {
+public class TabCharacterCheck extends SquidCheck<Grammar> {
 
   private static final boolean DEFAULT_CREATE_LINE_VIOLATION = false;
 
@@ -55,12 +52,6 @@ public class TabCharacterCheck extends SquidCheck<Grammar> implements CxxCharset
     description = "Create violations per line (default is one per file)",
     defaultValue = "" + DEFAULT_CREATE_LINE_VIOLATION)
   public boolean createLineViolation = DEFAULT_CREATE_LINE_VIOLATION;
-  private Charset defaultCharset = StandardCharsets.UTF_8;
-
-  @Override
-  public void setCharset(Charset charset) {
-    this.defaultCharset = charset;
-  }
 
   @Override
   public void visitFile(AstNode astNode) {

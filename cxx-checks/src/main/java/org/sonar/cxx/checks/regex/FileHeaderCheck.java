@@ -21,8 +21,6 @@ package org.sonar.cxx.checks.regex;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -34,7 +32,6 @@ import org.sonar.cxx.checks.utils.CheckUtils;
 import org.sonar.cxx.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.cxx.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.cxx.squidbridge.checks.SquidCheck;
-import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
 
 /**
  * FileHeaderCheck - similar Vera++ rule T013 "No copyright notice found"
@@ -47,7 +44,7 @@ import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
   tags = {})
 @ActivatedByDefault
 @SqaleConstantRemediation("5min")
-public class FileHeaderCheck extends SquidCheck<Grammar> implements CxxCharsetAwareVisitor {
+public class FileHeaderCheck extends SquidCheck<Grammar> {
 
   private static final String DEFAULT_HEADER_FORMAT = "";
   private static final String MESSAGE = "Add or update the header of this file.";
@@ -71,14 +68,8 @@ public class FileHeaderCheck extends SquidCheck<Grammar> implements CxxCharsetAw
     defaultValue = "false")
   public boolean isRegularExpression = false;
 
-  private Charset defaultCharset = StandardCharsets.UTF_8;
   private String[] expectedLines = null;
   private Pattern searchPattern = null;
-
-  @Override
-  public void setCharset(Charset charset) {
-    this.defaultCharset = charset;
-  }
 
   @Override
   public void init() {

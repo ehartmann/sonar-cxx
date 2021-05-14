@@ -21,8 +21,6 @@ package org.sonar.cxx.checks.regex;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.sonar.api.utils.PathUtils;
@@ -34,7 +32,6 @@ import org.sonar.cxx.checks.utils.CheckUtils;
 import org.sonar.cxx.squidbridge.annotations.NoSqale;
 import org.sonar.cxx.squidbridge.annotations.RuleTemplate;
 import org.sonar.cxx.squidbridge.checks.SquidCheck;
-import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
 
 /**
  * FileRegularExpressionCheck
@@ -46,7 +43,7 @@ import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
   priority = Priority.MAJOR)
 @RuleTemplate
 @NoSqale
-public class FileRegularExpressionCheck extends SquidCheck<Grammar> implements CxxCharsetAwareVisitor {
+public class FileRegularExpressionCheck extends SquidCheck<Grammar> {
 
   private static final String DEFAULT_MATCH_FILE_PATTERN = "";
   private static final boolean DEFAULT_INVERT_FILE_PATTERN = false;
@@ -98,7 +95,6 @@ public class FileRegularExpressionCheck extends SquidCheck<Grammar> implements C
     description = "The violation message",
     defaultValue = DEFAULT_MESSAGE)
   public String message = DEFAULT_MESSAGE;
-  private Charset defaultCharset = StandardCharsets.UTF_8;
   private Pattern pattern = null;
 
   private static boolean compare(boolean invert, boolean condition) {
@@ -108,11 +104,6 @@ public class FileRegularExpressionCheck extends SquidCheck<Grammar> implements C
   @Override
   public void init() {
     pattern = CheckUtils.compileUserRegexp(regularExpression);
-  }
-
-  @Override
-  public void setCharset(Charset charset) {
-    this.defaultCharset = charset;
   }
 
   @Override

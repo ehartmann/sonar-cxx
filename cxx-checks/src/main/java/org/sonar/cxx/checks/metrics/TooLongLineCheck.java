@@ -21,8 +21,6 @@ package org.sonar.cxx.checks.metrics;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
@@ -30,7 +28,6 @@ import org.sonar.cxx.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.cxx.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.cxx.squidbridge.checks.SquidCheck;
 import org.sonar.cxx.tag.Tag;
-import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
 
 /**
  * TooLongLineCheck - similar Vera++ rule L004 "Line too long"
@@ -43,7 +40,7 @@ import org.sonar.cxx.visitors.CxxCharsetAwareVisitor;
   priority = Priority.MINOR)
 @ActivatedByDefault
 @SqaleConstantRemediation("5min")
-public class TooLongLineCheck extends SquidCheck<Grammar> implements CxxCharsetAwareVisitor {
+public class TooLongLineCheck extends SquidCheck<Grammar> {
 
   private static final int DEFAULT_MAXIMUM_LINE_LENHGTH = 160;
   private static final int DEFAULT_TAB_WIDTH = 8;
@@ -65,13 +62,6 @@ public class TooLongLineCheck extends SquidCheck<Grammar> implements CxxCharsetA
     description = "Number of spaces in a 'tab' character",
     defaultValue = "" + DEFAULT_TAB_WIDTH)
   public int tabWidth = DEFAULT_TAB_WIDTH;
-
-  private Charset defaultCharset = StandardCharsets.UTF_8;
-
-  @Override
-  public void setCharset(Charset charset) {
-    this.defaultCharset = charset;
-  }
 
   @Override
   public void visitFile(AstNode astNode) {
