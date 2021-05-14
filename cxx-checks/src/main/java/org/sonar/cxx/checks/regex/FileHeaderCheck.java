@@ -21,11 +21,10 @@ package org.sonar.cxx.checks.regex;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.sonar.check.Priority;
@@ -76,16 +75,6 @@ public class FileHeaderCheck extends SquidCheck<Grammar> implements CxxCharsetAw
   private String[] expectedLines = null;
   private Pattern searchPattern = null;
 
-  private static boolean matches(String[] expectedLines, BufferedReader br) throws IOException {
-    for (var expectedLine : expectedLines) {
-      var line = br.readLine();
-      if (!expectedLine.equals(line)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   @Override
   public void setCharset(Charset charset) {
     this.defaultCharset = charset;
@@ -98,25 +87,19 @@ public class FileHeaderCheck extends SquidCheck<Grammar> implements CxxCharsetAw
         searchPattern = CheckUtils.compileUserRegexp(getHeaderFormat(), Pattern.DOTALL);
       }
     } else {
-      expectedLines = headerFormat.split("\\R");
+      expectedLines = headerFormat.split("(?:\r)?\n|\r");
     }
   }
 
   @Override
   public void visitFile(AstNode astNode) {
-    try {
-      if (isRegularExpression) {
-        String fileContent = getContext().getInputFile().contents();
-        checkRegularExpression(fileContent);
-      } else {
-        try ( var br = new BufferedReader(new InputStreamReader(getContext().getInputFile().inputStream()))) {
-          if (!matches(expectedLines, br)) {
-            getContext().createFileViolation(this, MESSAGE);
-          }
-        }
+    if (isRegularExpression) {
+      String fileContent = getContext().getInputFileContent();
+      checkRegularExpression(fileContent);
+    } else {
+      if (!matches(expectedLines, getContext().getInputFileLines())) {
+        getContext().createFileViolation(this, MESSAGE);
       }
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
     }
   }
 
@@ -133,6 +116,25 @@ public class FileHeaderCheck extends SquidCheck<Grammar> implements CxxCharsetAw
     if (!matcher.find() || matcher.start() != 0) {
       getContext().createFileViolation(this, MESSAGE);
     }
+  }
+
+  private static boolean matches(String[] expectedLines, List<String> lines) {
+    boolean result = false;
+
+    if (expectedLines.length <= lines.size()) {
+      result = true;
+
+      Iterator<String> it = lines.iterator();
+      for (int i = 0; i < expectedLines.length; i++) {
+        String line = it.next();
+        if (!line.equals(expectedLines[i])) {
+          result = false;
+          break;
+        }
+      }
+    }
+
+    return result;
   }
 
 }

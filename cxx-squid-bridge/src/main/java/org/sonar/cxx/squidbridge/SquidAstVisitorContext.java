@@ -27,6 +27,7 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Token;
 import java.io.File;
+import java.util.List;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.cxx.squidbridge.api.CheckMessage;
 import org.sonar.cxx.squidbridge.api.CodeCheck;
@@ -37,6 +38,10 @@ public abstract class SquidAstVisitorContext<G extends Grammar> {
   public abstract File getFile();
 
   public abstract InputFile getInputFile();
+
+  public abstract String getInputFileContent();
+
+  public abstract List<String> getInputFileLines();
 
   public abstract G getGrammar();
 

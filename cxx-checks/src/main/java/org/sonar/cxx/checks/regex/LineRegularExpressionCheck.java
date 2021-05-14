@@ -21,9 +21,6 @@ package org.sonar.cxx.checks.regex;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
@@ -121,19 +118,13 @@ public class LineRegularExpressionCheck extends SquidCheck<Grammar> implements C
   @Override
   public void visitFile(AstNode fileNode) {
     if (compare(invertFilePattern, matchFile())) {
-      try ( var br = new BufferedReader(new InputStreamReader(getContext().getInputFile().inputStream()))) {
-        String line;
-        int nr = 0;
-
-        while ((line = br.readLine()) != null) {
-          Matcher matcher = pattern.matcher(line);
-          ++nr;
-          if (compare(invertRegularExpression, matcher.find())) {
-            getContext().createLineViolation(this, message, nr);
-          }
+      int nr = 0;
+      for (String line : getContext().getInputFileLines()) {
+        Matcher matcher = pattern.matcher(line);
+        ++nr;
+        if (compare(invertRegularExpression, matcher.find())) {
+          getContext().createLineViolation(this, message, nr);
         }
-      } catch (IOException e) {
-        throw new IllegalStateException(e);
       }
     }
   }

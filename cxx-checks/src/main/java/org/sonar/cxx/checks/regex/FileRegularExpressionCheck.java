@@ -21,7 +21,6 @@ package org.sonar.cxx.checks.regex;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
@@ -122,15 +121,11 @@ public class FileRegularExpressionCheck extends SquidCheck<Grammar> implements C
       return;
     }
 
-    try {
-      String fileContent = getContext().getInputFile().contents();
-      Matcher matcher = pattern.matcher(fileContent);
+    String fileContent = getContext().getInputFileContent();
+    Matcher matcher = pattern.matcher(fileContent);
 
-      if (compare(invertRegularExpression, matcher.find())) {
-        getContext().createFileViolation(this, message);
-      }
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
+    if (compare(invertRegularExpression, matcher.find())) {
+      getContext().createFileViolation(this, message);
     }
   }
 

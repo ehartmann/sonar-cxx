@@ -21,7 +21,6 @@ package org.sonar.cxx.checks.file;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import java.io.IOException;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.cxx.squidbridge.annotations.ActivatedByDefault;
@@ -40,12 +39,8 @@ public class MissingNewLineAtEndOfFileCheck extends SquidCheck<Grammar> {
 
   @Override
   public void visitFile(AstNode astNode) {
-    try {
-      if (isEmptyOrNotEndingWithNewLine(getContext().getInputFile().contents())) {
-        getContext().createFileViolation(this, "Add a new line at the end of this file.");
-      }
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
+    if (isEmptyOrNotEndingWithNewLine(getContext().getInputFileContent())) {
+      getContext().createFileViolation(this, "Add a new line at the end of this file.");
     }
   }
 

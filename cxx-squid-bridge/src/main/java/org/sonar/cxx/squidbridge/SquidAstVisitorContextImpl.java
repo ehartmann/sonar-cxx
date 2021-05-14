@@ -27,8 +27,11 @@ import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Token;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
+import java.util.List;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.cxx.squidbridge.api.CheckMessage;
 import org.sonar.cxx.squidbridge.api.CodeCheck;
@@ -129,6 +132,26 @@ public class SquidAstVisitorContextImpl<G extends Grammar> extends SquidAstVisit
   @Override
   public InputFile getInputFile() {
     return inputFile;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getInputFileContent() {
+    try {
+      return inputFile.contents();
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<String> getInputFileLines() {
+    return Arrays.asList(getInputFileContent().split("(?:\r)?\n|\r", -1));
   }
 
   public SourceProject getProject() {

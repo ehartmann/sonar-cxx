@@ -21,9 +21,6 @@ package org.sonar.cxx.checks.metrics;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import org.sonar.check.Priority;
@@ -78,23 +75,17 @@ public class TooLongLineCheck extends SquidCheck<Grammar> implements CxxCharsetA
 
   @Override
   public void visitFile(AstNode astNode) {
-    try ( var br = new BufferedReader(new InputStreamReader(getContext().getInputFile().inputStream()))) {
-      String line;
-      int nr = 0;
-
-      while ((line = br.readLine()) != null) {
-        ++nr;
-        long length = line.chars().filter(c -> c == '\t').count();
-        length = line.length() + length * (tabWidth - 1);
-        if (length > maximumLineLength) {
-          getContext().createLineViolation(
-            this,
-            "Split this {0} characters long line (which is greater than {1} authorized).",
-            nr, length, maximumLineLength);
-        }
+    int nr = 0;
+    for (String line : getContext().getInputFileLines()) {
+      ++nr;
+      long length = line.chars().filter(c -> c == '\t').count();
+      length = line.length() + length * (tabWidth - 1);
+      if (length > maximumLineLength) {
+        getContext().createLineViolation(
+          this,
+          "Split this {0} characters long line (which is greater than {1} authorized).",
+          nr, length, maximumLineLength);
       }
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
     }
   }
 

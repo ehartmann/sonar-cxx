@@ -21,9 +21,6 @@ package org.sonar.cxx.checks.file;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Grammar;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import org.sonar.check.Priority;
@@ -67,27 +64,21 @@ public class TabCharacterCheck extends SquidCheck<Grammar> implements CxxCharset
 
   @Override
   public void visitFile(AstNode astNode) {
-    try ( var br = new BufferedReader(new InputStreamReader(getContext().getInputFile().inputStream()))) {
-      String line;
-      int nr = 0;
-
-      while ((line = br.readLine()) != null) {
-        ++nr;
-        if (line.contains("\t")) {
-          if (createLineViolation) {
-            getContext().createLineViolation(
-              this,
-              "Replace all tab characters in this line by sequences of white-spaces.", nr);
-          } else {
-            getContext().createFileViolation(
-              this,
-              "Replace all tab characters in this file by sequences of white-spaces.");
-            break;
-          }
+    int nr = 0;
+    for (String line : getContext().getInputFileLines()) {
+      ++nr;
+      if (line.contains("\t")) {
+        if (createLineViolation) {
+          getContext().createLineViolation(
+            this,
+            "Replace all tab characters in this line by sequences of white-spaces.", nr);
+        } else {
+          getContext().createFileViolation(
+            this,
+            "Replace all tab characters in this file by sequences of white-spaces.");
+          break;
         }
       }
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
     }
   }
 
