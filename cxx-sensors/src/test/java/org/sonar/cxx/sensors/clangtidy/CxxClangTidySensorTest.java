@@ -113,13 +113,40 @@ public class CxxClangTidySensorTest {
     assertThat(context.allIssues()).hasSize(4);
     var issuesList = new ArrayList<Issue>(context.allIssues());
     assertThat(issuesList.get(0).ruleKey().rule()).isEqualTo("hicpp-signed-bitwise");
-    assertThat(issuesList.get(0).primaryLocation().textRange().start().lineOffset()).isEqualTo(33);
+    assertThat(issuesList.get(0).primaryLocation().textRange().start().lineOffset()).isEqualTo(32);
     assertThat(issuesList.get(1).ruleKey().rule()).isEqualTo("hicpp-signed-bitwise");
-    assertThat(issuesList.get(1).primaryLocation().textRange().start().lineOffset()).isEqualTo(34);
+    assertThat(issuesList.get(1).primaryLocation().textRange().start().lineOffset()).isEqualTo(33);
     assertThat(issuesList.get(2).ruleKey().rule()).isEqualTo("hicpp-signed-bitwise");
-    assertThat(issuesList.get(2).primaryLocation().textRange().start().lineOffset()).isEqualTo(35);
+    assertThat(issuesList.get(2).primaryLocation().textRange().start().lineOffset()).isEqualTo(34);
     assertThat(issuesList.get(3).ruleKey().rule()).isEqualTo("hicpp-signed-bitwise");
-    assertThat(issuesList.get(3).primaryLocation().textRange().start().lineOffset()).isEqualTo(72);
+    assertThat(issuesList.get(3).primaryLocation().textRange().start().lineOffset()).isEqualTo(71);
+  }
+
+  @Test
+  public void shouldReportIssuesInFirstAndLastColumn() {
+    var context = SensorContextTester.create(fs.baseDir());
+    settings.setProperty(
+      CxxClangTidySensor.REPORT_PATH_KEY,
+      "clang-tidy-reports/cpd.report-min-max-cols.txt"
+    );
+    context.setSettings(settings);
+
+    context.fileSystem().add(TestInputFileBuilder
+      .create("ProjectKey", "sources/utils/code_chunks.cpp")
+      .setLanguage("cxx")
+      .initMetadata("0123456789\n")
+      .build()
+    );
+
+    var sensor = new CxxClangTidySensor();
+    sensor.execute(context);
+
+    assertThat(context.allIssues()).hasSize(2);
+    var issuesList = new ArrayList<Issue>(context.allIssues());
+    assertThat(issuesList.get(0).ruleKey().rule()).isEqualTo("first-column");
+    assertThat(issuesList.get(0).primaryLocation().textRange().start().lineOffset()).isEqualTo(0);
+    assertThat(issuesList.get(1).ruleKey().rule()).isEqualTo("last-column");
+    assertThat(issuesList.get(1).primaryLocation().textRange().start().lineOffset()).isEqualTo(9);
   }
 
   @Test

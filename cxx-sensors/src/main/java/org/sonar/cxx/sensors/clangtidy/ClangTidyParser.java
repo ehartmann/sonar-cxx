@@ -88,6 +88,13 @@ public class ClangTidyParser {
       issue.level = m.group(4);  // error, warning, note, ...
       issue.info = m.group(5);   // info [ruleIds]
 
+      // ClangTidy column numbers are from 1...n and SQ is using 0...n
+      try {
+        issue.column = Integer.toString(Integer.parseInt(issue.column) - 1);
+      } catch (java.lang.NumberFormatException e) {
+        issue.column = "";
+      }
+
       splitRuleIds();
     }
   }
