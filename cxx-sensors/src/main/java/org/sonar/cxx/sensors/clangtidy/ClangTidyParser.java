@@ -47,24 +47,22 @@ public class ClangTidyParser {
     try ( var scanner = new TextScanner(report, defaultEncoding)) {
       LOG.debug("Encoding='{}'", scanner.encoding());
 
-      // sample:
-      // c:\a\file.cc:5:20: warning: ... conversion from string literal to 'char *' [clang-diagnostic-writable-strings]
       CxxReportIssue currentIssue = null;
       while (scanner.hasNextLine()) {
-        parseLine(scanner.nextLine());
-        if (issue != null) {
-          if ("note".equals(issue.level)) {
-            if (currentIssue != null) {
-              currentIssue.addFlowElement(issue.path, issue.line, issue.column, issue.info);
-            }
-          } else {
-            if (currentIssue != null) {
-              sensor.saveUniqueViolation(currentIssue);
-            }
-            currentIssue = new CxxReportIssue(issue.ruleId, issue.path, issue.line, issue.column, issue.info);
-            for (var aliasRuleId : issue.aliasRuleIds) {
-              currentIssue.addAliasRuleId(aliasRuleId);
-            }
+        if (!parseLine(scanner.nextLine())) {
+          continue;
+        }
+        if ("note".equals(issue.level)) {
+          if (currentIssue != null) {
+            currentIssue.addFlowElement(issue.path, issue.line, issue.column, issue.info);
+          }
+        } else {
+          if (currentIssue != null) {
+            sensor.saveUniqueViolation(currentIssue);
+          }
+          currentIssue = new CxxReportIssue(issue.ruleId, issue.path, issue.line, issue.column, issue.info);
+          for (var aliasRuleId : issue.aliasRuleIds) {
+            currentIssue.addAliasRuleId(aliasRuleId);
           }
         }
       }
@@ -74,13 +72,15 @@ public class ClangTidyParser {
     }
   }
 
-  private void parseLine(String data) {
+  private boolean parseLine(String data) {
     var matcher = PATTERN.matcher(data);
     issue = null;
     if (matcher.matches()) {
       issue = new Issue();
       // group: 1      2      3         4        5
-      //      <path>:<line>:<column>: <level>: <info>
+      //      <path>:<line>:<column>: <level>: <info> [ruleIds]
+      // sample:
+      //      c:\a\file.cc:5:20: warning: txt txt [clang-diagnostic-writable-strings]
       var m = matcher.toMatchResult();
       issue.path = m.group(1);   // relative paths
       issue.line = m.group(2);   // 1...n
@@ -88,38 +88,45 @@ public class ClangTidyParser {
       issue.level = m.group(4);  // error, warning, note, ...
       issue.info = m.group(5);   // info [ruleIds]
 
-      // ClangTidy column numbers are from 1...n and SQ is using 0...n
+      // Clang-Tidy column numbers are from 1...n and SQ is using 0...n
       try {
         issue.column = Integer.toString(Integer.parseInt(issue.column) - 1);
       } catch (java.lang.NumberFormatException e) {
         issue.column = "";
       }
 
-      splitRuleIds();
+      splitRuleIds(); // info [ruleId, aliasId, ...]
     }
+
+    return issue != null;
   }
 
   private void splitRuleIds() {
     issue.ruleId = getDefaultRuleId();
 
-    if (issue.info.endsWith("]")) { // [ruleIds]
-      var end = issue.info.length() - 1;
-      for (var start = issue.info.length() - 2; start >= 0; start--) {
-        var c = issue.info.charAt(start);
-        if (!(Character.isLetterOrDigit(c) || c == '-' || c == '.' || c == '_')) {
-          if (c == ',') {
-            var aliasId = issue.info.substring(start + 1, end);
-            if (!"-warnings-as-errors".equals(aliasId)) {
-              issue.aliasRuleIds.addFirst(aliasId);
-            }
-            end = start;
-            continue;
-          } else if (c == '[') {
-            issue.ruleId = issue.info.substring(start + 1, end);
-            issue.info = issue.info.substring(0, start - 1);
-          }
-          break;
+    if (!issue.info.endsWith("]")) { // [...]
+      return;
+    }
+
+    var end = issue.info.length() - 1;
+    for (var start = issue.info.length() - 2; start >= 0; start--) {
+      var c = issue.info.charAt(start);
+      if (Character.isLetterOrDigit(c) || c == '-' || c == '.' || c == '_') {
+        continue;
+      } else if (c == ',') {
+        var aliasId = issue.info.substring(start + 1, end);
+        if (!"-warnings-as-errors".equals(aliasId)) {
+          issue.aliasRuleIds.addFirst(aliasId);
         }
+        end = start;
+      } else {
+        if (c == '[') {
+          issue.ruleId = issue.info.substring(start + 1, end);
+          issue.info = issue.info.substring(0, start - 1);
+        } else {
+          issue.aliasRuleIds.clear();
+        }
+        break;
       }
     }
   }
@@ -135,6 +142,11 @@ public class ClangTidyParser {
     return map.getOrDefault(issue.level, "clang-diagnostic-unknown");
   }
 
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
+
   private static class Issue {
 
     private String path;
@@ -144,11 +156,6 @@ public class ClangTidyParser {
     private String ruleId;
     private LinkedList<String> aliasRuleIds = new LinkedList<>();
     private String info;
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName();
   }
 
 }
