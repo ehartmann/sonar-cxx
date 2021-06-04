@@ -70,7 +70,7 @@ Feature: Importing Cppcheck reports
     And the server log (if locatable) contains no error/warning messages
     But the analysis log contains a line matching
       """
-      .*WARN: The 'Cppcheck V2' report is invalid.*, skipping
+      .*WARN: The 'Cppcheck V2' report is invalid.*skipping
       """
     And the number of violations fed is <violations>
     Examples:
