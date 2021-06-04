@@ -123,6 +123,33 @@ public class CxxClangTidySensorTest {
   }
 
   @Test
+  public void shouldReportLineIfColumnIsInvalid() {
+    var context = SensorContextTester.create(fs.baseDir());
+    settings.setProperty(
+      CxxClangTidySensor.REPORT_PATH_KEY,
+      "clang-tidy-reports/cpd.report-warning.txt"
+    );
+    context.setSettings(settings);
+
+    context.fileSystem().add(TestInputFileBuilder
+      .create("ProjectKey", "sources/utils/code_chunks.cpp")
+      .setLanguage("cxx")
+      .initMetadata(
+        "asd\n"
+          + "X\n" // line too short for column in message
+          + "asda\n")
+      .build()
+    );
+
+    var sensor = new CxxClangTidySensor();
+    sensor.execute(context);
+
+    assertThat(context.allIssues()).hasSize(1);
+    var issuesList = new ArrayList<Issue>(context.allIssues());
+    assertThat(issuesList.get(0).ruleKey().rule()).isEqualTo("readability-inconsistent-declaration-parameter-name");
+  }
+
+  @Test
   public void shouldReportIssuesInFirstAndLastColumn() {
     var context = SensorContextTester.create(fs.baseDir());
     settings.setProperty(
