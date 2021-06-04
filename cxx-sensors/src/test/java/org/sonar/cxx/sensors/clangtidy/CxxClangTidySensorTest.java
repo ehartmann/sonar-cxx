@@ -123,6 +123,33 @@ public class CxxClangTidySensorTest {
   }
 
   @Test
+  public void shouldRemoveDuplicateIssues() {
+    var context = SensorContextTester.create(fs.baseDir());
+    settings.setProperty(
+      CxxClangTidySensor.REPORT_PATH_KEY,
+      "clang-tidy-reports/cpd.report-duplicates.txt"
+    );
+    context.setSettings(settings);
+
+    context.fileSystem().add(TestInputFileBuilder
+      .create("ProjectKey", "sources/utils/code_chunks.cpp")
+      .setLanguage("cxx")
+      .initMetadata(
+        "asd\n"
+          + "                               _identityFunction) {\n"
+          + "asda\n")
+      .build()
+    );
+
+    var sensor = new CxxClangTidySensor();
+    sensor.execute(context);
+
+    assertThat(context.allIssues()).hasSize(1);
+    var issuesList = new ArrayList<Issue>(context.allIssues());
+    assertThat(issuesList.get(0).ruleKey().rule()).isEqualTo("clang-diagnostic-uninitialized");
+  }
+
+  @Test
   public void shouldReportLineIfColumnIsInvalid() {
     var context = SensorContextTester.create(fs.baseDir());
     settings.setProperty(
